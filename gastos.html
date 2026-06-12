@@ -1,0 +1,1437 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="color-scheme" content="light dark">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Control de Gastos gratis para autónomos — gestio.es</title>
+<meta name="description" content="Registra tus gastos deducibles, calcula el IVA soportado y la base deducible para el IRPF. Gratis, sin registro, 100% en tu navegador.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://gestio.es/gastos.html">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://gestio.es/gastos.html">
+<meta property="og:title" content="Control de Gastos gratis — gestio.es">
+<meta property="og:description" content="Registra gastos, calcula IVA soportado y gasto deducible IRPF por trimestre. Gratis, sin registro.">
+<meta property="og:locale" content="es_ES">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,700;12..96,800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  color-scheme: light dark;
+  --navy:    #0F1B2D;
+  --navy-2:  #1A2E48;
+  --emerald: #059669;
+  --em-light:#D1FAE5;
+  --em-mid:  #6EE7B7;
+  --slate:   #64748B;
+  --slate-2: #94A3B8;
+  --slate-3: #CBD5E1;
+  --bg:      #FAFAF9;
+  --bg-2:    #F4F4F2;
+  --bg-3:    #EEECEA;
+  --ink:     #0F1B2D;
+  --white:   #FFFFFF;
+  --line:    #E5E4E0;
+  --line-2:  #D0CEC9;
+  --rose:    #E11D48;
+  --amber:   #D97706;
+  --amber-light: #FEF3C7;
+  --r:       10px;
+  --r-lg:    14px;
+  --card-bg: #FFFFFF;
+  --card-ink: #0F1B2D;
+  --card-slate: #64748B;
+  --card-line: #E5E4E0;
+  --nav-bg:  rgba(250,250,249,0.92);
+  --input-bg:   #FFFFFF;
+  --input-ink:  #0F1B2D;
+  --input-line: #E5E4E0;
+  --input-ph:   #CBD5E1;
+  --dark-surface: #0F1B2D;
+  --dark-surface-2: #1A2E48;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg:      #0D1117;
+    --bg-2:    #161B22;
+    --bg-3:    #1C2128;
+    --ink:     #E6EDF3;
+    --white:   #161B22;
+    --line:    rgba(255,255,255,0.08);
+    --line-2:  rgba(255,255,255,0.13);
+    --slate:   #8B949E;
+    --slate-2: #6E7681;
+    --slate-3: #484F58;
+    --navy:    #E6EDF3;
+    --navy-2:  #C9D1D9;
+    --em-light:rgba(5,150,105,0.15);
+    --amber-light: rgba(217,119,6,0.15);
+    --card-bg: #FFFFFF;
+    --card-ink: #0F1B2D;
+    --card-slate: #64748B;
+    --card-line: #E5E4E0;
+    --nav-bg:  rgba(13,17,23,0.92);
+    --input-bg:   #FFFFFF;
+    --input-ink:  #0F1B2D;
+    --input-line: #D0CED9;
+    --input-ph:   #9CA3AF;
+    --dark-surface: #0F1B2D;
+    --dark-surface-2: #1A2E48;
+  }
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  min-height: 100vh;
+  font-size: 14px;
+  line-height: 1.5;
+  overflow-x: hidden;
+}
+
+/* ── NAV ─── */
+nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 28px;
+  background: var(--nav-bg);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--line);
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  text-decoration: none;
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--navy);
+  letter-spacing: -0.4px;
+}
+
+.logo-icon {
+  width: 28px; height: 28px;
+  background: var(--dark-surface);
+  border-radius: 7px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.logo-icon svg { width: 14px; height: 14px; }
+
+.nav-right { display: flex; align-items: center; gap: 8px; }
+
+.nav-link {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--slate);
+  text-decoration: none;
+  padding: 6px 14px;
+  border-radius: 20px;
+  transition: color 0.2s, background 0.2s;
+}
+.nav-link:hover { color: var(--navy); background: var(--bg-3); }
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11.5px;
+  font-weight: 600;
+  padding: 4px 12px;
+  border-radius: 20px;
+}
+.badge-em {
+  background: var(--em-light);
+  color: var(--emerald);
+  border: 1px solid rgba(5,150,105,0.2);
+}
+
+/* ── PAGE HEADER ─── */
+.page-header {
+  padding: 40px 28px 32px;
+  max-width: 1060px;
+  margin: 0 auto;
+  animation: fadeUp 0.5s ease both;
+}
+
+.page-header h1 {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: clamp(26px, 4vw, 38px);
+  font-weight: 800;
+  color: var(--navy);
+  letter-spacing: -1.5px;
+  line-height: 1.1;
+  margin-bottom: 8px;
+}
+
+.page-header p {
+  font-size: 14.5px;
+  color: var(--slate);
+}
+
+/* ── WRAP ─── */
+.wrap {
+  max-width: 1060px;
+  margin: 0 auto;
+  padding: 0 20px 120px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.span-2 { grid-column: 1 / -1; }
+
+/* ── CARD ─── */
+.card {
+  background: var(--card-bg);
+  border: 1px solid var(--card-line);
+  border-radius: var(--r-lg);
+  padding: 22px 20px;
+  color: var(--card-ink);
+  transition: border-color 0.2s, box-shadow 0.25s;
+  animation: cardIn 0.5s ease both;
+}
+.card:hover {
+  border-color: #C8C6C0;
+  box-shadow: 0 4px 24px rgba(15,27,45,0.08);
+}
+
+@keyframes cardIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 18px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--card-line);
+}
+
+.card-header-left { display: flex; align-items: center; gap: 10px; }
+
+.card-icon {
+  width: 32px; height: 32px;
+  background: #F4F4F2;
+  border: 1px solid var(--card-line);
+  border-radius: 9px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.card-icon svg { width: 14px; height: 14px; color: var(--card-ink); }
+
+.card-title {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--card-ink);
+  letter-spacing: -0.2px;
+}
+.card-sub { font-size: 11.5px; color: var(--card-slate); margin-top: 2px; font-weight: 400; }
+
+/* ── FIELDS ─── */
+.field { margin-bottom: 10px; }
+.field:last-child { margin-bottom: 0; }
+
+label {
+  display: block;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--card-slate);
+  margin-bottom: 5px;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  line-height: 1.3;
+}
+
+input[type="text"],
+input[type="date"],
+input[type="number"],
+select,
+textarea {
+  width: 100%;
+  padding: 9px 12px;
+  border: 1.5px solid var(--input-line, var(--line));
+  border-radius: var(--r);
+  font-family: 'Inter', sans-serif;
+  font-size: 13.5px;
+  font-weight: 400;
+  color: var(--input-ink, var(--ink));
+  background: var(--input-bg);
+  transition: border-color 0.2s, box-shadow 0.2s;
+  -webkit-appearance: none;
+  appearance: none;
+}
+input::placeholder { color: var(--input-ph, var(--slate-3)); }
+
+input:focus, select:focus, textarea:focus {
+  border-color: var(--emerald);
+  box-shadow: 0 0 0 3px rgba(5,150,105,0.1);
+  outline: none;
+}
+
+select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2394A3B8' stroke-width='2.5'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 11px center;
+  background-color: var(--input-bg);
+  padding-right: 34px;
+  cursor: pointer;
+}
+
+.row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+
+.info-box {
+  background: #D1FAE5;
+  border: 1px solid rgba(5,150,105,0.2);
+  border-radius: var(--r);
+  padding: 9px 12px;
+  font-size: 12px;
+  color: #065F46;
+  margin-top: 8px;
+  line-height: 1.55;
+}
+.info-box.amber {
+  background: var(--amber-light);
+  border-color: rgba(217,119,6,0.25);
+  color: #92400E;
+}
+
+/* ── PERIODO SELECTOR ─── */
+.periodo-selector {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 6px;
+  margin-top: 2px;
+}
+.periodo-opt { display: none; }
+.periodo-opt + label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 6px;
+  border: 1.5px solid var(--input-line);
+  border-radius: var(--r);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--card-slate);
+  cursor: pointer;
+  transition: all 0.18s;
+  text-transform: none;
+  letter-spacing: 0;
+  background: var(--input-bg);
+}
+.periodo-opt + label:hover { border-color: var(--slate-2); }
+.periodo-opt:checked + label {
+  border-color: var(--emerald);
+  background: var(--em-light);
+  color: var(--emerald);
+}
+
+/* ── GASTO CARD ─── */
+.gastos-list { display: flex; flex-direction: column; gap: 10px; }
+
+.gasto-card {
+  border: 1.5px solid var(--card-line);
+  border-radius: var(--r-lg);
+  padding: 14px;
+  background: #FBFBFA;
+  animation: fadeSlideIn 0.22s ease;
+  position: relative;
+}
+@media (prefers-color-scheme: dark) { .gasto-card { background: #1C2128; } }
+
+@keyframes fadeSlideIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.gasto-card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.gasto-num {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--card-slate);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+}
+
+.btn-remove {
+  width: 30px; height: 30px;
+  border: 1.5px solid var(--card-line);
+  border-radius: 8px;
+  background: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--slate-2);
+  font-size: 16px;
+  transition: all 0.2s;
+  padding: 0; flex-shrink: 0;
+}
+.btn-remove:hover { background: #FFF1F2; border-color: #FECDD3; color: var(--rose); }
+
+.gasto-row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 8px; }
+.gasto-row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px; }
+.gasto-row-full { margin-bottom: 8px; }
+.gasto-row-4 { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 8px; margin-bottom: 4px; }
+
+.gasto-card .field { margin-bottom: 0; }
+
+.gasto-result {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px dashed var(--card-line);
+  font-size: 12px;
+}
+.gasto-result .gr-item { display: flex; flex-direction: column; gap: 2px; }
+.gasto-result .gr-label { color: var(--card-slate); font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.6px; }
+.gasto-result .gr-val { font-weight: 700; font-variant-numeric: tabular-nums; color: var(--card-ink); }
+.gasto-result .gr-val.rose { color: var(--rose); }
+.gasto-result .gr-val.em { color: var(--emerald); }
+
+.cat-note {
+  display: none;
+  margin-top: 8px;
+}
+.cat-note.visible { display: block; }
+
+.btn-add-line {
+  margin-top: 4px;
+  padding: 10px 14px;
+  border: 1.5px dashed #CBD5E1;
+  border-radius: var(--r);
+  background: none;
+  color: #64748B;
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  width: 100%;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+.btn-add-line:hover {
+  border-color: var(--emerald);
+  color: var(--emerald);
+  background: #D1FAE5;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 30px 10px;
+  color: var(--slate-2);
+  font-size: 13px;
+}
+
+/* ── SUMMARY TABLE ─── */
+.summary-table { width: 100%; border-collapse: collapse; margin-bottom: 16px; }
+.summary-table th, .summary-table td {
+  text-align: right;
+  padding: 8px 6px;
+  font-size: 12px;
+  border-bottom: 1px solid var(--card-line);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.summary-table th:first-child, .summary-table td:first-child { text-align: left; white-space: normal; }
+.summary-table th {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--card-slate);
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  border-bottom: 1.5px solid var(--card-line);
+}
+.summary-table tbody tr:last-child td { border-bottom: none; }
+.summary-table td.cat-name { font-weight: 500; }
+.summary-table-wrap { overflow-x: auto; }
+
+/* ── TOTALS ─── */
+.totals-box {
+  margin-top: 4px;
+  background: #F4F4F2;
+  border: 1.5px solid #E5E4E0;
+  border-radius: var(--r-lg);
+  padding: 18px 20px;
+}
+@media (prefers-color-scheme: dark) { .totals-box { background: #1C2128; border-color: rgba(255,255,255,0.08); } }
+
+.total-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 5px 0;
+  border-bottom: 1px solid var(--card-line);
+}
+.total-row:last-of-type { border-bottom: none; }
+.total-row .t-label { font-size: 13px; color: #64748B; }
+.total-row .t-val {
+  font-variant-numeric: tabular-nums;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--card-ink);
+}
+
+.total-final {
+  margin-top: 14px;
+  background: var(--dark-surface);
+  border-radius: var(--r-lg);
+  padding: 16px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: box-shadow 0.2s;
+}
+.total-final:hover { box-shadow: 0 4px 20px rgba(15,27,45,0.15); }
+.total-final .tf-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: rgba(255,255,255,0.5);
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+}
+.total-final .tf-amount {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 28px;
+  font-weight: 800;
+  color: white;
+  letter-spacing: -1px;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+.total-final .tf-sub { font-size: 11px; color: var(--em-mid); margin-top: 3px; }
+
+/* ── ACTIONS BAR ─── */
+.actions-bar {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  z-index: 100;
+  background: var(--nav-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-top: 1px solid var(--line);
+  padding: 12px 24px;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.btn-clear {
+  padding: 0 18px;
+  height: 44px;
+  background: var(--card-bg);
+  border: 1.5px solid var(--line);
+  border-radius: var(--r);
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--slate);
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+.btn-clear:hover {
+  border-color: #FECDD3;
+  color: var(--rose);
+  background: #FFF1F2;
+}
+
+.btn-csv {
+  height: 44px;
+  padding: 0 16px;
+  background: var(--card-bg);
+  border: 1.5px solid var(--line);
+  border-radius: var(--r);
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--navy);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+.btn-csv:hover { border-color: var(--emerald); color: var(--emerald); background: var(--em-light); }
+
+.btn-pdf {
+  flex: 1;
+  height: 44px;
+  background: var(--dark-surface);
+  color: white;
+  border: none;
+  border-radius: var(--r);
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  letter-spacing: -0.2px;
+  transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+  box-shadow: 0 2px 12px rgba(15,27,45,0.2);
+}
+.btn-pdf:hover {
+  background: var(--dark-surface-2);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 24px rgba(15,27,45,0.25);
+}
+.btn-pdf:active { transform: translateY(0); }
+.btn-pdf.loading { opacity: 0.7; cursor: not-allowed; pointer-events: none; }
+
+/* ── TOAST ─── */
+.toast {
+  position: fixed;
+  bottom: 72px;
+  left: 50%;
+  transform: translateX(-50%) translateY(10px);
+  background: var(--dark-surface);
+  color: white;
+  font-size: 13px;
+  font-weight: 500;
+  padding: 10px 20px;
+  border-radius: 24px;
+  opacity: 0;
+  transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
+  pointer-events: none;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+.toast-dot { width: 6px; height: 6px; background: var(--em-mid); border-radius: 50%; }
+
+/* ── ANIMATIONS ─── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── RESPONSIVE ─── */
+@media (max-width: 720px) {
+  .grid { grid-template-columns: 1fr; }
+  .span-2 { grid-column: 1; }
+  .wrap { padding: 0 12px 130px; }
+  .page-header { padding: 28px 12px 20px; }
+  nav { padding: 0 14px; }
+  .row-2 { grid-template-columns: 1fr 1fr; }
+  .row-3 { grid-template-columns: 1fr 1fr; }
+  .gasto-row-3 { grid-template-columns: 1fr 1fr; }
+  .gasto-row-4 { grid-template-columns: 1fr 1fr; }
+  .gasto-row-2 { grid-template-columns: 1fr 1fr; }
+  .periodo-selector { grid-template-columns: repeat(5,1fr); }
+}
+@media (max-width: 560px) {
+  .row-3 { grid-template-columns: 1fr; }
+  .gasto-row-3 { grid-template-columns: 1fr; }
+  .gasto-row-4 { grid-template-columns: 1fr 1fr; }
+  .periodo-selector { grid-template-columns: repeat(3,1fr); gap: 5px; }
+  .total-final .tf-amount { font-size: 24px; }
+  .actions-bar { flex-wrap: wrap; }
+  .btn-pdf { flex: 1 1 100%; order: 3; }
+  .btn-clear, .btn-csv { flex: 1; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="index.html" class="logo">
+    <div class="logo-icon">
+      <svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="5" y="3" width="10" height="2.5" rx="1" fill="white"/><rect x="3" y="3" width="2.5" height="14" rx="1" fill="white"/><rect x="5" y="14.5" width="10" height="2.5" rx="1" fill="white"/><rect x="10" y="10" width="5" height="2.5" rx="1" fill="#6EE7B7"/></svg>
+    </div>
+    gestio
+  </a>
+  <div class="nav-right">
+    <a href="index.html" class="nav-link">← Inicio</a>
+    <span class="badge badge-em">Gratis</span>
+  </div>
+</nav>
+
+<!-- PAGE HEADER -->
+<div class="page-header">
+  <h1>Control de gastos</h1>
+  <p>Registra tus gastos deducibles y calcula al instante el IVA soportado y la base deducible para tu IRPF.</p>
+</div>
+
+<!-- WRAP -->
+<div class="wrap">
+  <div class="grid">
+
+    <!-- TITULAR -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-header-left">
+          <div class="card-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          </div>
+          <div>
+            <div class="card-title">Tus datos</div>
+            <div class="card-sub">Para el encabezado del resumen</div>
+          </div>
+        </div>
+      </div>
+      <div class="field"><label>Nombre / Razón social</label><input type="text" id="titular_nombre" placeholder="Tu nombre o empresa"></div>
+      <div class="field"><label>NIF / CIF</label><input type="text" id="titular_nif" placeholder="12345678A"></div>
+    </div>
+
+    <!-- PERIODO -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-header-left">
+          <div class="card-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          </div>
+          <div>
+            <div class="card-title">Periodo</div>
+            <div class="card-sub">Filtra el resumen para el 130 / 303</div>
+          </div>
+        </div>
+      </div>
+      <div class="field"><label>Año</label><input type="number" id="periodo_anio" step="1" placeholder="2026" oninput="calcularTotales()"></div>
+      <div class="field">
+        <label>Trimestre</label>
+        <div class="periodo-selector">
+          <input class="periodo-opt" type="radio" name="trimestre" id="per_todos" value="todos" checked onchange="calcularTotales()">
+          <label for="per_todos">Todos</label>
+          <input class="periodo-opt" type="radio" name="trimestre" id="per_t1" value="1" onchange="calcularTotales()">
+          <label for="per_t1">T1</label>
+          <input class="periodo-opt" type="radio" name="trimestre" id="per_t2" value="2" onchange="calcularTotales()">
+          <label for="per_t2">T2</label>
+          <input class="periodo-opt" type="radio" name="trimestre" id="per_t3" value="3" onchange="calcularTotales()">
+          <label for="per_t3">T3</label>
+          <input class="periodo-opt" type="radio" name="trimestre" id="per_t4" value="4" onchange="calcularTotales()">
+          <label for="per_t4">T4</label>
+        </div>
+      </div>
+    </div>
+
+    <!-- GASTOS -->
+    <div class="card span-2">
+      <div class="card-header">
+        <div class="card-header-left">
+          <div class="card-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+          </div>
+          <div>
+            <div class="card-title">Gastos registrados</div>
+            <div class="card-sub">Cada gasto suma al resumen según su fecha</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="gastos-list" id="gastos"></div>
+      <div class="empty-state" id="emptyState" style="display:none">Aún no has añadido ningún gasto.</div>
+
+      <button class="btn-add-line" onclick="addGasto()">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Añadir gasto
+      </button>
+    </div>
+
+    <!-- RESUMEN -->
+    <div class="card span-2">
+      <div class="card-header">
+        <div class="card-header-left">
+          <div class="card-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M18.7 8 13 13.7l-3-3L3 18"/></svg>
+          </div>
+          <div>
+            <div class="card-title">Resumen <span id="resumenPeriodoLabel">— todos los gastos</span></div>
+            <div class="card-sub">Por categoría · base, IVA soportado y deducible IRPF</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="summary-table-wrap">
+        <table class="summary-table">
+          <thead>
+            <tr>
+              <th>Categoría</th>
+              <th>Base</th>
+              <th>IVA sop.</th>
+              <th>Total pagado</th>
+              <th>Ded. IRPF</th>
+            </tr>
+          </thead>
+          <tbody id="resumenCategorias">
+            <tr><td colspan="5" style="text-align:center;color:var(--slate-2)">Sin datos todavía</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="totals-box">
+        <div class="total-row">
+          <span class="t-label">Base imponible total</span>
+          <span class="t-val" id="t_base">0,00 €</span>
+        </div>
+        <div class="total-row">
+          <span class="t-label">IVA soportado deducible</span>
+          <span class="t-val" id="t_iva">0,00 €</span>
+        </div>
+        <div class="total-row">
+          <span class="t-label">Total pagado</span>
+          <span class="t-val" id="t_pagado">0,00 €</span>
+        </div>
+        <div class="total-final">
+          <div>
+            <div class="tf-label">Gasto deducible IRPF</div>
+            <div class="tf-sub" id="t_count">0 gastos</div>
+          </div>
+          <span class="tf-amount" id="t_irpf">0,00 €</span>
+        </div>
+      </div>
+
+      <div class="info-box" style="margin-top:14px">
+        El <b>IVA soportado deducible</b> sirve para compensar el IVA repercutido en tu modelo 303. El <b>gasto deducible IRPF</b> reduce el rendimiento neto de tu actividad en el modelo 130 / declaración anual. Revisa siempre con tu gestoría.
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="actions-bar">
+  <button class="btn-clear" onclick="limpiarFormulario()">Limpiar</button>
+  <button class="btn-csv" onclick="exportarCSV()">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+    CSV
+  </button>
+  <button class="btn-pdf" id="btnPdf" onclick="generarPDF()">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+    Descargar resumen PDF
+  </button>
+</div>
+
+<div class="toast" id="toast">
+  <span class="toast-dot"></span>
+  <span id="toastMsg">PDF descargado</span>
+</div>
+
+<script>
+// ─────────────────────────────────────────────
+// CATEGORÍAS (basadas en gastos deducibles AEAT para autónomos)
+// ─────────────────────────────────────────────
+const CATEGORIAS = {
+  compras:       { label: 'Compras y mercaderías',                 iva: 21, ded: 100 },
+  alquiler:      { label: 'Alquiler / arrendamiento',              iva: 21, ded: 100 },
+  suministros:   { label: 'Suministros (luz, agua, gas, internet, teléfono)', iva: 21, ded: 100 },
+  reparaciones:  { label: 'Reparaciones y conservación',           iva: 21, ded: 100 },
+  profesionales: { label: 'Servicios profesionales (asesoría, abogados)', iva: 21, ded: 100 },
+  seguros:       { label: 'Seguros',                                iva: 0,  ded: 100 },
+  tributos:      { label: 'Tributos (IBI, IAE, tasas)',             iva: 0,  ded: 100 },
+  financieros:   { label: 'Gastos financieros (intereses, comisiones)', iva: 0, ded: 100 },
+  vehiculo:      { label: 'Vehículo (combustible, mantenimiento, seguro)', iva: 21, ded: 50 },
+  dietas:        { label: 'Dietas y manutención',                  iva: 10, ded: 100 },
+  reta:          { label: 'Cuota de autónomos (RETA)',              iva: 0,  ded: 100 },
+  publicidad:    { label: 'Publicidad y marketing',                 iva: 21, ded: 100 },
+  formacion:     { label: 'Formación',                              iva: 21, ded: 100 },
+  material:      { label: 'Material de oficina',                    iva: 21, ded: 100 },
+  software:      { label: 'Software y suscripciones',               iva: 21, ded: 100 },
+  otros:         { label: 'Otros gastos deducibles',                 iva: 21, ded: 100 },
+};
+
+const NOTAS_CATEGORIA = {
+  vehiculo: 'Hacienda solo admite, salvo prueba de afectación exclusiva, un <b>50% de deducción</b> en el IVA y el gasto de vehículos. Ajusta el % deducible si es necesario.',
+  dietas:   'Las dietas son deducibles si se pagan por medios electrónicos y no superan <b>26,67 €/día sin pernocta</b> (53,34 € con pernocta) en España, o el doble en el extranjero.',
+  reta:     'La cuota de autónomos es <b>100% deducible</b> y no lleva IVA. Marca el justificante como "Recibo / sin IVA".',
+  suministros: 'Si trabajas desde casa, solo puedes deducir el porcentaje de los suministros proporcional a los m² afectos a la actividad (normalmente 30% de ese %).',
+};
+
+const IVA_OPCIONES = [21, 10, 4, 0];
+
+let gastos = [], ctr = 0;
+
+window.onload = () => {
+  const hoy = new Date();
+  document.getElementById('periodo_anio').value = hoy.getFullYear();
+  addGasto();
+};
+
+function ivaOptionsHTML(selected) {
+  return IVA_OPCIONES.map(v => `<option value="${v}" ${v === selected ? 'selected' : ''}>${v}%</option>`).join('');
+}
+
+function categoriaOptionsHTML(selected) {
+  return Object.entries(CATEGORIAS).map(([key, c]) =>
+    `<option value="${key}" ${key === selected ? 'selected' : ''}>${c.label}</option>`
+  ).join('');
+}
+
+function addGasto() {
+  const id = ++ctr;
+  gastos.push(id);
+  const hoy = new Date().toISOString().split('T')[0];
+  const div = document.createElement('div');
+  div.className = 'gasto-card';
+  div.id = `gasto_${id}`;
+  div.innerHTML = `
+    <div class="gasto-card-head">
+      <span class="gasto-num">Gasto #${id}</span>
+      <button class="btn-remove" onclick="removeGasto(${id})" title="Eliminar">×</button>
+    </div>
+
+    <div class="gasto-row-3">
+      <div class="field"><label>Fecha</label><input type="date" id="fecha_${id}" value="${hoy}" onchange="calcularTotales()"></div>
+      <div class="field"><label>Proveedor</label><input type="text" id="proveedor_${id}" placeholder="Nombre del proveedor"></div>
+      <div class="field"><label>NIF proveedor</label><input type="text" id="nif_${id}" placeholder="B12345678"></div>
+    </div>
+
+    <div class="gasto-row-full">
+      <div class="field"><label>Concepto</label><input type="text" id="concepto_${id}" placeholder="Descripción del gasto"></div>
+    </div>
+
+    <div class="gasto-row-2">
+      <div class="field">
+        <label>Categoría</label>
+        <select id="categoria_${id}" onchange="onCategoriaChange(${id})">${categoriaOptionsHTML('otros')}</select>
+      </div>
+      <div class="field">
+        <label>Justificante</label>
+        <select id="justificante_${id}" onchange="calcularTotales()">
+          <option value="factura">Factura completa</option>
+          <option value="ticket">Ticket / factura simplificada</option>
+          <option value="recibo">Recibo sin IVA</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="gasto-row-4">
+      <div class="field"><label>Base imponible</label><input type="number" id="base_${id}" placeholder="0,00" min="0" step="0.01" oninput="calcularTotales()"></div>
+      <div class="field">
+        <label>% IVA</label>
+        <select id="ivapct_${id}" onchange="calcularTotales()">${ivaOptionsHTML(CATEGORIAS.otros.iva)}</select>
+      </div>
+      <div class="field"><label>% Deducible</label><input type="number" id="dedpct_${id}" value="${CATEGORIAS.otros.ded}" min="0" max="100" step="1" oninput="calcularTotales()"></div>
+      <div class="field"><label>&nbsp;</label><div style="font-size:11px;color:var(--card-slate);padding-top:8px">Editable según tu caso</div></div>
+    </div>
+
+    <div class="cat-note" id="catnote_${id}"></div>
+
+    <div class="gasto-result">
+      <div class="gr-item"><span class="gr-label">IVA</span><span class="gr-val" id="r_iva_${id}">0,00 €</span></div>
+      <div class="gr-item"><span class="gr-label">Total pagado</span><span class="gr-val" id="r_total_${id}">0,00 €</span></div>
+      <div class="gr-item"><span class="gr-label">IVA deducible</span><span class="gr-val em" id="r_ivaded_${id}">0,00 €</span></div>
+      <div class="gr-item"><span class="gr-label">Gasto deducible IRPF</span><span class="gr-val em" id="r_irpf_${id}">0,00 €</span></div>
+    </div>
+  `;
+  document.getElementById('gastos').appendChild(div);
+  toggleEmptyState();
+  calcularTotales();
+}
+
+function removeGasto(id) {
+  const el = document.getElementById(`gasto_${id}`);
+  el.style.opacity = '0'; el.style.transform = 'translateX(-6px)';
+  el.style.transition = 'all 0.18s ease';
+  setTimeout(() => {
+    gastos = gastos.filter(g => g !== id);
+    el.remove();
+    toggleEmptyState();
+    calcularTotales();
+  }, 180);
+}
+
+function toggleEmptyState() {
+  document.getElementById('emptyState').style.display = gastos.length === 0 ? 'block' : 'none';
+}
+
+function onCategoriaChange(id) {
+  const cat = CATEGORIAS[document.getElementById(`categoria_${id}`).value];
+  document.getElementById(`ivapct_${id}`).value = cat.iva;
+  document.getElementById(`dedpct_${id}`).value = cat.ded;
+  const catKey = document.getElementById(`categoria_${id}`).value;
+  if (catKey === 'reta') document.getElementById(`justificante_${id}`).value = 'recibo';
+  const noteEl = document.getElementById(`catnote_${id}`);
+  if (NOTAS_CATEGORIA[catKey]) {
+    noteEl.innerHTML = `<div class="info-box amber">${NOTAS_CATEGORIA[catKey]}</div>`;
+    noteEl.classList.add('visible');
+  } else {
+    noteEl.innerHTML = '';
+    noteEl.classList.remove('visible');
+  }
+  calcularTotales();
+}
+
+// ─────────────────────────────────────────────
+// CÁLCULOS
+// ─────────────────────────────────────────────
+function getGastoData(id) {
+  const fecha   = document.getElementById(`fecha_${id}`)?.value || '';
+  const base    = parseFloat(document.getElementById(`base_${id}`)?.value) || 0;
+  const ivaPct  = parseFloat(document.getElementById(`ivapct_${id}`)?.value) || 0;
+  const dedPct  = parseFloat(document.getElementById(`dedpct_${id}`)?.value) || 0;
+  const justif  = document.getElementById(`justificante_${id}`)?.value || 'factura';
+  const catKey  = document.getElementById(`categoria_${id}`)?.value || 'otros';
+
+  const ivaAmount = base * ivaPct / 100;
+  const total = base + ivaAmount;
+
+  // Si no hay factura completa, el IVA no es deducible: pasa a formar parte del gasto
+  const ivaDeducible = justif === 'factura' ? ivaAmount * dedPct / 100 : 0;
+  const baseGastoIRPF = justif === 'factura' ? base : total;
+  const gastoIRPF = baseGastoIRPF * dedPct / 100;
+
+  return { id, fecha, base, ivaPct, dedPct, justif, catKey, ivaAmount, total, ivaDeducible, gastoIRPF };
+}
+
+function pasaFiltro(fecha) {
+  const anio = parseInt(document.getElementById('periodo_anio').value) || null;
+  const trimestre = document.querySelector('input[name="trimestre"]:checked')?.value || 'todos';
+  if (!fecha) return false;
+  const [y, m] = fecha.split('-').map(Number);
+  if (anio && y !== anio) return false;
+  if (trimestre !== 'todos') {
+    const tri = Math.ceil(m / 3);
+    if (tri !== parseInt(trimestre)) return false;
+  }
+  return true;
+}
+function calcularTotales() {
+  let totBase = 0, totIva = 0, totPagado = 0, totIrpf = 0, count = 0;
+  const porCategoria = {};
+
+  gastos.forEach(id => {
+    const d = getGastoData(id);
+
+    document.getElementById(`r_iva_${id}`).textContent     = fmt(d.ivaAmount);
+    document.getElementById(`r_total_${id}`).textContent   = fmt(d.total);
+    document.getElementById(`r_ivaded_${id}`).textContent  = fmt(d.ivaDeducible);
+    document.getElementById(`r_irpf_${id}`).textContent    = fmt(d.gastoIRPF);
+
+    if (!pasaFiltro(d.fecha)) return;
+
+    count++;
+    totBase   += d.base;
+    totIva    += d.ivaDeducible;
+    totPagado += d.total;
+    totIrpf   += d.gastoIRPF;
+
+    if (!porCategoria[d.catKey]) porCategoria[d.catKey] = { base: 0, iva: 0, pagado: 0, irpf: 0 };
+    porCategoria[d.catKey].base   += d.base;
+    porCategoria[d.catKey].iva    += d.ivaDeducible;
+    porCategoria[d.catKey].pagado += d.total;
+    porCategoria[d.catKey].irpf   += d.gastoIRPF;
+  });
+
+  document.getElementById('t_base').textContent   = fmt(totBase);
+  document.getElementById('t_iva').textContent    = fmt(totIva);
+  document.getElementById('t_pagado').textContent = fmt(totPagado);
+  document.getElementById('t_irpf').textContent   = fmt(totIrpf);
+  document.getElementById('t_count').textContent  = `${count} gasto${count === 1 ? '' : 's'}`;
+
+  // Etiqueta del periodo
+  const anio = document.getElementById('periodo_anio').value || '—';
+  const trimestre = document.querySelector('input[name="trimestre"]:checked')?.value || 'todos';
+  const labelTri = trimestre === 'todos' ? `año ${anio}` : `T${trimestre} ${anio}`;
+  document.getElementById('resumenPeriodoLabel').textContent = `— ${labelTri}`;
+// Tabla por categoría
+  const tbody = document.getElementById('resumenCategorias');
+  const keys = Object.keys(porCategoria);
+  if (keys.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;color:var(--slate-2)">Sin datos para este periodo</td></tr>`;
+  } else {
+    tbody.innerHTML = keys.map(k => `
+      <tr>
+        <td class="cat-name">${CATEGORIAS[k]?.label || k}</td>
+        <td>${fmt(porCategoria[k].base)}</td>
+        <td>${fmt(porCategoria[k].iva)}</td>
+        <td>${fmt(porCategoria[k].pagado)}</td>
+        <td>${fmt(porCategoria[k].irpf)}</td>
+      </tr>
+    `).join('');
+  }
+}
+
+function fmt(n) {
+  return n.toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' €';
+}
+function fmtN(n) {
+  return n.toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+function fmtFecha(s) {
+  if (!s) return '—';
+  const [y, m, d] = s.split('-'); return `${d}/${m}/${y}`;
+}
+function g(id) { return document.getElementById(id)?.value?.trim() || ''; }
+
+function showToast(msg, isError = false) {
+  const t = document.getElementById('toast');
+  document.getElementById('toastMsg').textContent = msg;
+  t.style.background = isError ? '#E11D48' : '';
+  t.querySelector('.toast-dot').style.background = isError ? 'rgba(255,255,255,0.6)' : '';
+  t.classList.add('show');
+  setTimeout(() => { t.classList.remove('show'); t.style.background = ''; }, isError ? 3500 : 2500);
+}
+
+function limpiarFormulario() {
+  if (!confirm('¿Borrar todos los gastos registrados?')) return;
+  gastos = []; ctr = 0;
+  document.getElementById('gastos').innerHTML = '';
+  document.getElementById('titular_nombre').value = '';
+  document.getElementById('titular_nif').value = '';
+  document.getElementById('per_todos').checked = true;
+  toggleEmptyState();
+  addGasto();
+}
+
+// ─────────────────────────────────────────────
+// EXPORT CSV
+// ─────────────────────────────────────────────
+function exportarCSV() {
+  if (gastos.length === 0) { showToast('No hay gastos para exportar', true); return; }
+  const headers = ['Fecha','Proveedor','NIF','Concepto','Categoría','Justificante','Base','% IVA','IVA','% Deducible','Total pagado','IVA deducible','Gasto deducible IRPF'];
+  const rows = gastos.map(id => {
+    const d = getGastoData(id);
+    return [
+      fmtFecha(d.fecha),
+      g(`proveedor_${id}`),
+      g(`nif_${id}`),
+      g(`concepto_${id}`),
+      CATEGORIAS[d.catKey]?.label || d.catKey,
+      { factura: 'Factura completa', ticket: 'Ticket simplificado', recibo: 'Recibo sin IVA' }[d.justif] || d.justif,
+      fmtN(d.base),
+      d.ivaPct,
+      fmtN(d.ivaAmount),
+      d.dedPct,
+      fmtN(d.total),
+      fmtN(d.ivaDeducible),
+      fmtN(d.gastoIRPF),
+    ];
+  });
+
+  const csvLines = [headers, ...rows].map(row =>
+    row.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(';')
+  );
+  const csv = '\uFEFF' + csvLines.join('\r\n');
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  const anio = g('periodo_anio') || 'gastos';
+  a.href = url; a.download = `gastos_${anio}.csv`;
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(() => { document.body.removeChild(a); URL.revokeObjectURL(url); }, 200);
+  showToast('CSV descargado');
+}
+
+// ─────────────────────────────────────────────
+// PDF — RESUMEN DE GASTOS
+// ─────────────────────────────────────────────
+async function generarPDF() {
+  if (gastos.length === 0) { showToast('No hay gastos para exportar', true); return; }
+
+  const btn = document.getElementById('btnPdf');
+  btn.classList.add('loading');
+  btn.disabled = true;
+  const origHTML = btn.innerHTML;
+  btn.innerHTML = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Generando…`;
+
+  try {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF({ unit: 'mm', format: 'a4' });
+    const W = 210, M = 16, H = 297;
+
+    const black   = [15,  27,  45];
+    const gray1   = [80,  90, 110];
+    const gray2   = [130, 140, 155];
+    const green   = [5,   150, 105];
+    const greenLt = [209, 250, 229];
+    const bg      = [248, 248, 247];
+    const white   = [255, 255, 255];
+    const rose    = [225, 29,  72];
+    const divider = [230, 230, 228];
+
+    let y = 0;
+    let page = 1;
+
+    const anio = g('periodo_anio') || '—';
+    const trimestre = document.querySelector('input[name="trimestre"]:checked')?.value || 'todos';
+    const periodoLabel = trimestre === 'todos' ? `Año ${anio}` : `${trimestre}º Trimestre ${anio}`;
+
+    function drawHeader() {
+      doc.setFillColor(...white);
+      doc.rect(0, 0, W, H, 'F');
+      doc.setFillColor(...bg);
+      doc.rect(0, 0, W, 38, 'F');
+      doc.setFillColor(...green);
+      doc.rect(0, 0, 3, 38, 'F');
+      doc.setFillColor(...divider);
+      doc.rect(0, 38, W, 0.4, 'F');
+doc.setFont('helvetica', 'bold');
+      doc.setFontSize(20);
+      doc.setTextColor(...black);
+      doc.text('RESUMEN DE GASTOS', M + 4, 17);
+
+      doc.setFillColor(...greenLt);
+      doc.roundedRect(M + 4, 22, 46, 8, 2, 2, 'F');
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(8);
+      doc.setTextColor(...green);
+      doc.text(periodoLabel.toUpperCase(), M + 7, 27.5);
+
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(11);
+      doc.setTextColor(...black);
+      doc.text(g('titular_nombre') || '—', W - M, 14, { align: 'right' });
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(8.5);
+      doc.setTextColor(...gray1);
+      if (g('titular_nif')) doc.text(`NIF: ${g('titular_nif')}`, W - M, 20, { align: 'right' });
+y = 48;
+    }
+
+    function drawFooter() {
+      doc.setFillColor(...bg);
+      doc.rect(0, 283, W, 14, 'F');
+      doc.setFillColor(...divider);
+      doc.rect(0, 283, W, 0.3, 'F');
+      doc.setFillColor(...green);
+      doc.rect(0, 283, 3, 14, 'F');
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(7);
+      doc.setTextColor(...gray2);
+      doc.text(`Generado con gestio.es — Página ${page}`, W / 2, 292, { align: 'center' });
+    }
+
+    function checkPageBreak(needed) {
+      if (y + needed > 278) {
+        drawFooter();
+        doc.addPage();
+        page++;
+        drawHeader();
+      }
+    }
+
+    drawHeader();
+
+    // Tabla de gastos filtrados
+    const datos = gastos.map(getGastoData).filter(d => pasaFiltro(d.fecha));
+
+    const cols = { fecha: M, prov: M + 18, cat: M + 62, base: 132, iva: 152, ded: 172, total: W - M };
+    const thH = 7;
+
+    function drawTableHeader() {
+      doc.setFillColor(...black);
+      doc.roundedRect(M, y, W - M * 2, thH, 1.5, 1.5, 'F');
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(7);
+      doc.setTextColor(...white);
+      doc.text('FECHA', cols.fecha + 2, y + 4.6);
+      doc.text('PROVEEDOR / CONCEPTO', cols.prov + 2, y + 4.6);
+      doc.text('CATEGORÍA', cols.cat + 2, y + 4.6);
+      doc.text('BASE', cols.base, y + 4.6, { align: 'right' });
+      doc.text('IVA D.', cols.iva, y + 4.6, { align: 'right' });
+      doc.text('% D.', cols.ded, y + 4.6, { align: 'right' });
+      doc.text('TOTAL', cols.total, y + 4.6, { align: 'right' });
+      y += thH;
+    }
+
+    drawTableHeader();
+
+    let alt = false;
+    datos.sort((a, b) => (a.fecha || '').localeCompare(b.fecha || ''));
+    datos.forEach(d => {
+      checkPageBreak(8);
+      if (y === 48 + thH || (y === 48 && page > 1)) { /* fresh page, header already drawn */ }
+      if (alt) { doc.setFillColor(...bg); doc.rect(M, y, W - M * 2, 7, 'F'); }
+      alt = !alt;
+
+      const prov = g(`proveedor_${d.id}`) || '(sin proveedor)';
+      const concepto = g(`concepto_${d.id}`);
+
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(7.5);
+      doc.setTextColor(...black);
+      doc.text(fmtFecha(d.fecha), cols.fecha + 2, y + 4.8);
+
+      doc.setFont('helvetica', 'bold');
+      doc.text(doc.splitTextToSize(prov, 42)[0] || '', cols.prov + 2, y + 4.8);
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(6.5);
+      doc.setTextColor(...gray2);
+      if (concepto) doc.text(doc.splitTextToSize(concepto, 42)[0] || '', cols.prov + 2, y + 4.8, {});
+
+      doc.setFontSize(7);
+      doc.setTextColor(...gray1);
+      doc.text(doc.splitTextToSize(CATEGORIAS[d.catKey]?.label || d.catKey, 38)[0] || '', cols.cat + 2, y + 4.8);
+
+      doc.setTextColor(...black);
+      doc.text(fmtN(d.base) + ' €', cols.base, y + 4.8, { align: 'right' });
+      doc.setTextColor(...green);
+      doc.text(fmtN(d.ivaDeducible) + ' €', cols.iva, y + 4.8, { align: 'right' });
+      doc.setTextColor(...gray1);
+      doc.text(`${d.dedPct}%`, cols.ded, y + 4.8, { align: 'right' });
+      doc.setFont('helvetica', 'bold');
+      doc.setTextColor(...black);
+      doc.text(fmtN(d.total) + ' €', cols.total, y + 4.8, { align: 'right' });
+
+      y += 7;
+    });
+
+    doc.setDrawColor(...divider);
+    doc.setLineWidth(0.3);
+    y += 4;
+
+    // Resumen por categoría
+    checkPageBreak(40);
+    doc.setFillColor(...divider);
+    doc.rect(M, y, W - M * 2, 0.4, 'F');
+    y += 8;
+
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(10);
+    doc.setTextColor(...black);
+    doc.text('RESUMEN POR CATEGORÍA', M, y);
+    y += 6;
+
+    const porCategoria = {};
+    datos.forEach(d => {
+      if (!porCategoria[d.catKey]) porCategoria[d.catKey] = { base: 0, iva: 0, pagado: 0, irpf: 0 };
+      porCategoria[d.catKey].base   += d.base;
+      porCategoria[d.catKey].iva    += d.ivaDeducible;
+      porCategoria[d.catKey].pagado += d.total;
+      porCategoria[d.catKey].irpf   += d.gastoIRPF;
+    });
+
+    const c2 = { cat: M, base: 110, iva: 138, pagado: 166, irpf: W - M };
+    doc.setFontSize(7);
+    doc.setTextColor(...gray1);
+    doc.text('CATEGORÍA', c2.cat, y);
+    doc.text('BASE', c2.base, y, { align: 'right' });
+    doc.text('IVA DED.', c2.iva, y, { align: 'right' });
+    doc.text('PAGADO', c2.pagado, y, { align: 'right' });
+    doc.text('DED. IRPF', c2.irpf, y, { align: 'right' });
+    y += 2;
+    doc.setFillColor(...divider);
+    doc.rect(M, y, W - M * 2, 0.3, 'F');
+    y += 5;
+
+    let totBase = 0, totIva = 0, totPagado = 0, totIrpf = 0;
+    Object.entries(porCategoria).forEach(([k, v]) => {
+      checkPageBreak(7);
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(8);
+      doc.setTextColor(...black);
+      doc.text(CATEGORIAS[k]?.label || k, c2.cat, y);
+      doc.setTextColor(...gray1);
+      doc.text(fmtN(v.base) + ' €', c2.base, y, { align: 'right' });
+      doc.setTextColor(...green);
+      doc.text(fmtN(v.iva) + ' €', c2.iva, y, { align: 'right' });
+      doc.setTextColor(...gray1);
+      doc.text(fmtN(v.pagado) + ' €', c2.pagado, y, { align: 'right' });
+      doc.setTextColor(...black);
+      doc.text(fmtN(v.irpf) + ' €', c2.irpf, y, { align: 'right' });
+      y += 6;
+      totBase += v.base; totIva += v.iva; totPagado += v.pagado; totIrpf += v.irpf;
+    });
+
+    y += 4;
+    checkPageBreak(40);
+
+    // Caja totales finales
+    doc.setFillColor(...bg);
+    doc.roundedRect(M, y, W - M * 2, 30, 2, 2, 'F');
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(8.5);
+    doc.setTextColor(...gray1);
+    doc.text('Base imponible total', M + 6, y + 8);
+    doc.text('IVA soportado deducible', M + 6, y + 15);
+    doc.text('Total pagado', M + 6, y + 22);
+
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(...black);
+    doc.text(fmtN(totBase) + ' €', W - M - 50, y + 8, { align: 'right' });
+    doc.setTextColor(...green);
+    doc.text(fmtN(totIva) + ' €', W - M - 50, y + 15, { align: 'right' });
+    doc.setTextColor(...black);
+    doc.text(fmtN(totPagado) + ' €', W - M - 50, y + 22, { align: 'right' });
+
+    doc.setFillColor(...black);
+    doc.roundedRect(W - M - 44, y + 3, 44, 24, 2, 2, 'F');
+    doc.setFillColor(...green);
+    doc.roundedRect(W - M - 44, y + 3, 3, 24, 1.5, 1.5, 'F');
+    doc.rect(W - M - 44 + 1.5, y + 3, 1.5, 24, 'F');
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(7);
+    doc.setTextColor(180, 190, 200);
+    doc.text('GASTO DEDUCIBLE IRPF', W - M - 38, y + 11);
+    doc.setFontSize(13);
+    doc.setTextColor(...white);
+    doc.text(fmtN(totIrpf) + ' €', W - M - 4, y + 21, { align: 'right' });
+
+    y += 38;
+
+    // Aviso legal
+    checkPageBreak(16);
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(7.5);
+    doc.setTextColor(...gray2);
+    const aviso = doc.splitTextToSize('Este resumen es una herramienta de apoyo y no sustituye el asesoramiento de una gestoría. Verifica la deducibilidad de cada gasto, la conservación de las facturas justificativas y los límites aplicables antes de presentar el modelo 130 o 303.', W - M * 2);
+    doc.text(aviso, M, y);
+
+    drawFooter();
+
+    const filename = `resumen_gastos_${anio}${trimestre !== 'todos' ? '_T' + trimestre : ''}.pdf`;
+    const blob = doc.output('blob');
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(() => { document.body.removeChild(a); URL.revokeObjectURL(url); }, 200);
+    showToast('PDF descargado');
+
+  } catch (err) {
+    showToast('Error al generar el PDF', true);
+    console.error(err);
+  } finally {
+    btn.classList.remove('loading');
+    btn.disabled = false;
+    btn.innerHTML = origHTML;
+  }
+}
+</script>
+</body>
+</html>
