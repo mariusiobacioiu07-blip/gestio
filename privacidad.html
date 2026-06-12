@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="color-scheme" content="light dark">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Política de Privacidad — gestio.es</title>
+<meta name="description" content="Política de privacidad de gestio.es. Sin cookies de seguimiento, sin almacenamiento de datos. Todo ocurre en tu navegador.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://gestio.es/privacidad.html">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  color-scheme: light dark;
+  --navy:    #0F1B2D;
+  --emerald: #059669;
+  --em-light:#D1FAE5;
+  --slate:   #64748B;
+  --slate-2: #94A3B8;
+  --bg:      #FAFAF9;
+  --bg-2:    #F4F4F2;
+  --ink:     #0F1B2D;
+  --line:    #E5E4E0;
+  --nav-bg:  rgba(250,250,249,0.92);
+  --dark-surface: #0F1B2D;
+  --r: 10px;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg:    #0D1117;
+    --bg-2:  #161B22;
+    --ink:   #E6EDF3;
+    --navy:  #E6EDF3;
+    --line:  rgba(255,255,255,0.08);
+    --slate: #8B949E;
+    --nav-bg: rgba(13,17,23,0.92);
+    --em-light: rgba(5,150,105,0.15);
+  }
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  font-size: 14px;
+  line-height: 1.6;
+}
+nav {
+  position: sticky; top: 0; z-index: 100;
+  height: 56px;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 28px;
+  background: var(--nav-bg);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--line);
+}
+.logo {
+  display: flex; align-items: center; gap: 9px;
+  text-decoration: none;
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 17px; font-weight: 700;
+  color: var(--navy); letter-spacing: -0.4px;
+}
+.logo-icon {
+  width: 28px; height: 28px;
+  background: var(--dark-surface);
+  border-radius: 7px;
+  display: flex; align-items: center; justify-content: center;
+}
+.logo-icon svg { width: 14px; height: 14px; }
+.nav-link {
+  font-size: 13px; font-weight: 500; color: var(--slate);
+  text-decoration: none; padding: 6px 14px; border-radius: 20px;
+  transition: color 0.2s, background 0.2s;
+}
+.nav-link:hover { color: var(--navy); background: var(--bg-2); }
+
+.wrap {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 48px 24px 80px;
+}
+.page-eyebrow {
+  font-size: 11px; font-weight: 700;
+  letter-spacing: 2px; text-transform: uppercase;
+  color: var(--emerald); margin-bottom: 12px;
+  display: flex; align-items: center; gap: 8px;
+}
+.page-eyebrow::before {
+  content: ''; width: 18px; height: 2px;
+  background: var(--emerald); border-radius: 1px;
+}
+h1 {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: clamp(28px, 5vw, 40px);
+  font-weight: 800; color: var(--navy);
+  letter-spacing: -1.5px; line-height: 1.1;
+  margin-bottom: 8px;
+}
+.meta { font-size: 13px; color: var(--slate-2); margin-bottom: 40px; }
+
+.section {
+  margin-bottom: 36px;
+  padding-bottom: 36px;
+  border-bottom: 1px solid var(--line);
+}
+.section:last-child { border-bottom: none; margin-bottom: 0; }
+
+h2 {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 17px; font-weight: 700;
+  color: var(--navy); letter-spacing: -0.3px;
+  margin-bottom: 12px;
+}
+p { color: var(--slate); margin-bottom: 10px; }
+p:last-child { margin-bottom: 0; }
+
+.highlight-box {
+  background: var(--em-light);
+  border: 1px solid rgba(5,150,105,0.2);
+  border-radius: var(--r);
+  padding: 14px 16px;
+  margin: 14px 0;
+  font-size: 13px;
+  color: #065F46;
+  line-height: 1.6;
+}
+.highlight-box strong { font-weight: 600; }
+
+.check-list {
+  list-style: none;
+  margin: 12px 0;
+}
+.check-list li {
+  display: flex; align-items: flex-start; gap: 10px;
+  color: var(--slate); font-size: 13.5px;
+  margin-bottom: 8px;
+}
+.check-list li::before {
+  content: '✓';
+  color: var(--emerald);
+  font-weight: 700;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+footer {
+  background: var(--dark-surface);
+  color: rgba(255,255,255,0.5);
+  text-align: center;
+  padding: 24px;
+  font-size: 13px;
+}
+footer a { color: rgba(255,255,255,0.6); text-decoration: none; }
+footer a:hover { color: white; }
+
+@media (max-width: 600px) {
+  nav { padding: 0 16px; }
+  .wrap { padding: 32px 16px 64px; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="logo">
+    <div class="logo-icon">
+      <svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="5" y="3" width="10" height="2.5" rx="1" fill="white"/><rect x="3" y="3" width="2.5" height="14" rx="1" fill="white"/><rect x="5" y="14.5" width="10" height="2.5" rx="1" fill="white"/><rect x="10" y="10" width="5" height="2.5" rx="1" fill="#6EE7B7"/></svg>
+    </div>
+    gestio
+  </a>
+  <a href="index.html" class="nav-link">← Inicio</a>
+</nav>
+
+<div class="wrap">
+
+  <div class="page-eyebrow">Legal</div>
+  <h1>Política de privacidad</h1>
+  <p class="meta">Última actualización: junio de 2026</p>
+
+  <div class="section">
+    <h2>El resumen</h2>
+    <div class="highlight-box">
+      <strong>gestio.es no recoge, almacena ni transmite ningún dato personal tuyo.</strong> Todo lo que escribes en los formularios vive únicamente en tu navegador y desaparece al cerrar la pestaña. Los PDF se generan en tu dispositivo y nunca pasan por nuestros servidores.
+    </div>
+    <ul class="check-list">
+      <li>Sin registro ni cuenta de usuario</li>
+      <li>Sin cookies de seguimiento ni publicidad</li>
+      <li>Sin analítica que identifique usuarios individuales</li>
+      <li>Sin envío de datos a terceros</li>
+      <li>Tus documentos son tuyos y solo tuyos</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <h2>1. Responsable del tratamiento</h2>
+    <p>El responsable del sitio web gestio.es es su titular. Para cualquier consulta sobre privacidad, escribe a <a href="mailto:hola@gestio.es" style="color:var(--emerald)">hola@gestio.es</a>.</p>
+  </div>
+
+  <div class="section">
+    <h2>2. Datos que NO recogemos</h2>
+    <p>Las herramientas de generación de documentos (facturas, albaranes, presupuestos, nóminas) funcionan íntegramente en tu navegador mediante JavaScript del lado del cliente. En ningún momento los datos que introduces — nombre, NIF, importes, datos de clientes — se envían a ningún servidor ni son accesibles por gestio.es.</p>
+    <p>Al cerrar o recargar la página, esos datos desaparecen. No utilizamos localStorage ni ningún mecanismo de persistencia local salvo que en el futuro lo indiquemos expresamente.</p>
+  </div>
+
+  <div class="section">
+    <h2>3. Cookies</h2>
+    <p>gestio.es no utiliza cookies propias de seguimiento, publicidad ni analítica de usuarios individuales.</p>
+    <p>Las fuentes tipográficas se cargan desde Google Fonts. Google puede establecer cookies técnicas propias; puedes consultar la política de Google en <a href="https://policies.google.com/privacy" target="_blank" rel="noopener" style="color:var(--emerald)">policies.google.com/privacy</a>. Si prefieres evitarlo, puedes bloquear Google Fonts desde las opciones de tu navegador sin que ello afecte al funcionamiento del sitio.</p>
+  </div>
+
+  <div class="section">
+    <h2>4. Formulario de contacto</h2>
+    <p>Si en algún momento contactas con gestio.es por email, los datos que facilites (nombre, dirección de correo, contenido del mensaje) se usarán exclusivamente para responder tu consulta y no se cederán a terceros. Se conservarán el tiempo necesario para gestionar la comunicación y, como máximo, durante el plazo legal aplicable.</p>
+  </div>
+
+  <div class="section">
+    <h2>5. Tus derechos</h2>
+    <p>Dado que gestio.es no almacena datos personales identificables, el ejercicio de los derechos de acceso, rectificación, supresión, oposición, portabilidad y limitación del tratamiento es de aplicación prácticamente nula. En cualquier caso, puedes ejercerlos escribiendo a <a href="mailto:hola@gestio.es" style="color:var(--emerald)">hola@gestio.es</a>.</p>
+    <p>Si consideras que el tratamiento de tus datos vulnera la normativa vigente, puedes presentar una reclamación ante la Agencia Española de Protección de Datos (<a href="https://www.aepd.es" target="_blank" rel="noopener" style="color:var(--emerald)">aepd.es</a>).</p>
+  </div>
+
+  <div class="section">
+    <h2>6. Cambios en esta política</h2>
+    <p>Cualquier modificación relevante en esta política se indicará en la fecha de actualización que aparece en la cabecera. El uso continuado del sitio tras un cambio implica su aceptación.</p>
+  </div>
+
+</div>
+
+<footer>
+  <p>© 2026 gestio.es — Herramientas gratuitas para autónomos y pymes &nbsp;·&nbsp; <a href="aviso-legal.html">Aviso legal</a> &nbsp;·&nbsp; <a href="privacidad.html">Privacidad</a></p>
+</footer>
+
+</body>
+</html>

@@ -147,8 +147,11 @@ nav.scrolled { box-shadow: 0 2px 24px rgba(15,27,45,0.07); }
   align-items: center;
   justify-content: center;
 }
-.logo-icon svg { width: 16px; height: 16px; }
+.logo-icon svg { width: 15px; height: 15px; }
 
+.logo-dot {
+  color: var(--emerald);
+}
 
 .nav-links {
   display: flex;
@@ -892,9 +895,10 @@ footer a:hover { color: white; }
 <nav id="mainNav">
   <a href="index.html" class="logo">
     <div class="logo-icon">
-      <svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="5" y="3" width="10" height="2.5" rx="1" fill="white"/><rect x="3" y="3" width="2.5" height="14" rx="1" fill="white"/><rect x="5" y="14.5" width="10" height="2.5" rx="1" fill="white"/><rect x="10" y="10" width="5" height="2.5" rx="1" fill="#6EE7B7"/></svg>
+      <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
     </div>
-    gestio</a>
+    gestio<span class="logo-dot">.es</span>
+  </a>
   <div class="nav-links">
     <a href="facturas.html" class="nav-cta">Empezar gratis →</a>
   </div>
@@ -1156,7 +1160,7 @@ footer a:hover { color: white; }
 
 <!-- FOOTER -->
 <footer>
-  <p>© 2026 gestio.es — Herramientas gratuitas para autónomos y pymes &nbsp;·&nbsp; <a href="#">Aviso legal</a> &nbsp;·&nbsp; <a href="#">Privacidad</a></p>
+  <p>© 2026 gestio.es — Herramientas gratuitas para autónomos y pymes &nbsp;·&nbsp; <a href="aviso-legal.html">Aviso legal</a> &nbsp;·&nbsp; <a href="privacidad.html">Privacidad</a></p>
 </footer>
 
 <script>
