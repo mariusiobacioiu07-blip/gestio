@@ -397,6 +397,45 @@ textarea { resize: vertical; min-height: 80px; }
   line-height: 1.55;
 }
 
+/* ── LOGO UPLOAD ─── */
+.logo-upload-area {
+  border: 1.5px dashed var(--input-line, #E5E4E0);
+  border-radius: var(--r);
+  padding: 14px;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+  background: var(--input-bg);
+  position: relative;
+}
+.logo-upload-area:hover { border-color: var(--emerald); background: #F0FDF9; }
+.logo-upload-area input[type="file"] {
+  position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; border: none;
+}
+.logo-upload-placeholder {
+  display: flex; flex-direction: column; align-items: center; gap: 6px;
+  color: var(--slate-2); font-size: 12.5px; pointer-events: none;
+}
+.logo-upload-placeholder svg { color: var(--slate-3); }
+.logo-preview {
+  display: none;
+  position: relative;
+}
+.logo-preview img {
+  max-height: 60px; max-width: 100%; object-fit: contain; display: block; margin: 0 auto;
+}
+.logo-preview-remove {
+  position: absolute; top: -6px; right: -6px;
+  width: 20px; height: 20px; border-radius: 50%;
+  background: var(--rose); color: white; border: none;
+  font-size: 13px; line-height: 20px; text-align: center;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+}
+.logo-upload-area.has-logo .logo-upload-placeholder { display: none; }
+.logo-upload-area.has-logo .logo-preview { display: block; }
+.logo-upload-area.has-logo input[type="file"] { display: none; }
+
 /* ── LINES TABLE ─── */
 .lines-head {
   display: grid;
@@ -686,6 +725,20 @@ textarea { resize: vertical; min-height: 80px; }
         <div class="field"><label>Email</label><input type="email" id="emisor_email" placeholder="tu@email.com"></div>
         <div class="field"><label>Teléfono</label><input type="tel" id="emisor_tel" placeholder="600 000 000"></div>
       </div>
+      <div class="field">
+        <label>Logo de empresa <span style="font-weight:400;color:var(--slate-2)">(opcional)</span></label>
+        <div class="logo-upload-area" id="logoUploadArea">
+          <input type="file" id="logoInput" accept="image/*" onchange="handleLogoUpload(event)">
+          <div class="logo-upload-placeholder">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+            <span>Sube tu logo · PNG, JPG o SVG</span>
+          </div>
+          <div class="logo-preview" id="logoPreview">
+            <img id="logoImg" src="" alt="Logo">
+            <button class="logo-preview-remove" onclick="removeLogo(event)" title="Eliminar logo">×</button>
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- CLIENTE -->
@@ -847,6 +900,31 @@ textarea { resize: vertical; min-height: 80px; }
 
 <script>
 let lineas = [], ctr = 0;
+let logoDataUrl = null;
+
+function handleLogoUpload(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    logoDataUrl = ev.target.result;
+    document.getElementById('logoImg').src = logoDataUrl;
+    document.getElementById('logoUploadArea').classList.add('has-logo');
+    document.getElementById('logoPreview').style.display = 'block';
+  };
+  reader.readAsDataURL(file);
+}
+
+function removeLogo(e) {
+  e.stopPropagation();
+  logoDataUrl = null;
+  document.getElementById('logoImg').src = '';
+  document.getElementById('logoUploadArea').classList.remove('has-logo');
+  document.getElementById('logoPreview').style.display = 'none';
+  document.getElementById('logoInput').value = '';
+  // Restore file input
+  document.getElementById('logoUploadArea').querySelector('input[type="file"]').style.display = '';
+}
 
 window.onload = () => {
   const hoy = new Date();
@@ -939,7 +1017,7 @@ function g(id) { return document.getElementById(id)?.value?.trim() || ''; }
 // ─────────────────────────────────────────────
 // PDF — DISEÑO BLANCO PROFESIONAL
 // ─────────────────────────────────────────────
-function generarPDF() {
+async function generarPDF() {
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF({ unit: 'mm', format: 'a4' });
   const W = 210, M = 18, gutter = 120;
@@ -980,6 +1058,25 @@ function generarPDF() {
   doc.setTextColor(...black);
   doc.text('FACTURA', M + 4, 22);
 
+  // Logo empresa (si existe) — esquina superior derecha de la cabecera
+  if (logoDataUrl) {
+    try {
+      const imgFormat = logoDataUrl.startsWith('data:image/png') ? 'PNG'
+                      : logoDataUrl.startsWith('data:image/svg') ? 'SVG'
+                      : 'JPEG';
+      // Máximo 40mm ancho, 24mm alto, alineado a la derecha
+      const logoMaxW = 40, logoMaxH = 24;
+      const img = new Image();
+      img.src = logoDataUrl;
+      await new Promise(r => { img.onload = r; img.onerror = r; });
+      const ratio = img.naturalWidth / img.naturalHeight;
+      let lw = logoMaxW, lh = logoMaxW / ratio;
+      if (lh > logoMaxH) { lh = logoMaxH; lw = lh * ratio; }
+      const lx = W - M - lw;
+      doc.addImage(logoDataUrl, imgFormat === 'SVG' ? 'PNG' : imgFormat, lx, 8, lw, lh);
+    } catch(e) { /* si falla el logo, continúa sin él */ }
+  }
+
   // Número de factura
   const numFact = g('factura_num') || '—';
   doc.setFillColor(...greenLt);
@@ -989,29 +1086,30 @@ function generarPDF() {
   doc.setTextColor(...green);
   doc.text(`Nº  ${numFact}`, M + 7, 31.5);
 
-  // Fechas — derecha
+  // Fechas — derecha (se desplazan si hay logo)
+  const dateX = logoDataUrl ? W - M - 46 : W - M;
   doc.setFont('helvetica', 'bold');
   doc.setFontSize(7.5);
   doc.setTextColor(...gray1);
-  doc.text('FECHA DE EMISIÓN', W - M, 16, { align: 'right' });
+  doc.text('FECHA DE EMISIÓN', dateX, 16, { align: 'right' });
   doc.setFont('helvetica', 'normal');
   doc.setFontSize(10);
   doc.setTextColor(...black);
-  doc.text(g('factura_fecha') ? fmtFecha(g('factura_fecha')) : '—', W - M, 23, { align: 'right' });
+  doc.text(g('factura_fecha') ? fmtFecha(g('factura_fecha')) : '—', dateX, 23, { align: 'right' });
 
   doc.setFont('helvetica', 'bold');
   doc.setFontSize(7.5);
   doc.setTextColor(...gray1);
-  doc.text('VENCIMIENTO', W - M, 33, { align: 'right' });
+  doc.text('VENCIMIENTO', dateX, 33, { align: 'right' });
   doc.setFont('helvetica', 'normal');
   doc.setFontSize(9);
   doc.setTextColor(...gray2);
-  doc.text(g('factura_vence') ? fmtFecha(g('factura_vence')) : '—', W - M, 39.5, { align: 'right' });
+  doc.text(g('factura_vence') ? fmtFecha(g('factura_vence')) : '—', dateX, 39.5, { align: 'right' });
 
   doc.setFont('helvetica', 'bold');
   doc.setFontSize(7.5);
   doc.setTextColor(...gray2);
-  doc.text(`FORMA DE PAGO: ${g('factura_pago') || 'Transferencia bancaria'}`.toUpperCase(), W - M, 46.5, { align: 'right' });
+  doc.text(`FORMA DE PAGO: ${g('factura_pago') || 'Transferencia bancaria'}`.toUpperCase(), dateX, 46.5, { align: 'right' });
 
   y = 64;
 

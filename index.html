@@ -171,6 +171,23 @@ nav.scrolled { box-shadow: 0 2px 24px rgba(15,27,45,0.07); }
 }
 .nav-cta:hover { background: var(--dark-surface-2); transform: translateY(-1px); }
 
+.nav-tool {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13.5px;
+  font-weight: 500;
+  color: var(--slate);
+  text-decoration: none;
+  padding: 7px 14px;
+  border-radius: 20px;
+  transition: color 0.2s, background 0.2s;
+  white-space: nowrap;
+}
+.nav-tool:hover { color: var(--navy); background: var(--bg-3); }
+
+@media (max-width: 580px) { .nav-tool { display: none; } }
+
 /* ── HERO ─── */
 .hero {
   position: relative;
@@ -792,17 +809,20 @@ footer a:hover { color: white; }
     gestio<span class="logo-dot">.es</span>
   </a>
   <div class="nav-links">
-    <a href="#herramientas" class="nav-pill">Herramientas</a>
-    <a href="#herramientas" class="nav-cta">Empezar gratis →</a>
+    <a href="facturas.html" class="nav-tool">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+      Facturas
+    </a>
+    <a href="nominas.html" class="nav-tool">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
+      Nóminas
+    </a>
+    <a href="facturas.html" class="nav-cta">Empezar gratis →</a>
   </div>
 </nav>
 
 <!-- HERO -->
 <section class="hero">
-  <div class="hero-badge">
-    <span class="badge-dot"></span>
-    Herramienta #1 disponible ahora
-  </div>
   <h1>Gestiona tu empresa<br>sin <em>complicaciones</em></h1>
   <p>Facturas, nóminas, albaranes y más. Herramientas gratuitas para autónomos y pymes españolas. Sin registro. Sin letra pequeña.</p>
   <div class="hero-actions">
@@ -867,6 +887,9 @@ footer a:hover { color: white; }
 
     <!-- Nómina -->
     <a href="nominas.html" class="tool-card featured reveal reveal-delay-2">
+      <div class="tool-arrow">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </div>
       <div class="tool-icon sl">
         <svg viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/><line x1="12" y1="12" x2="12" y2="16"/><line x1="10" y1="14" x2="14" y2="14"/></svg>
       </div>
@@ -874,7 +897,6 @@ footer a:hover { color: white; }
         <div class="tool-name">Calculadora de nóminas</div>
         <div class="tool-desc">Calcula nóminas con IRPF, Seguridad Social y deducciones. Exporta al PDF.</div>
       </div>
-      <div class="tool-arrow">→</div>
     </a>
 
     <!-- Albarán -->
@@ -1001,27 +1023,45 @@ footer a:hover { color: white; }
 
   <div class="faq-item reveal">
     <button class="faq-q" onclick="toggleFaq(this)">
-      ¿Cuándo estarán las demás herramientas?
+      ¿Puedo añadir el logo de mi empresa en la factura?
       <div class="faq-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
     </button>
-    <div class="faq-a">Estamos desarrollando la calculadora de nóminas como segunda herramienta. El objetivo es lanzar una nueva cada pocas semanas, siempre manteniendo el mismo estándar de calidad y cero fricciones.</div>
+    <div class="faq-a">Sí. En el generador de facturas hay un campo para subir tu logo. Se incrusta directamente en el PDF sin enviarse a ningún servidor.</div>
+  </div>
+
+  <div class="faq-item reveal">
+    <button class="faq-q" onclick="toggleFaq(this)">
+      ¿Funciona en el móvil?
+      <div class="faq-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
+    </button>
+    <div class="faq-a">Sí, el diseño es responsive y funciona en cualquier dispositivo. Para generar y descargar el PDF recomendamos hacerlo desde el ordenador, ya que algunos navegadores móviles tienen limitaciones al guardar archivos.</div>
+  </div>
+
+  <div class="faq-item reveal">
+    <button class="faq-q" onclick="toggleFaq(this)">
+      ¿Qué diferencia hay entre factura y albarán?
+      <div class="faq-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
+    </button>
+    <div class="faq-a">La factura es el documento fiscal con IVA e IRPF que acredita una compraventa. El albarán es un documento de entrega que confirma que la mercancía o servicio fue recibido, sin valor fiscal directo. Ambas herramientas estarán disponibles en gestio.es.</div>
+  </div>
+
+  <div class="faq-item reveal">
+    <button class="faq-q" onclick="toggleFaq(this)">
+      ¿La calculadora de nóminas sirve para cualquier convenio?
+      <div class="faq-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
+    </button>
+    <div class="faq-a">La calculadora aplica los tramos de IRPF y cuotas de Seguridad Social vigentes de forma genérica. Las particularidades de cada convenio colectivo (plus de transporte, pagas extra adicionales, etc.) deberás introducirlas manualmente en los campos de conceptos.</div>
+  </div>
+
+  <div class="faq-item reveal">
+    <button class="faq-q" onclick="toggleFaq(this)">
+      ¿Puedo facturar en otro idioma o moneda?
+      <div class="faq-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
+    </button>
+    <div class="faq-a">De momento las herramientas están optimizadas para el mercado español (€, IVA, IRPF). La posibilidad de cambiar idioma y moneda está en la hoja de ruta.</div>
   </div>
 
 </section>
-
-<!-- CTA BAND -->
-<div class="cta-band">
-  <div class="cta-band-bg"></div>
-  <div class="cta-band-inner">
-    <div>
-      <h2>Tu primera factura,<br>lista en 2 minutos.</h2>
-      <p>Sin cuenta. Sin tarjeta. Solo tú y tu factura.</p>
-    </div>
-    <a href="facturas.html" class="btn-white">
-      Generar factura gratis →
-    </a>
-  </div>
-</div>
 
 <!-- FOOTER -->
 <footer>
