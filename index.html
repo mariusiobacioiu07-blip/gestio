@@ -781,6 +781,83 @@ footer a:hover { color: white; }
   .cta-band-inner { flex-direction: column; align-items: flex-start; }
 }
 
+/* ── TOOLS STRIP ─── */
+.tools-strip {
+  position: fixed;
+  top: 60px;
+  left: 0; right: 0;
+  z-index: 99;
+  background: var(--bg);
+  border-bottom: 1px solid var(--line);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0 24px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  height: 42px;
+}
+.tools-strip::-webkit-scrollbar { display: none; }
+
+.strip-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 14px;
+  height: 28px;
+  border-radius: 7px;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--slate);
+  text-decoration: none;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: color 0.15s, background 0.15s;
+  cursor: pointer;
+  border: none;
+  background: none;
+}
+.strip-tab:hover { color: var(--navy); background: var(--bg-3); }
+.strip-tab.active {
+  background: var(--dark-surface);
+  color: white;
+}
+.strip-tab.soon {
+  opacity: 0.45;
+  cursor: default;
+}
+.strip-tab.soon:hover { background: none; color: var(--slate); }
+
+.strip-tab svg { flex-shrink: 0; }
+
+.strip-sep {
+  width: 1px;
+  height: 16px;
+  background: var(--line);
+  margin: 0 4px;
+  flex-shrink: 0;
+}
+
+.strip-badge {
+  font-size: 9.5px;
+  font-weight: 700;
+  padding: 1px 6px;
+  border-radius: 10px;
+  background: var(--bg-3);
+  color: var(--slate);
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+}
+.strip-tab.active .strip-badge {
+  background: rgba(255,255,255,0.15);
+  color: rgba(255,255,255,0.7);
+}
+
+/* Adjust hero padding to account for strip */
+.hero { padding-top: 140px; }
+@media (max-width: 640px) { .hero { padding-top: 100px; } }
+
 /* ── CURSOR GLOW ─── */
 .cursor-glow {
   position: fixed;
@@ -809,30 +886,22 @@ footer a:hover { color: white; }
     gestio<span class="logo-dot">.es</span>
   </a>
   <div class="nav-links">
-    <a href="facturas.html" class="nav-tool">
-      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-      Facturas
-    </a>
-    <a href="nominas.html" class="nav-tool">
-      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
-      Nóminas
-    </a>
     <a href="facturas.html" class="nav-cta">Empezar gratis →</a>
   </div>
 </nav>
 
-<!-- HERO -->
+
 <section class="hero">
   <h1>Gestiona tu empresa<br>sin <em>complicaciones</em></h1>
   <p>Facturas, nóminas, albaranes y más. Herramientas gratuitas para autónomos y pymes españolas. Sin registro. Sin letra pequeña.</p>
   <div class="hero-actions">
-    <a href="facturas.html" class="btn-primary">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-      Crear factura gratis
-    </a>
-    <a href="#herramientas" class="btn-secondary">
+    <a href="#herramientas" class="btn-primary" onclick="event.preventDefault();document.getElementById('herramientas').scrollIntoView({behavior:'smooth'})">
       Ver todas las herramientas
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+    </a>
+    <a href="facturas.html" class="btn-secondary">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+      Crear factura gratis
     </a>
   </div>
 </section>
@@ -900,7 +969,10 @@ footer a:hover { color: white; }
     </a>
 
     <!-- Albarán -->
-    <div class="tool-card coming-soon reveal reveal-delay-3">
+    <a href="albaranes.html" class="tool-card featured reveal reveal-delay-3">
+      <div class="tool-arrow">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </div>
       <div class="tool-icon am">
         <svg viewBox="0 0 24 24" fill="none" stroke="#D97706" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/></svg>
       </div>
@@ -908,11 +980,13 @@ footer a:hover { color: white; }
         <div class="tool-name">Generador de albaranes</div>
         <div class="tool-desc">Albaranes de entrega rápidos y profesionales, listos para firmar.</div>
       </div>
-      <span class="tool-tag tag-soon">Próximamente</span>
-    </div>
+    </a>
 
     <!-- Control de gastos -->
-    <div class="tool-card coming-soon reveal">
+    <a href="gastos.html" class="tool-card featured reveal">
+      <div class="tool-arrow">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </div>
       <div class="tool-icon ro">
         <svg viewBox="0 0 24 24" fill="none" stroke="#E11D48" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
       </div>
@@ -920,11 +994,13 @@ footer a:hover { color: white; }
         <div class="tool-name">Control de gastos</div>
         <div class="tool-desc">Registra y categoriza gastos deducibles. Exporta el resumen trimestral.</div>
       </div>
-      <span class="tool-tag tag-soon">Próximamente</span>
-    </div>
+    </a>
 
     <!-- Gestor de flota -->
-    <div class="tool-card coming-soon reveal reveal-delay-1">
+    <a href="flota.html" class="tool-card featured reveal reveal-delay-1">
+      <div class="tool-arrow">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </div>
       <div class="tool-icon em">
         <svg viewBox="0 0 24 24" fill="none" stroke="var(--emerald)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13" rx="2"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
       </div>
@@ -932,11 +1008,13 @@ footer a:hover { color: white; }
         <div class="tool-name">Gestor de turnos / flota</div>
         <div class="tool-desc">Planifica turnos y rutas de tu equipo. Ideal para pequeñas flotas.</div>
       </div>
-      <span class="tool-tag tag-soon">Próximamente</span>
-    </div>
+    </a>
 
     <!-- Presupuestos -->
-    <div class="tool-card coming-soon reveal reveal-delay-2">
+    <a href="presupuestos.html" class="tool-card featured reveal reveal-delay-2">
+      <div class="tool-arrow">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </div>
       <div class="tool-icon sl">
         <svg viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
       </div>
@@ -944,8 +1022,7 @@ footer a:hover { color: white; }
         <div class="tool-name">Generador de presupuestos</div>
         <div class="tool-desc">Presupuestos profesionales que se convierten en factura con un clic.</div>
       </div>
-      <span class="tool-tag tag-soon">Próximamente</span>
-    </div>
+    </a>
 
   </div>
 </section>
@@ -1037,35 +1114,12 @@ footer a:hover { color: white; }
     <div class="faq-a">Sí, el diseño es responsive y funciona en cualquier dispositivo. Para generar y descargar el PDF recomendamos hacerlo desde el ordenador, ya que algunos navegadores móviles tienen limitaciones al guardar archivos.</div>
   </div>
 
-  <div class="faq-item reveal">
-    <button class="faq-q" onclick="toggleFaq(this)">
-      ¿Qué diferencia hay entre factura y albarán?
-      <div class="faq-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
-    </button>
-    <div class="faq-a">La factura es el documento fiscal con IVA e IRPF que acredita una compraventa. El albarán es un documento de entrega que confirma que la mercancía o servicio fue recibido, sin valor fiscal directo. Ambas herramientas estarán disponibles en gestio.es.</div>
-  </div>
-
-  <div class="faq-item reveal">
-    <button class="faq-q" onclick="toggleFaq(this)">
-      ¿La calculadora de nóminas sirve para cualquier convenio?
-      <div class="faq-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
-    </button>
-    <div class="faq-a">La calculadora aplica los tramos de IRPF y cuotas de Seguridad Social vigentes de forma genérica. Las particularidades de cada convenio colectivo (plus de transporte, pagas extra adicionales, etc.) deberás introducirlas manualmente en los campos de conceptos.</div>
-  </div>
-
-  <div class="faq-item reveal">
-    <button class="faq-q" onclick="toggleFaq(this)">
-      ¿Puedo facturar en otro idioma o moneda?
-      <div class="faq-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
-    </button>
-    <div class="faq-a">De momento las herramientas están optimizadas para el mercado español (€, IVA, IRPF). La posibilidad de cambiar idioma y moneda está en la hoja de ruta.</div>
-  </div>
 
 </section>
 
 <!-- FOOTER -->
 <footer>
-  <p>© 2025 gestio.es — Herramientas gratuitas para autónomos y pymes &nbsp;·&nbsp; <a href="#">Aviso legal</a> &nbsp;·&nbsp; <a href="#">Privacidad</a></p>
+  <p>© 2026 gestio.es — Herramientas gratuitas para autónomos y pymes &nbsp;·&nbsp; <a href="#">Aviso legal</a> &nbsp;·&nbsp; <a href="#">Privacidad</a></p>
 </footer>
 
 <script>
