@@ -1,0 +1,1670 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="color-scheme" content="light dark">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calculadora de Nóminas — gestio.es</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,700;12..96,800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  color-scheme: light dark;
+  --navy:    #0F1B2D;
+  --navy-2:  #1A2E48;
+  --emerald: #059669;
+  --em-light:#D1FAE5;
+  --em-mid:  #6EE7B7;
+  --slate:   #64748B;
+  --slate-2: #94A3B8;
+  --slate-3: #CBD5E1;
+  --bg:      #FAFAF9;
+  --bg-2:    #F4F4F2;
+  --bg-3:    #EEECEA;
+  --ink:     #0F1B2D;
+  --line:    #E5E4E0;
+  --line-2:  #D0CEC9;
+  --rose:    #E11D48;
+  --amber:   #D97706;
+  --r:       10px;
+  --r-lg:    14px;
+  --card-bg: #FFFFFF;
+  --card-ink: #0F1B2D;
+  --card-slate: #64748B;
+  --card-line: #E5E4E0;
+  --nav-bg:  rgba(250,250,249,0.92);
+  --input-bg:#FFFFFF;
+  --input-ink:   #0F1B2D;
+  --input-line:  #E5E4E0;
+  --input-ph:    #CBD5E1;
+  --dark-surface: #0F1B2D;
+  --dark-surface-2: #1A2E48;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg:      #0D1117;
+    --bg-2:    #161B22;
+    --bg-3:    #1C2128;
+    --ink:     #E6EDF3;
+    --line:    rgba(255,255,255,0.08);
+    --line-2:  rgba(255,255,255,0.13);
+    --slate:   #8B949E;
+    --slate-2: #6E7681;
+    --slate-3: #484F58;
+    --navy:    #E6EDF3;
+    --navy-2:  #C9D1D9;
+    --em-light:rgba(5,150,105,0.15);
+    --card-bg: #FFFFFF;
+    --card-ink: #0F1B2D;
+    --card-slate: #64748B;
+    --card-line: #E5E4E0;
+    --nav-bg:  rgba(13,17,23,0.92);
+    /* inputs siempre blancos — formulario profesional */
+    --input-bg:    #FFFFFF;
+    --input-ink:   #0F1B2D;
+    --input-line:  #D0CED9;
+    --input-ph:    #9CA3AF;
+    --dark-surface: #0F1B2D;
+    --dark-surface-2: #1A2E48;
+  }
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  min-height: 100vh;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* ── NAV ─── */
+nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 28px;
+  background: var(--nav-bg);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--line);
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  text-decoration: none;
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--navy);
+  letter-spacing: -0.4px;
+}
+.logo-icon {
+  width: 28px; height: 28px;
+  background: var(--dark-surface);
+  border-radius: 7px;
+  display: flex; align-items: center; justify-content: center;
+}
+.logo-icon svg { width: 13px; height: 13px; }
+.logo-dot { color: var(--emerald); }
+
+.nav-right { display: flex; align-items: center; gap: 12px; }
+.nav-link {
+  font-size: 13px; font-weight: 500;
+  color: var(--slate); text-decoration: none;
+  transition: color 0.2s;
+}
+.nav-link:hover { color: var(--ink); }
+
+.badge {
+  padding: 3px 10px; border-radius: 20px;
+  font-size: 11px; font-weight: 700; letter-spacing: 0.3px;
+}
+.badge-em { background: var(--em-light); color: var(--emerald); }
+
+/* ── PAGE HEADER ─── */
+.page-header {
+  padding: 36px 28px 24px;
+  max-width: 1160px;
+  margin: 0 auto;
+}
+.page-eyebrow {
+  display: inline-flex; align-items: center; gap: 7px;
+  font-size: 11px; font-weight: 700; letter-spacing: 2px;
+  text-transform: uppercase; color: var(--emerald);
+  margin-bottom: 10px;
+}
+.page-eyebrow::before {
+  content: ''; width: 16px; height: 2px;
+  background: var(--emerald); border-radius: 1px;
+}
+.page-header h1 {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: clamp(24px, 4vw, 34px);
+  font-weight: 800; letter-spacing: -1.2px;
+  color: var(--ink); margin-bottom: 6px;
+}
+.page-header p { font-size: 14px; color: var(--slate); }
+
+/* ── LAYOUT ─── */
+.wrap {
+  max-width: 1160px;
+  margin: 0 auto;
+  padding: 0 28px 140px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.span-2 { grid-column: 1 / -1; }
+
+/* ── CARD ─── */
+.card {
+  background: var(--card-bg);
+  border: 1px solid var(--card-line);
+  border-radius: var(--r-lg);
+  padding: 22px 20px;
+  transition: border-color 0.2s, box-shadow 0.25s;
+  animation: cardIn 0.5s ease both;
+  color: var(--card-ink);
+}
+.card:hover { border-color: #C8C6C0; box-shadow: 0 4px 24px rgba(15,27,45,0.08); }
+.card:nth-child(1) { animation-delay: 0.05s; }
+.card:nth-child(2) { animation-delay: 0.1s; }
+.card:nth-child(3) { animation-delay: 0.15s; }
+.card:nth-child(4) { animation-delay: 0.2s; }
+.card:nth-child(5) { animation-delay: 0.25s; }
+.card:nth-child(6) { animation-delay: 0.3s; }
+.card:nth-child(7) { animation-delay: 0.35s; }
+
+@keyframes cardIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.card-header {
+  display: flex; align-items: center; gap: 10px;
+  margin-bottom: 18px; padding-bottom: 14px;
+  border-bottom: 1px solid var(--card-line);
+}
+.card-icon {
+  width: 32px; height: 32px;
+  background: #F4F4F2; border: 1px solid var(--card-line);
+  border-radius: 9px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.card-icon svg { width: 14px; height: 14px; color: var(--card-ink); }
+.card-title {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 14px; font-weight: 700;
+  color: var(--card-ink); letter-spacing: -0.2px;
+}
+
+/* ── FIELDS ─── */
+.field { margin-bottom: 10px; }
+.field:last-child { margin-bottom: 0; }
+
+label {
+  display: block;
+  font-size: 11px; font-weight: 600;
+  color: var(--card-slate); margin-bottom: 5px;
+  text-transform: uppercase; letter-spacing: 0.6px;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="tel"],
+input[type="date"],
+input[type="number"],
+select,
+textarea {
+  width: 100%;
+  padding: 9px 12px;
+  border: 1.5px solid var(--input-line);
+  border-radius: var(--r);
+  font-family: 'Inter', sans-serif;
+  font-size: 13.5px; font-weight: 400;
+  color: var(--input-ink);
+  background: var(--input-bg);
+  transition: border-color 0.2s, box-shadow 0.2s;
+  -webkit-appearance: none; appearance: none;
+}
+input::placeholder { color: var(--input-ph); }
+input:focus, select:focus, textarea:focus {
+  border-color: var(--emerald);
+  box-shadow: 0 0 0 3px rgba(5,150,105,0.12);
+  outline: none;
+}
+select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2394A3B8' stroke-width='2.5'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 11px center;
+  background-color: var(--input-bg);
+  padding-right: 34px; cursor: pointer;
+}
+textarea { resize: vertical; min-height: 70px; }
+
+.row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+
+/* ── TOGGLE ─── */
+.toggle-row {
+  display: flex; align-items: center;
+  justify-content: space-between;
+  cursor: pointer; user-select: none;
+  padding: 2px 0;
+}
+.toggle-row label:first-child {
+  font-size: 13px; font-weight: 500;
+  color: var(--card-ink); text-transform: none;
+  letter-spacing: 0; cursor: pointer; margin-bottom: 0;
+}
+.toggle { position: relative; width: 36px; height: 21px; flex-shrink: 0; }
+.toggle input { opacity: 0; width: 0; height: 0; }
+.slider {
+  position: absolute; inset: 0;
+  background: #CBD5E1; border-radius: 21px;
+  transition: 0.25s cubic-bezier(0.4,0,0.2,1);
+  cursor: pointer;
+}
+.slider::before {
+  content: ''; position: absolute;
+  width: 15px; height: 15px; left: 3px; top: 3px;
+  background: white; border-radius: 50%;
+  transition: 0.25s cubic-bezier(0.4,0,0.2,1);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.15);
+}
+.toggle input:checked + .slider { background: var(--emerald); }
+.toggle input:checked + .slider::before { transform: translateX(15px); }
+
+/* ── INFO BOX ─── */
+.info-box {
+  margin-top: 12px;
+  padding: 10px 14px;
+  background: #D1FAE5;
+  border-radius: 8px;
+  font-size: 12px;
+  color: #065F46;
+  line-height: 1.5;
+}
+.info-box.amber {
+  background: #FEF3C7;
+  color: #92400E;
+}
+
+/* ── COLLAPSIBLE EXTRA ─── */
+.extra-field {
+  overflow: hidden;
+  max-height: 0;
+  transition: max-height 0.35s cubic-bezier(0.4,0,0.2,1), opacity 0.25s ease, margin 0.25s ease;
+  opacity: 0;
+  margin-top: 0;
+}
+.extra-field.visible {
+  max-height: 600px;
+  opacity: 1;
+  margin-top: 10px;
+}
+
+/* ── RESUMEN CARD ─── */
+.resumen-card {
+  background: #FFFFFF;
+  border: 1px solid #E5E4E0;
+  border-radius: var(--r-lg);
+  padding: 22px 20px;
+  animation: cardIn 0.5s 0.3s ease both;
+}
+
+.resumen-title {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 13px; font-weight: 700;
+  color: #94A3B8;
+  text-transform: uppercase; letter-spacing: 1.5px;
+  margin-bottom: 16px;
+}
+
+.resumen-cols {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 14px;
+}
+
+.res-block { margin-bottom: 16px; }
+.res-block:last-child { margin-bottom: 0; }
+
+.res-block-title {
+  font-size: 10px; font-weight: 700;
+  color: #94A3B8;
+  text-transform: uppercase; letter-spacing: 1.2px;
+  margin-bottom: 8px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid #E5E4E0;
+}
+
+.res-row {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 5px 0;
+  font-size: 13px;
+}
+.res-row .res-label { color: #64748B; }
+.res-row .res-val { font-weight: 600; color: #0F1B2D; font-variant-numeric: tabular-nums; }
+.res-row.highlight .res-label { color: #0F1B2D; font-weight: 600; }
+.res-row.highlight .res-val { color: #0F1B2D; font-weight: 700; }
+.res-row.negative .res-val { color: #DC2626; }
+.res-row.positive .res-val { color: #059669; }
+
+.res-divider {
+  height: 1px; background: #E5E4E0;
+  margin: 10px 0;
+}
+
+.neto-final {
+  margin-top: 14px;
+  background: #059669;
+  border-radius: var(--r);
+  padding: 14px 16px;
+  display: flex; justify-content: space-between; align-items: center;
+}
+.neto-final .nf-label {
+  font-size: 11px; font-weight: 600;
+  color: rgba(255,255,255,0.75);
+  text-transform: uppercase; letter-spacing: 1px;
+}
+.neto-final .nf-amount {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 26px; font-weight: 800;
+  color: white; letter-spacing: -1px;
+  font-variant-numeric: tabular-nums;
+}
+
+.coste-empresa {
+  margin-top: 10px;
+  background: #F4F4F2;
+  border: 1px solid #E5E4E0;
+  border-radius: var(--r);
+  padding: 12px 14px;
+  display: flex; justify-content: space-between; align-items: center;
+}
+.coste-empresa .ce-label {
+  font-size: 12px; color: #64748B;
+}
+.coste-empresa .ce-val {
+  font-size: 15px; font-weight: 700;
+  color: #0F1B2D;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── ACTIONS BAR ─── */
+.actions-bar {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  z-index: 100;
+  background: var(--nav-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-top: 1px solid var(--line);
+  padding: 12px 24px;
+  display: flex; gap: 10px; align-items: center;
+}
+
+.btn-clear {
+  padding: 0 18px; height: 44px;
+  background: var(--card-bg);
+  border: 1.5px solid var(--line);
+  border-radius: var(--r);
+  font-family: 'Inter', sans-serif;
+  font-size: 13px; font-weight: 500;
+  color: var(--slate); cursor: pointer;
+  transition: all 0.2s; white-space: nowrap;
+}
+.btn-clear:hover { border-color: #FECDD3; color: var(--rose); background: #FFF1F2; }
+
+.btn-pdf {
+  flex: 1; height: 44px;
+  background: var(--dark-surface); color: white;
+  border: none; border-radius: var(--r);
+  font-family: 'Inter', sans-serif;
+  font-size: 14px; font-weight: 600;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  letter-spacing: -0.2px;
+  transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+  box-shadow: 0 2px 12px rgba(15,27,45,0.2);
+}
+.btn-pdf:hover { background: var(--dark-surface-2); transform: translateY(-1px); box-shadow: 0 6px 24px rgba(15,27,45,0.25); }
+.btn-pdf:active { transform: translateY(0); }
+
+/* ── TOAST ─── */
+.toast {
+  position: fixed; bottom: 72px; left: 50%;
+  transform: translateX(-50%) translateY(10px);
+  background: var(--dark-surface); color: white;
+  font-size: 13px; font-weight: 500;
+  padding: 10px 20px; border-radius: 24px;
+  opacity: 0;
+  transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
+  pointer-events: none; z-index: 9999;
+  display: flex; align-items: center; gap: 8px;
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+.toast-dot { width: 6px; height: 6px; background: var(--em-mid); border-radius: 50%; }
+
+/* ── COTIZACIONES TABLE ─── */
+.cotiz-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 4px;
+}
+.cotiz-table th {
+  text-align: left;
+  font-size: 10px; font-weight: 700;
+  color: #64748B;
+  text-transform: uppercase; letter-spacing: 0.8px;
+  padding: 6px 8px;
+  border-bottom: 1px solid #E5E4E0;
+}
+.cotiz-table th:last-child { text-align: right; }
+.cotiz-table td {
+  font-size: 12.5px; color: #0F1B2D;
+  padding: 7px 8px;
+  border-bottom: 1px solid #E5E4E0;
+}
+.cotiz-table td:last-child { text-align: right; font-weight: 600; font-variant-numeric: tabular-nums; }
+.cotiz-table tr:last-child td { border-bottom: none; }
+.cotiz-table .cotiz-total td {
+  font-weight: 700; color: #0F1B2D;
+  background: #F4F4F2;
+  border-top: 1.5px solid #D0CEC9;
+}
+
+/* ── RESPONSIVE ─── */
+@media (max-width: 860px) {
+  .grid { grid-template-columns: 1fr; }
+  .span-2 { grid-column: 1; }
+  .resumen-cols { grid-template-columns: 1fr; gap: 0; }
+  .res-block { border-bottom: 1px solid #E5E4E0; padding-bottom: 14px; margin-bottom: 14px; }
+  /* tabla: scroll interno contenido, no de la página */
+  .cotiz-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; max-width: 100%; }
+  .cotiz-table { min-width: 560px; }
+}
+
+@media (max-width: 600px) {
+  .wrap { padding: 0 10px 130px; }
+  .page-header { padding: 20px 10px 14px; }
+  nav { padding: 0 12px; }
+  .page-header h1 { font-size: 22px; }
+  .card { padding: 16px 14px; }
+  .resumen-card { padding: 16px 14px; }
+  .neto-final { flex-direction: column; align-items: flex-start; gap: 6px; }
+  .neto-final .nf-amount { font-size: 22px; }
+  .coste-empresa { flex-direction: column; align-items: flex-start; gap: 4px; }
+  .row-2, .row-3 { grid-template-columns: 1fr; }
+
+  /* ── TABLA COTIZACIONES EN MÓVIL: layout tipo tarjeta ── */
+  /* Ocultar la cabecera de la tabla */
+  .cotiz-table thead { display: none; }
+  /* Cada fila se convierte en bloque */
+  .cotiz-table,
+  .cotiz-table tbody,
+  .cotiz-table tr,
+  .cotiz-table td { display: block; width: 100%; }
+  .cotiz-table-wrap { overflow-x: visible; }
+  .cotiz-table { min-width: unset; }
+  /* Separador entre filas */
+  .cotiz-table tr {
+    border-bottom: 1px solid #E5E4E0;
+    padding: 8px 0;
+    position: relative;
+  }
+  .cotiz-table tr:last-child { border-bottom: none; }
+  .cotiz-table td {
+    border-bottom: none;
+    padding: 2px 4px;
+    font-size: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    text-align: left;
+  }
+  /* Etiqueta con data-label antes del valor */
+  .cotiz-table td::before {
+    content: attr(data-label);
+    font-size: 10px;
+    font-weight: 700;
+    color: #94A3B8;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    flex-shrink: 0;
+    margin-right: 8px;
+    min-width: 90px;
+  }
+  /* Primera celda (concepto) más destacada */
+  .cotiz-table td:first-child {
+    font-weight: 600;
+    font-size: 13px;
+    color: #0F1B2D;
+    padding-bottom: 4px;
+  }
+  .cotiz-table td:first-child::before { display: none; }
+  /* Fila total */
+  .cotiz-table .cotiz-total td { background: #F4F4F2; padding: 4px 8px; border-radius: 6px; margin-top: 2px; }
+}
+
+@media (max-width: 440px) {
+  .actions-bar { padding: 10px 12px; gap: 8px; }
+  .btn-pdf { flex: 1; }
+  .btn-clear { white-space: nowrap; }
+}
+
+/* ── ANIMATIONS ─── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="gestio-landing.html" class="logo">
+    <div class="logo-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+    </div>
+    gestio<span class="logo-dot">.es</span>
+  </a>
+  <div class="nav-right">
+    <a href="gestio-landing.html" class="nav-link">← Inicio</a>
+    <span class="badge badge-em">Gratis</span>
+  </div>
+</nav>
+
+<!-- PAGE HEADER -->
+<div class="page-header">
+  <div class="page-eyebrow">Herramienta #2</div>
+  <h1>Calculadora de nóminas</h1>
+  <p>Calcula el salario neto, retenciones IRPF y cotizaciones a la Seguridad Social. Descarga la nómina en PDF.</p>
+</div>
+
+<!-- WRAP -->
+<div class="wrap">
+  <div class="grid">
+
+    <!-- EMPRESA -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
+        </div>
+        <div class="card-title">Datos de la empresa</div>
+      </div>
+      <div class="field"><label>Razón social</label><input type="text" id="emp_nombre" placeholder="Empresa S.L."></div>
+      <div class="field"><label>CIF</label><input type="text" id="emp_cif" placeholder="B12345678"></div>
+      <div class="field"><label>Dirección</label><input type="text" id="emp_dir" placeholder="Calle, número, piso"></div>
+      <div class="row-2">
+        <div class="field"><label>CP y Ciudad</label><input type="text" id="emp_ciudad" placeholder="28001 Madrid"></div>
+        <div class="field"><label>CCC Seguridad Social</label><input type="text" id="emp_ccc" placeholder="28 1234567890"></div>
+      </div>
+    </div>
+
+    <!-- TRABAJADOR -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </div>
+        <div class="card-title">Datos del trabajador</div>
+      </div>
+      <div class="row-2">
+        <div class="field"><label>Nombre</label><input type="text" id="trab_nombre" placeholder="Nombre"></div>
+        <div class="field"><label>Apellidos</label><input type="text" id="trab_apellidos" placeholder="Apellidos"></div>
+      </div>
+      <div class="row-2">
+        <div class="field"><label>DNI / NIE</label><input type="text" id="trab_dni" placeholder="12345678A"></div>
+        <div class="field"><label>Nº Afiliación SS</label><input type="text" id="trab_nss" placeholder="28 1234567890"></div>
+      </div>
+      <div class="row-2">
+        <div class="field"><label>Categoría / Puesto</label><input type="text" id="trab_categoria" placeholder="Técnico especialista"></div>
+        <div class="field"><label>Grupo cotización</label>
+          <select id="trab_grupo" onchange="calcular()">
+            <option value="1">Grupo 1 — Ingenieros, licenciados</option>
+            <option value="2">Grupo 2 — Técnicos superiores</option>
+            <option value="3">Grupo 3 — Técnicos no superiores</option>
+            <option value="4" selected>Grupo 4 — Ayudantes no titulados</option>
+            <option value="5">Grupo 5 — Oficiales administrativos</option>
+            <option value="6">Grupo 6 — Subalternos</option>
+            <option value="7">Grupo 7 — Auxiliares administrativos</option>
+            <option value="8">Grupo 8 — Oficiales 1ª y 2ª</option>
+            <option value="9">Grupo 9 — Oficiales 3ª, especialistas</option>
+            <option value="10">Grupo 10 — Peones</option>
+            <option value="11">Grupo 11 — Trabajadores < 18 años</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- CONTRATO -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+        </div>
+        <div class="card-title">Contrato y jornada</div>
+      </div>
+      <div class="row-2">
+        <div class="field"><label>Tipo de contrato</label>
+          <select id="contrato_tipo" onchange="calcular()">
+            <option value="indefinido">Indefinido</option>
+            <option value="temporal">Temporal / obra</option>
+            <option value="formacion">Formación y aprendizaje</option>
+            <option value="practicas">Prácticas</option>
+            <option value="interinidad">Interinidad</option>
+          </select>
+        </div>
+        <div class="field"><label>Jornada</label>
+          <select id="jornada_tipo" onchange="toggleParcial()">
+            <option value="completa">Completa</option>
+            <option value="parcial">Parcial</option>
+          </select>
+        </div>
+      </div>
+      <div class="extra-field" id="parcial_field">
+        <div class="field"><label>Porcentaje de jornada (%)</label>
+          <input type="number" id="jornada_pct" value="50" min="1" max="99" step="1" oninput="calcular()">
+        </div>
+      </div>
+      <div class="row-2">
+        <div class="field"><label>Fecha inicio</label><input type="date" id="contrato_inicio"></div>
+        <div class="field"><label>Antigüedad (años)</label>
+          <input type="number" id="antiguedad" value="0" min="0" step="1" oninput="calcular()">
+        </div>
+      </div>
+      <div class="row-2">
+        <div class="field"><label>Período nómina</label>
+          <select id="periodo_mes">
+            <option value="1">Enero</option><option value="2">Febrero</option>
+            <option value="3">Marzo</option><option value="4">Abril</option>
+            <option value="5">Mayo</option><option value="6">Junio</option>
+            <option value="7">Julio</option><option value="8">Agosto</option>
+            <option value="9">Septiembre</option><option value="10">Octubre</option>
+            <option value="11">Noviembre</option><option value="12">Diciembre</option>
+          </select>
+        </div>
+        <div class="field"><label>Año</label>
+          <input type="number" id="periodo_anyo" value="2025" min="2020" max="2040" step="1">
+        </div>
+      </div>
+    </div>
+
+    <!-- SALARIO -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+        </div>
+        <div class="card-title">Salario y retribución</div>
+      </div>
+      <div class="row-2">
+        <div class="field"><label>Salario bruto anual (€)</label>
+          <input type="number" id="salario_anual" placeholder="24000" min="0" step="100" oninput="sincronizarSalario('anual')">
+        </div>
+        <div class="field"><label>Salario bruto mensual (€)</label>
+          <input type="number" id="salario_mensual" placeholder="2000" min="0" step="10" oninput="sincronizarSalario('mensual')">
+        </div>
+      </div>
+      <div class="field"><label>Nº de pagas</label>
+        <select id="num_pagas" onchange="calcular()">
+          <option value="12">12 pagas (extras prorrateadas)</option>
+          <option value="14" selected>14 pagas (2 pagas extra)</option>
+          <option value="15">15 pagas</option>
+          <option value="16">16 pagas</option>
+        </select>
+      </div>
+
+      <div style="margin-top:14px; padding-top:14px; border-top:1px solid var(--line);">
+        <div class="field" style="margin-bottom:8px">
+          <div class="toggle-row" onclick="document.getElementById('toggle_especie').click()">
+            <label>Retribución en especie</label>
+            <label class="toggle" onclick="event.stopPropagation()">
+              <input type="checkbox" id="toggle_especie" onchange="toggleField('especie_field', 'toggle_especie'); calcular()">
+              <span class="slider"></span>
+            </label>
+          </div>
+        </div>
+        <div class="extra-field" id="especie_field">
+          <div class="field"><label>Valor anual en especie (€)</label>
+            <input type="number" id="especie_val" placeholder="1200" min="0" step="100" oninput="calcular()">
+          </div>
+          <div class="info-box" style="margin-top:6px">Seguros médicos, coche empresa, tickets restaurante, etc. Se suma al bruto para calcular cotizaciones e IRPF.</div>
+        </div>
+      </div>
+
+      <div style="margin-top:10px">
+        <div class="field" style="margin-bottom:8px">
+          <div class="toggle-row" onclick="document.getElementById('toggle_complementos').click()">
+            <label>Complementos salariales</label>
+            <label class="toggle" onclick="event.stopPropagation()">
+              <input type="checkbox" id="toggle_complementos" onchange="toggleField('complementos_field', 'toggle_complementos'); calcular()">
+              <span class="slider"></span>
+            </label>
+          </div>
+        </div>
+        <div class="extra-field" id="complementos_field">
+          <div class="row-2">
+            <div class="field"><label>Plus transporte / mes (€)</label><input type="number" id="plus_transporte" placeholder="0" min="0" oninput="calcular()"></div>
+            <div class="field"><label>Plus asistencia / mes (€)</label><input type="number" id="plus_asistencia" placeholder="0" min="0" oninput="calcular()"></div>
+          </div>
+          <div class="row-2">
+            <div class="field"><label>Horas extra normales</label><input type="number" id="horas_extra" placeholder="0" min="0" oninput="calcular()"></div>
+            <div class="field"><label>Precio hora extra (€)</label><input type="number" id="precio_hora_extra" placeholder="0" min="0" step="0.01" oninput="calcular()"></div>
+          </div>
+          <div class="field"><label>Otros complementos / mes (€)</label><input type="number" id="otros_complementos" placeholder="0" min="0" oninput="calcular()"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- IRPF Y SS -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+        </div>
+        <div class="card-title">IRPF y Seguridad Social</div>
+      </div>
+
+      <div class="field">
+        <label>Retención IRPF</label>
+        <select id="irpf_modo" onchange="toggleIRPFModo()">
+          <option value="auto">Calculada automáticamente (tablas 2025)</option>
+          <option value="manual">Introducir manualmente (%)</option>
+        </select>
+      </div>
+      <div class="extra-field" id="irpf_manual_field">
+        <div class="field"><label>Porcentaje IRPF (%)</label>
+          <input type="number" id="irpf_manual_pct" value="15" min="0" max="47" step="0.1" oninput="calcular()">
+        </div>
+      </div>
+
+      <div style="margin-top:14px; padding-top:14px; border-top:1px solid var(--line)">
+        <div class="field" style="margin-bottom:10px">
+          <label>Situación familiar (para IRPF)</label>
+          <select id="situacion_familiar" onchange="calcular()">
+            <option value="soltero">Soltero/a sin hijos</option>
+            <option value="casado_un_pagador">Casado/a, cónyuge sin ingresos</option>
+            <option value="casado_dos_pagadores">Casado/a, ambos trabajan</option>
+            <option value="monoparental">Familia monoparental</option>
+          </select>
+        </div>
+        <div class="row-2">
+          <div class="field"><label>Hijos menores de 3 años</label>
+            <input type="number" id="hijos_menor3" value="0" min="0" max="10" oninput="calcular()">
+          </div>
+          <div class="field"><label>Hijos de 3 a 25 años</label>
+            <input type="number" id="hijos_mayor3" value="0" min="0" max="10" oninput="calcular()">
+          </div>
+        </div>
+        <div class="field"><label>Discapacidad trabajador (%)</label>
+          <select id="discapacidad" onchange="calcular()">
+            <option value="0">Sin discapacidad</option>
+            <option value="33">33% – 65% (reducción 3.000 €)</option>
+            <option value="65">65% o más (reducción 9.000 €)</option>
+            <option value="65m">65% o más + movilidad reducida (12.000 €)</option>
+          </select>
+        </div>
+      </div>
+
+      <div style="margin-top:14px; padding-top:14px; border-top:1px solid var(--line)">
+        <div class="field" style="margin-bottom:8px">
+          <div class="toggle-row" onclick="document.getElementById('toggle_desemp').click()">
+            <label>Cotización por desempleo</label>
+            <label class="toggle" onclick="event.stopPropagation()">
+              <input type="checkbox" id="toggle_desemp" checked onchange="calcular()">
+              <span class="slider"></span>
+            </label>
+          </div>
+        </div>
+        <div class="field" style="margin-bottom:8px">
+          <div class="toggle-row" onclick="document.getElementById('toggle_fp').click()">
+            <label>Cotización Formación Profesional</label>
+            <label class="toggle" onclick="event.stopPropagation()">
+              <input type="checkbox" id="toggle_fp" checked onchange="calcular()">
+              <span class="slider"></span>
+            </label>
+          </div>
+        </div>
+        <div class="field" style="margin-bottom:0">
+          <div class="toggle-row" onclick="document.getElementById('toggle_mecanismo').click()">
+            <label>Mecanismo Equidad Intergeneracional</label>
+            <label class="toggle" onclick="event.stopPropagation()">
+              <input type="checkbox" id="toggle_mecanismo" checked onchange="calcular()">
+              <span class="slider"></span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div class="info-box" style="margin-top:14px">
+        Tipos SS 2025: Contingencias Comunes 4,70%, Desempleo 1,55%, FP 0,10%, MEI 0,13%.
+      </div>
+    </div>
+
+    <!-- DEDUCCIONES -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        </div>
+        <div class="card-title">Deducciones y anticipos</div>
+      </div>
+      <div class="row-2">
+        <div class="field"><label>Anticipo / mes (€)</label>
+          <input type="number" id="anticipo" placeholder="0" min="0" oninput="calcular()">
+        </div>
+        <div class="field"><label>Embargo judicial / mes (€)</label>
+          <input type="number" id="embargo" placeholder="0" min="0" oninput="calcular()">
+        </div>
+      </div>
+      <div class="row-2">
+        <div class="field"><label>Plan de pensiones / mes (€)</label>
+          <input type="number" id="pension_plan" placeholder="0" min="0" oninput="calcular()">
+        </div>
+        <div class="field"><label>Otras deducciones / mes (€)</label>
+          <input type="number" id="otras_deducciones" placeholder="0" min="0" oninput="calcular()">
+        </div>
+      </div>
+      <div class="field" style="margin-top:4px"><label>Concepto otras deducciones</label>
+        <input type="text" id="otras_deduciones_desc" placeholder="Uniforme, material, etc.">
+      </div>
+
+      <div style="margin-top:14px; padding-top:14px; border-top:1px solid var(--line)">
+        <div class="field" style="margin-bottom:8px">
+          <div class="toggle-row" onclick="document.getElementById('toggle_extra').click()">
+            <label>¿Este mes incluye paga extra?</label>
+            <label class="toggle" onclick="event.stopPropagation()">
+              <input type="checkbox" id="toggle_extra" onchange="toggleField('extra_field', 'toggle_extra'); calcular()">
+              <span class="slider"></span>
+            </label>
+          </div>
+        </div>
+        <div class="extra-field" id="extra_field">
+          <div class="row-2">
+            <div class="field"><label>Concepto paga extra</label>
+              <select id="extra_tipo">
+                <option value="verano">Paga de verano</option>
+                <option value="navidad">Paga de Navidad</option>
+                <option value="beneficios">Participación en beneficios</option>
+                <option value="otra">Otra</option>
+              </select>
+            </div>
+            <div class="field"><label>Importe paga extra (€)</label>
+              <input type="number" id="extra_importe" placeholder="0" min="0" oninput="calcular()">
+            </div>
+          </div>
+          <div class="info-box amber" style="margin-top:6px">La paga extra cotiza a la SS y tributa IRPF igual que el salario ordinario.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RESUMEN -->
+    <div class="resumen-card span-2" id="resumen">
+      <div class="resumen-title">Resumen de la nómina</div>
+
+      <div class="resumen-cols">
+
+        <!-- DEVENGOS -->
+        <div class="res-block">
+          <div class="res-block-title">Devengos (percepciones)</div>
+          <div class="res-row"><span class="res-label">Salario base</span><span class="res-val" id="r_salario_base">—</span></div>
+          <div class="res-row" id="row_complementos" style="display:none"><span class="res-label">Complementos</span><span class="res-val" id="r_complementos">—</span></div>
+          <div class="res-row" id="row_extra_res" style="display:none"><span class="res-label">Paga extra</span><span class="res-val" id="r_extra">—</span></div>
+          <div class="res-row" id="row_especie_res" style="display:none"><span class="res-label">Retrib. especie</span><span class="res-val" id="r_especie">—</span></div>
+          <div class="res-divider"></div>
+          <div class="res-row highlight"><span class="res-label">Total devengado</span><span class="res-val" id="r_total_devengado">—</span></div>
+        </div>
+
+        <!-- DEDUCCIONES -->
+        <div class="res-block">
+          <div class="res-block-title">Deducciones</div>
+          <div class="res-row negative"><span class="res-label">Cont. comunes (4,70%)</span><span class="res-val" id="r_ss_comunes">—</span></div>
+          <div class="res-row negative" id="row_r_desemp"><span class="res-label">Desempleo (1,55%)</span><span class="res-val" id="r_desemp">—</span></div>
+          <div class="res-row negative" id="row_r_fp"><span class="res-label">Form. Profesional (0,10%)</span><span class="res-val" id="r_fp">—</span></div>
+          <div class="res-row negative" id="row_r_mei"><span class="res-label">MEI (0,13%)</span><span class="res-val" id="r_mei">—</span></div>
+          <div class="res-row negative"><span class="res-label">Retención IRPF</span><span class="res-val"><span id="r_irpf_pct">—</span></span></div>
+          <div class="res-row negative" id="row_r_anticipo" style="display:none"><span class="res-label">Anticipo</span><span class="res-val" id="r_anticipo">—</span></div>
+          <div class="res-row negative" id="row_r_embargo" style="display:none"><span class="res-label">Embargo</span><span class="res-val" id="r_embargo_res">—</span></div>
+          <div class="res-row negative" id="row_r_pension" style="display:none"><span class="res-label">Plan de pensiones</span><span class="res-val" id="r_pension">—</span></div>
+          <div class="res-row negative" id="row_r_otras" style="display:none"><span class="res-label" id="r_otras_label">Otras deducciones</span><span class="res-val" id="r_otras">—</span></div>
+          <div class="res-divider"></div>
+          <div class="res-row highlight"><span class="res-label">Total deducciones</span><span class="res-val" id="r_total_ded">—</span></div>
+        </div>
+
+        <!-- COTIZACIÓN EMPRESA -->
+        <div class="res-block">
+          <div class="res-block-title">Coste empresa (SS)</div>
+          <div class="res-row"><span class="res-label">Cont. comunes (23,60%)</span><span class="res-val" id="r_emp_comunes">—</span></div>
+          <div class="res-row" id="row_emp_desemp"><span class="res-label">Desempleo (5,50%)</span><span class="res-val" id="r_emp_desemp">—</span></div>
+          <div class="res-row"><span class="res-label">FOGASA (0,20%)</span><span class="res-val" id="r_emp_fogasa">—</span></div>
+          <div class="res-row"><span class="res-label">Form. Profesional (0,60%)</span><span class="res-val" id="r_emp_fp">—</span></div>
+          <div class="res-row" id="row_emp_mei"><span class="res-label">MEI (0,58%)</span><span class="res-val" id="r_emp_mei">—</span></div>
+          <div class="res-divider"></div>
+          <div class="res-row highlight"><span class="res-label">Total SS empresa</span><span class="res-val" id="r_emp_total_ss">—</span></div>
+        </div>
+      </div>
+
+      <!-- NETO FINAL -->
+      <div class="neto-final" style="margin-top:16px">
+        <div>
+          <div class="nf-label">Salario neto a percibir</div>
+          <div style="font-size:11px; color:rgba(255,255,255,0.8); margin-top:3px" id="r_neto_nota">—</div>
+        </div>
+        <div class="nf-amount" id="r_neto">—</div>
+      </div>
+
+      <div class="coste-empresa">
+        <div>
+          <div class="ce-label">Coste total para la empresa</div>
+          <div style="font-size:11px; color:#94A3B8; margin-top:2px">Bruto + cuotas patronales</div>
+        </div>
+        <div class="ce-val" id="r_coste_empresa">—</div>
+      </div>
+    </div>
+
+    <!-- COTIZACIONES DETALLE -->
+    <div class="card span-2">
+      <div class="card-header">
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+        </div>
+        <div class="card-title">Detalle de cotizaciones a la Seguridad Social</div>
+      </div>
+      <div class="cotiz-table-wrap">
+      <table class="cotiz-table">
+        <thead>
+          <tr>
+            <th>Concepto</th>
+            <th>Tipo trabajador</th>
+            <th>Tipo empresa</th>
+            <th>Base cotización</th>
+            <th>Cuota trabajador</th>
+            <th>Cuota empresa</th>
+          </tr>
+        </thead>
+        <tbody id="cotiz_tbody">
+          <tr><td colspan="6" style="text-align:center; color:var(--slate-2); padding:20px">Introduce el salario para ver el detalle</td></tr>
+        </tbody>
+      </table>
+      </div>
+    </div>
+
+    <!-- NOTAS -->
+    <div class="card span-2">
+      <div class="card-header">
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+        </div>
+        <div class="card-title">Observaciones <span style="font-weight:400;color:var(--slate-2)">(opcional)</span></div>
+      </div>
+      <textarea id="notas" placeholder="Notas para incluir en la nómina: cambio de categoría, vacaciones disfrutadas, acuerdos especiales..."></textarea>
+    </div>
+
+  </div><!-- /grid -->
+</div><!-- /wrap -->
+
+<div class="actions-bar">
+  <button class="btn-clear" onclick="limpiar()">Limpiar</button>
+  <button class="btn-pdf" onclick="generarPDF()">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+    Descargar nómina PDF
+  </button>
+</div>
+
+<div class="toast" id="toast">
+  <span class="toast-dot"></span>
+  PDF descargado
+</div>
+
+<script>
+// ─────────────────────────────────────────────
+// HELPERS
+// ─────────────────────────────────────────────
+const g  = id => document.getElementById(id);
+const gv = id => parseFloat(g(id)?.value) || 0;
+const gs = id => g(id)?.value?.trim() || '';
+const fmt = n  => n.toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' €';
+const fmtPct = n => n.toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + '%';
+
+const MESES = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+
+// ─────────────────────────────────────────────
+// INIT
+// ─────────────────────────────────────────────
+window.onload = () => {
+  const hoy = new Date();
+  g('contrato_inicio').value = hoy.toISOString().split('T')[0];
+  g('periodo_mes').value = hoy.getMonth() + 1;
+  g('periodo_anyo').value = hoy.getFullYear();
+  g('salario_anual').value = 24000;
+  g('salario_mensual').value = 2000;
+  calcular();
+};
+
+// ─────────────────────────────────────────────
+// SYNC SALARIO
+// ─────────────────────────────────────────────
+function sincronizarSalario(origen) {
+  const pagas = parseInt(gs('num_pagas')) || 14;
+  if (origen === 'anual') {
+    const a = gv('salario_anual');
+    g('salario_mensual').value = a > 0 ? (a / pagas).toFixed(2) : '';
+  } else {
+    const m = gv('salario_mensual');
+    g('salario_anual').value = m > 0 ? (m * pagas).toFixed(2) : '';
+  }
+  calcular();
+}
+
+// ─────────────────────────────────────────────
+// TOGGLE HELPERS
+// ─────────────────────────────────────────────
+function toggleField(fieldId, checkId) {
+  g(fieldId).classList.toggle('visible', g(checkId).checked);
+}
+function toggleParcial() {
+  g('parcial_field').classList.toggle('visible', gs('jornada_tipo') === 'parcial');
+  calcular();
+}
+function toggleIRPFModo() {
+  g('irpf_manual_field').classList.toggle('visible', gs('irpf_modo') === 'manual');
+  calcular();
+}
+
+// ─────────────────────────────────────────────
+// CÁLCULO IRPF — tablas 2025 simplificadas
+// ─────────────────────────────────────────────
+function calcularIRPFAuto(brutoAnual) {
+  // Mínimo personal y familiar
+  let minPersonal = 5550;
+
+  // Situación familiar
+  const sit = gs('situacion_familiar');
+  if (sit === 'casado_un_pagador') minPersonal += 3400;
+
+  // Hijos
+  const h3 = gv('hijos_menor3');
+  const hm3 = gv('hijos_mayor3');
+  const totalHijos = h3 + hm3;
+  if (totalHijos >= 1) minPersonal += h3 > 0 ? 2800 + (h3 * 2800) : 0;
+  // Mínimo descendientes 2025
+  const hijosMin = [2400, 2700, 4000, 4500];
+  for (let i = 0; i < totalHijos; i++) {
+    minPersonal += hijosMin[Math.min(i, 3)];
+  }
+  // Hijos < 3 años: +2800 adicional
+  minPersonal += h3 * 2800;
+
+  // Discapacidad
+  const disc = gs('discapacidad');
+  if (disc === '33') minPersonal += 3000;
+  else if (disc === '65') minPersonal += 9000;
+  else if (disc === '65m') minPersonal += 12000;
+
+  // Reducción por rendimientos del trabajo
+  let reduccionTrabajo = 0;
+  if (brutoAnual <= 13115) reduccionTrabajo = 5565;
+  else if (brutoAnual <= 16825) reduccionTrabajo = 5565 - 1.5 * (brutoAnual - 13115);
+  else reduccionTrabajo = 0;
+
+  const baseImponible = Math.max(0, brutoAnual - reduccionTrabajo);
+  const baseLiquidable = Math.max(0, baseImponible - minPersonal);
+
+  // Escala general 2025
+  const tramos = [
+    { hasta: 12450, tipo: 0.19 },
+    { hasta: 20200, tipo: 0.24 },
+    { hasta: 35200, tipo: 0.30 },
+    { hasta: 60000, tipo: 0.37 },
+    { hasta: 300000, tipo: 0.45 },
+    { hasta: Infinity, tipo: 0.47 },
+  ];
+
+  let cuotaIntegra = 0;
+  let restante = baseLiquidable;
+  let anterior = 0;
+  for (const t of tramos) {
+    if (restante <= 0) break;
+    const en_tramo = Math.min(restante, t.hasta - anterior);
+    cuotaIntegra += en_tramo * t.tipo;
+    restante -= en_tramo;
+    anterior = t.hasta;
+  }
+
+  // Deducción mínimo personal (tipo del 1er tramo)
+  const deduccionMinimo = Math.min(minPersonal, 12450) * 0.19 +
+    Math.max(0, minPersonal - 12450) * 0.24;
+
+  const cuotaLiquida = Math.max(0, cuotaIntegra - deduccionMinimo);
+  const tipoPct = brutoAnual > 0 ? (cuotaLiquida / brutoAnual) * 100 : 0;
+  return Math.max(0, Math.min(tipoPct, 47));
+}
+
+// ─────────────────────────────────────────────
+// CÁLCULO PRINCIPAL
+// ─────────────────────────────────────────────
+function calcular() {
+  const pagas = parseInt(gs('num_pagas')) || 14;
+  const jornadaPct = gs('jornada_tipo') === 'parcial' ? (gv('jornada_pct') / 100) : 1;
+
+  // Salario base mensual (ya ajustado a jornada parcial)
+  let salarioMensual = gv('salario_mensual') * jornadaPct;
+
+  // Complementos
+  const plusTransporte = g('toggle_complementos').checked ? gv('plus_transporte') : 0;
+  const plusAsistencia = g('toggle_complementos').checked ? gv('plus_asistencia') : 0;
+  const horasExtra     = g('toggle_complementos').checked ? gv('horas_extra') * gv('precio_hora_extra') : 0;
+  const otrosComp      = g('toggle_complementos').checked ? gv('otros_complementos') : 0;
+  const totalComplementos = plusTransporte + plusAsistencia + horasExtra + otrosComp;
+
+  // Paga extra
+  const extraImporte = g('toggle_extra').checked ? gv('extra_importe') : 0;
+
+  // Especie
+  const especieAnual = g('toggle_especie').checked ? gv('especie_val') : 0;
+  const especieMensual = especieAnual / 12;
+
+  // Total devengado este mes
+  const totalDevengado = salarioMensual + totalComplementos + extraImporte + especieMensual;
+
+  // Base de cotización SS (salario + complementos + extra, excluye algunos plus exentos)
+  // Simplificado: toda la retribución es base de cotización
+  const baseCotizacion = totalDevengado;
+
+  // Cuotas trabajador SS
+  const ss_comunes = baseCotizacion * 0.047;
+  const ss_desemp  = g('toggle_desemp').checked ? baseCotizacion * 0.0155 : 0;
+  const ss_fp      = g('toggle_fp').checked     ? baseCotizacion * 0.001  : 0;
+  const ss_mei     = g('toggle_mecanismo').checked ? baseCotizacion * 0.0013 : 0;
+  const totalSSTrab = ss_comunes + ss_desemp + ss_fp + ss_mei;
+
+  // IRPF
+  // Para IRPF usamos bruto anual estimado
+  const brutoAnual = gv('salario_anual') * jornadaPct + (totalComplementos * 12) + (especieAnual);
+  let irpfPct;
+  if (gs('irpf_modo') === 'manual') {
+    irpfPct = gv('irpf_manual_pct');
+  } else {
+    irpfPct = calcularIRPFAuto(brutoAnual);
+  }
+  const irpfMensual = totalDevengado * (irpfPct / 100);
+
+  // Otras deducciones
+  const anticipo   = gv('anticipo');
+  const embargo    = gv('embargo');
+  const pension    = gv('pension_plan');
+  const otras      = gv('otras_deducciones');
+  const totalDed   = totalSSTrab + irpfMensual + anticipo + embargo + pension + otras;
+
+  // Neto
+  const neto = totalDevengado - totalDed;
+
+  // Coste empresa
+  const emp_comunes = baseCotizacion * 0.236;
+  const emp_desemp  = g('toggle_desemp').checked ? baseCotizacion * 0.055 : 0;
+  const emp_fogasa  = baseCotizacion * 0.002;
+  const emp_fp      = baseCotizacion * 0.006;
+  const emp_mei     = g('toggle_mecanismo').checked ? baseCotizacion * 0.0058 : 0;
+  const totalSSEmp  = emp_comunes + emp_desemp + emp_fogasa + emp_fp + emp_mei;
+  const costeEmpresa = salarioMensual + totalComplementos + especieMensual + totalSSEmp;
+
+  // ── ACTUALIZAR UI ──
+  setText('r_salario_base', fmt(salarioMensual));
+  setText('r_total_devengado', fmt(totalDevengado));
+  setText('r_ss_comunes', '−' + fmt(ss_comunes));
+  setText('r_desemp', '−' + fmt(ss_desemp));
+  setText('r_fp', '−' + fmt(ss_fp));
+  setText('r_mei', '−' + fmt(ss_mei));
+  setText('r_irpf_pct', `−${fmt(irpfMensual)} (${fmtPct(irpfPct)})`);
+  setText('r_total_ded', '−' + fmt(totalDed));
+  setText('r_neto', fmt(neto));
+  setText('r_neto_nota', `IRPF ${fmtPct(irpfPct)} · SS trab. ${fmtPct((totalSSTrab/totalDevengado)*100)}`);
+
+  // Empresa
+  setText('r_emp_comunes', fmt(emp_comunes));
+  setText('r_emp_desemp', fmt(emp_desemp));
+  setText('r_emp_fogasa', fmt(emp_fogasa));
+  setText('r_emp_fp', fmt(emp_fp));
+  setText('r_emp_mei', fmt(emp_mei));
+  setText('r_emp_total_ss', fmt(totalSSEmp));
+  setText('r_coste_empresa', fmt(costeEmpresa));
+
+  // Filas opcionales
+  showRow('row_complementos', totalComplementos > 0, 'r_complementos', fmt(totalComplementos));
+  showRow('row_extra_res', extraImporte > 0, 'r_extra', fmt(extraImporte));
+  showRow('row_especie_res', especieMensual > 0, 'r_especie', fmt(especieMensual));
+  showRow('row_r_anticipo', anticipo > 0, 'r_anticipo', '−' + fmt(anticipo));
+  showRow('row_r_embargo', embargo > 0, 'r_embargo_res', '−' + fmt(embargo));
+  showRow('row_r_pension', pension > 0, 'r_pension', '−' + fmt(pension));
+  showRow('row_r_otras', otras > 0, 'r_otras', '−' + fmt(otras));
+  showRow('row_r_desemp', g('toggle_desemp').checked, 'r_desemp', '−' + fmt(ss_desemp));
+  showRow('row_r_fp', g('toggle_fp').checked, 'r_fp', '−' + fmt(ss_fp));
+  showRow('row_r_mei', g('toggle_mecanismo').checked, 'r_mei', '−' + fmt(ss_mei));
+  showRow('row_emp_desemp', g('toggle_desemp').checked, 'r_emp_desemp', fmt(emp_desemp));
+  showRow('row_emp_mei', g('toggle_mecanismo').checked, 'r_emp_mei', fmt(emp_mei));
+
+  // Label otras deducciones
+  const otrasDesc = gs('otras_deduciones_desc');
+  if (otrasDesc) setText('r_otras_label', otrasDesc);
+  else setText('r_otras_label', 'Otras deducciones');
+
+  // Tabla de cotizaciones
+  actualizarTablaCotizaciones(baseCotizacion, ss_comunes, ss_desemp, ss_fp, ss_mei, emp_comunes, emp_desemp, emp_fogasa, emp_fp, emp_mei);
+
+  // Guardar en window para PDF
+  window._nomData = {
+    bruto: totalDevengado, neto, irpfPct, irpfMensual,
+    ss_comunes, ss_desemp, ss_fp, ss_mei, totalSSTrab,
+    emp_comunes, emp_desemp, emp_fogasa, emp_fp, emp_mei, totalSSEmp,
+    costeEmpresa, salarioMensual, totalComplementos, extraImporte, especieMensual,
+    baseCotizacion, anticipo, embargo, pension, otras, totalDed,
+    plusTransporte, plusAsistencia, horasExtra, otrosComp,
+    desemp: g('toggle_desemp').checked, fp: g('toggle_fp').checked, mei: g('toggle_mecanismo').checked
+  };
+}
+
+function setText(id, val) { const el = g(id); if (el) el.textContent = val; }
+function showRow(rowId, show, valId, val) {
+  const row = g(rowId);
+  if (row) row.style.display = show ? 'flex' : 'none';
+  if (show && valId) setText(valId, val);
+}
+
+function actualizarTablaCotizaciones(base, ss_c, ss_d, ss_fp, ss_mei, emp_c, emp_d, emp_fog, emp_fp, emp_mei) {
+  const rows = [
+    ['Contingencias comunes', '4,70%', '23,60%', base, ss_c, emp_c],
+    ['Desempleo', g('toggle_desemp').checked ? '1,55%' : '—', '5,50%', base, ss_d, emp_d],
+    ['FOGASA', '—', '0,20%', base, 0, emp_fog],
+    ['Formación Profesional', g('toggle_fp').checked ? '0,10%' : '—', '0,60%', base, ss_fp, emp_fp],
+    ['Mecanismo Eq. Intergeneracional', g('toggle_mecanismo').checked ? '0,13%' : '—', '0,58%', base, ss_mei, emp_mei],
+  ];
+
+  const totalTrab = ss_c + ss_d + ss_fp + ss_mei;
+  const totalEmp  = emp_c + emp_d + emp_fog + emp_fp + emp_mei;
+
+  let html = rows.map(([concepto, tipT, tipE, base, cuotaT, cuotaE]) => `
+    <tr>
+      <td>${concepto}</td>
+      <td data-label="Tipo trabajador">${tipT}</td>
+      <td data-label="Tipo empresa">${tipE}</td>
+      <td data-label="Base cotiz.">${fmt(base)}</td>
+      <td data-label="Cuota trabaj.">${cuotaT > 0 ? fmt(cuotaT) : '—'}</td>
+      <td data-label="Cuota empresa">${cuotaE > 0 ? fmt(cuotaE) : '—'}</td>
+    </tr>
+  `).join('');
+
+  html += `<tr class="cotiz-total">
+    <td><strong>TOTAL</strong></td><td data-label="Tipo trabaj."></td><td data-label="Tipo empresa"></td>
+    <td data-label="Base cotiz.">${fmt(base)}</td>
+    <td data-label="Cuota trabaj."><strong>${fmt(totalTrab)}</strong></td>
+    <td data-label="Cuota empresa"><strong>${fmt(totalEmp)}</strong></td>
+  </tr>`;
+
+  g('cotiz_tbody').innerHTML = html;
+}
+
+// ─────────────────────────────────────────────
+// LIMPIAR
+// ─────────────────────────────────────────────
+function limpiar() {
+  if (!confirm('¿Limpiar todos los datos?')) return;
+  document.querySelectorAll('input[type="text"],input[type="email"],input[type="tel"],input[type="number"]').forEach(el => el.value = '');
+  document.querySelectorAll('input[type="checkbox"]').forEach(el => { el.checked = false; });
+  document.querySelectorAll('.extra-field').forEach(el => el.classList.remove('visible'));
+  window.onload();
+}
+
+// ─────────────────────────────────────────────
+// TOAST
+// ─────────────────────────────────────────────
+function showToast(msg) {
+  const t = g('toast');
+  t.querySelector('.toast-dot').nextSibling.textContent = ' ' + msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+// ─────────────────────────────────────────────
+// PDF
+// ─────────────────────────────────────────────
+function generarPDF() {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ unit: 'mm', format: 'a4' });
+  const W = 210, M = 14;
+  const d = window._nomData || {};
+
+  const black   = [15,  27,  45];
+  const gray1   = [80,  90, 110];
+  const gray2   = [130, 140, 155];
+  const gray3   = [200, 205, 215];
+  const green   = [5,   150, 105];
+  const greenLt = [209, 250, 229];
+  const bg      = [248, 248, 247];
+  const white   = [255, 255, 255];
+  const rose    = [220,  38,  38];
+  const divider = [228, 228, 226];
+
+  let y = 0;
+
+  // ── CABECERA ──
+  doc.setFillColor(...bg);
+  doc.rect(0, 0, W, 48, 'F');
+  doc.setFillColor(...green);
+  doc.rect(0, 0, 3, 48, 'F');
+  doc.setFillColor(...divider);
+  doc.rect(0, 48, W, 0.3, 'F');
+
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(20);
+  doc.setTextColor(...black);
+  doc.text('NÓMINA', M + 4, 19);
+
+  // Periodo
+  const mes = MESES[(parseInt(gs('periodo_mes')) || 1) - 1];
+  const anyo = gs('periodo_anyo') || '2025';
+  doc.setFillColor(...greenLt);
+  doc.roundedRect(M + 4, 23, 38, 8, 2, 2, 'F');
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(8);
+  doc.setTextColor(...green);
+  doc.text(`${mes.toUpperCase()} ${anyo}`, M + 7, 28.5);
+
+  // Empresa — derecha cabecera
+  const empNombre = gs('emp_nombre') || 'Empresa';
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(9);
+  doc.setTextColor(...black);
+  doc.text(empNombre, W - M, 14, { align: 'right' });
+
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(7.5);
+  doc.setTextColor(...gray2);
+  const empLines = [gs('emp_cif'), gs('emp_dir'), gs('emp_ciudad'), gs('emp_ccc') ? `CCC: ${gs('emp_ccc')}` : ''].filter(Boolean);
+  empLines.forEach((l, i) => doc.text(l, W - M, 20 + i * 4.5, { align: 'right' }));
+
+  y = 58;
+
+  // ── TRABAJADOR / CONTRATO ──
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(6.5);
+  doc.setTextColor(...green);
+  doc.text('TRABAJADOR', M, y);
+  doc.text('CONTRATO', W / 2 + 4, y);
+  y += 5;
+
+  const trabNombre = `${gs('trab_nombre')} ${gs('trab_apellidos')}`.trim() || '—';
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(10);
+  doc.setTextColor(...black);
+  doc.text(trabNombre, M, y);
+
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(8.5);
+  doc.text(gs('contrato_tipo') ? gs('contrato_tipo').charAt(0).toUpperCase() + gs('contrato_tipo').slice(1) : '—', W / 2 + 4, y);
+  y += 5;
+
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(7.5);
+  doc.setTextColor(...gray1);
+  const trabLines = [
+    gs('trab_dni') ? `DNI: ${gs('trab_dni')}` : null,
+    gs('trab_nss') ? `NSS: ${gs('trab_nss')}` : null,
+    gs('trab_categoria'),
+    `Grupo ${gs('trab_grupo') || '—'} cotización`,
+  ].filter(Boolean);
+
+  const jornadaLabel = gs('jornada_tipo') === 'parcial' ? `Parcial ${gv('jornada_pct')}%` : 'Completa';
+  const contLines = [
+    `Jornada: ${jornadaLabel}`,
+    gs('contrato_inicio') ? `Inicio: ${fmtFecha(gs('contrato_inicio'))}` : null,
+    gv('antiguedad') > 0 ? `Antigüedad: ${gv('antiguedad')} año${gv('antiguedad') !== 1 ? 's' : ''}` : null,
+  ].filter(Boolean);
+
+  const maxL = Math.max(trabLines.length, contLines.length);
+  for (let i = 0; i < maxL; i++) {
+    if (trabLines[i]) doc.text(trabLines[i], M, y);
+    if (contLines[i]) doc.text(contLines[i], W / 2 + 4, y);
+    y += 4.5;
+  }
+  y += 3;
+
+  // Divider
+  doc.setFillColor(...divider);
+  doc.rect(M, y, W - M * 2, 0.3, 'F');
+  y += 7;
+
+  // ── TABLA DEVENGOS / DEDUCCIONES ──
+  const col1 = M, col2 = 105, col3 = W - M;
+  const thH = 7;
+
+  // Cabecera izquierda — DEVENGOS
+  doc.setFillColor(...black);
+  doc.roundedRect(col1, y, (col2 - col1) - 4, thH, 1.5, 1.5, 'F');
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(7);
+  doc.setTextColor(...white);
+  doc.text('DEVENGOS', col1 + 4, y + 4.8);
+  doc.text('IMPORTE', col2 - 8, y + 4.8, { align: 'right' });
+
+  // Cabecera derecha — DEDUCCIONES
+  doc.setFillColor(...black);
+  doc.roundedRect(col2, y, col3 - col2, thH, 1.5, 1.5, 'F');
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(7);
+  doc.setTextColor(...white);
+  doc.text('DEDUCCIONES', col2 + 4, y + 4.8);
+  doc.text('IMPORTE', col3, y + 4.8, { align: 'right' });
+  y += thH;
+
+  // Filas
+  const devengos = [
+    ['Salario base', d.salarioMensual],
+    d.totalComplementos > 0 ? ['Complementos', d.totalComplementos] : null,
+    d.extraImporte > 0      ? ['Paga extra', d.extraImporte] : null,
+    d.especieMensual > 0    ? ['Retrib. en especie', d.especieMensual] : null,
+  ].filter(Boolean);
+
+  const deducciones = [
+    ['Cont. Comunes (4,70%)', d.ss_comunes],
+    d.desemp ? ['Desempleo (1,55%)', d.ss_desemp] : null,
+    d.fp     ? ['Form. Prof. (0,10%)', d.ss_fp] : null,
+    d.mei    ? ['M.E.I. (0,13%)', d.ss_mei] : null,
+    [`IRPF (${(d.irpfPct||0).toFixed(2)}%)`, d.irpfMensual],
+    d.anticipo > 0 ? ['Anticipo', d.anticipo] : null,
+    d.embargo > 0  ? ['Embargo', d.embargo] : null,
+    d.pension > 0  ? ['Plan pensiones', d.pension] : null,
+    d.otras > 0    ? [gs('otras_deduciones_desc') || 'Otras', d.otras] : null,
+  ].filter(Boolean);
+
+  const rowH = 6.5;
+  const maxRows = Math.max(devengos.length, deducciones.length);
+  let alt = false;
+
+  for (let i = 0; i < maxRows; i++) {
+    if (alt) {
+      doc.setFillColor(...bg);
+      doc.rect(col1, y, col2 - col1 - 4, rowH, 'F');
+      doc.rect(col2, y, col3 - col2, rowH, 'F');
+    }
+    alt = !alt;
+
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(7.5);
+
+    if (devengos[i]) {
+      doc.setTextColor(...gray1);
+      doc.text(devengos[i][0], col1 + 4, y + 4.5);
+      doc.setFont('helvetica', 'bold');
+      doc.setTextColor(...black);
+      doc.text(fmtN(devengos[i][1]) + ' €', col2 - 8, y + 4.5, { align: 'right' });
+    }
+    if (deducciones[i]) {
+      doc.setFont('helvetica', 'normal');
+      doc.setTextColor(...gray1);
+      doc.text(deducciones[i][0], col2 + 4, y + 4.5);
+      doc.setFont('helvetica', 'bold');
+      doc.setTextColor(...rose);
+      doc.text('−' + fmtN(deducciones[i][1]) + ' €', col3, y + 4.5, { align: 'right' });
+    }
+    y += rowH;
+  }
+
+  // Bordes tablas
+  doc.setDrawColor(...divider);
+  doc.setLineWidth(0.25);
+  doc.roundedRect(col1, y - maxRows * rowH - thH, col2 - col1 - 4, maxRows * rowH + thH, 1.5, 1.5, 'S');
+  doc.roundedRect(col2, y - maxRows * rowH - thH, col3 - col2, maxRows * rowH + thH, 1.5, 1.5, 'S');
+  y += 5;
+
+  // Subtotales
+  const subH = 8;
+  // Izq — total devengado
+  doc.setFillColor(240, 252, 246);
+  doc.roundedRect(col1, y, col2 - col1 - 4, subH, 1.5, 1.5, 'F');
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(7.5);
+  doc.setTextColor(...green);
+  doc.text('TOTAL DEVENGADO', col1 + 4, y + 5.2);
+  doc.text(fmtN(d.bruto) + ' €', col2 - 8, y + 5.2, { align: 'right' });
+
+  // Der — total deducciones
+  doc.setFillColor(254, 242, 242);
+  doc.roundedRect(col2, y, col3 - col2, subH, 1.5, 1.5, 'F');
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(7.5);
+  doc.setTextColor(...rose);
+  doc.text('TOTAL DEDUCCIONES', col2 + 4, y + 5.2);
+  doc.text('−' + fmtN(d.totalDed) + ' €', col3, y + 5.2, { align: 'right' });
+  y += subH + 8;
+
+  // ── NETO ──
+  doc.setFillColor(...black);
+  doc.roundedRect(M, y, W - M * 2, 16, 2, 2, 'F');
+  doc.setFillColor(...green);
+  doc.roundedRect(M, y, 3, 16, 1.5, 1.5, 'F');
+  doc.rect(M + 1.5, y, 1.5, 16, 'F');
+
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(7.5);
+  doc.setTextColor(160, 175, 195);
+  doc.text('LÍQUIDO A PERCIBIR (NETO)', M + 8, y + 10.5);
+
+  doc.setFontSize(14);
+  doc.setTextColor(...white);
+  doc.text(fmtN(d.neto) + ' €', W - M - 2, y + 10.5, { align: 'right' });
+  y += 22;
+
+  // ── SS EMPRESA ──
+  doc.setFillColor(...bg);
+  doc.roundedRect(M, y, W - M * 2, 10, 1.5, 1.5, 'F');
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(7.5);
+  doc.setTextColor(...gray2);
+  doc.text('CUOTAS EMPRESA (SS):', M + 4, y + 6.5);
+  doc.setFont('helvetica', 'normal');
+  doc.setTextColor(...gray1);
+  doc.text(`CC ${fmtN(d.emp_comunes)} € + Desemp. ${fmtN(d.emp_desemp)} € + FP ${fmtN(d.emp_fp)} € + FOGASA ${fmtN(d.emp_fogasa)} € + MEI ${fmtN(d.emp_mei)} €`, M + 52, y + 6.5);
+  doc.setFont('helvetica', 'bold');
+  doc.setTextColor(...black);
+  doc.text('Total: ' + fmtN(d.totalSSEmp) + ' €', W - M, y + 6.5, { align: 'right' });
+  y += 15;
+
+  // Coste empresa total
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(7.5);
+  doc.setTextColor(...gray2);
+  doc.text('COSTE TOTAL EMPRESA:', M + 4, y);
+  doc.setFont('helvetica', 'bold');
+  doc.setTextColor(...black);
+  doc.text(fmtN(d.costeEmpresa) + ' €', W - M, y, { align: 'right' });
+  y += 10;
+
+  // ── NOTAS ──
+  const notas = gs('notas');
+  if (notas) {
+    doc.setFillColor(...bg);
+    doc.roundedRect(M, y, W - M * 2, 18, 2, 2, 'F');
+    doc.setFillColor(...green);
+    doc.roundedRect(M, y, 3, 18, 1.5, 1.5, 'F');
+    doc.rect(M + 1.5, y, 1.5, 18, 'F');
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(7);
+    doc.setTextColor(...green);
+    doc.text('OBSERVACIONES', M + 7, y + 7);
+    doc.setFont('helvetica', 'normal');
+    doc.setTextColor(...gray1);
+    const nLines = doc.splitTextToSize(notas, W - M * 2 - 14);
+    doc.text(nLines, M + 7, y + 13);
+    y += 24;
+  }
+
+  // ── FIRMAS ──
+  if (y < 240) {
+    y = Math.max(y, 230);
+    doc.setFillColor(...divider);
+    doc.rect(M, y, 55, 0.3, 'F');
+    doc.rect(W - M - 55, y, 55, 0.3, 'F');
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(7);
+    doc.setTextColor(...gray3);
+    doc.text('Firma empresa', M + 27, y + 5, { align: 'center' });
+    doc.text('Recibí conforme', W - M - 27, y + 5, { align: 'center' });
+  }
+
+  // ── FOOTER ──
+  doc.setFillColor(...bg);
+  doc.rect(0, 283, W, 14, 'F');
+  doc.setFillColor(...divider);
+  doc.rect(0, 283, W, 0.3, 'F');
+  doc.setFillColor(...green);
+  doc.rect(0, 283, 3, 14, 'F');
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(6.5);
+  doc.setTextColor(...gray2);
+  doc.text('Generado con gestio.es — Herramientas gratuitas para autónomos y pymes de España', W / 2, 292, { align: 'center' });
+
+  const apellidos = gs('trab_apellidos').replace(/\s+/g,'_');
+  const nombre    = gs('trab_nombre').replace(/\s+/g,'_');
+  const filename = `nomina_${nombre}_${apellidos}_${mes}_${anyo}.pdf`;
+  const blob = doc.output('blob');
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(() => { document.body.removeChild(a); URL.revokeObjectURL(url); }, 200);
+  showToast('PDF descargado');
+}
+
+function fmtN(n) {
+  return (n||0).toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+function fmtFecha(s) {
+  const [y, m, d] = s.split('-'); return `${d}/${m}/${y}`;
+}
+</script>
+</body>
+</html>

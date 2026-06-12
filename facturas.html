@@ -1,0 +1,1237 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="color-scheme" content="light dark">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Generador de Facturas — gestio.es</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,700;12..96,800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  color-scheme: light dark;
+  --navy:    #0F1B2D;
+  --navy-2:  #1A2E48;
+  --emerald: #059669;
+  --em-light:#D1FAE5;
+  --em-mid:  #6EE7B7;
+  --slate:   #64748B;
+  --slate-2: #94A3B8;
+  --slate-3: #CBD5E1;
+  --bg:      #FAFAF9;
+  --bg-2:    #F4F4F2;
+  --bg-3:    #EEECEA;
+  --ink:     #0F1B2D;
+  --white:   #FFFFFF;
+  --line:    #E5E4E0;
+  --line-2:  #D0CEC9;
+  --rose:    #E11D48;
+  --r:       10px;
+  --r-lg:    14px;
+  --card-bg: #FFFFFF;
+  --card-ink: #0F1B2D;
+  --card-slate: #64748B;
+  --card-line: #E5E4E0;
+  --nav-bg:  rgba(250,250,249,0.92);
+  --input-bg:   #FFFFFF;
+  --input-ink:  #0F1B2D;
+  --input-line: #E5E4E0;
+  --input-ph:   #CBD5E1;
+  /* Siempre oscuro independientemente del modo */
+  --dark-surface: #0F1B2D;
+  --dark-surface-2: #1A2E48;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg:      #0D1117;
+    --bg-2:    #161B22;
+    --bg-3:    #1C2128;
+    --ink:     #E6EDF3;
+    --white:   #161B22;
+    --line:    rgba(255,255,255,0.08);
+    --line-2:  rgba(255,255,255,0.13);
+    --slate:   #8B949E;
+    --slate-2: #6E7681;
+    --slate-3: #484F58;
+    --navy:    #E6EDF3;
+    --navy-2:  #C9D1D9;
+    --em-light:rgba(5,150,105,0.15);
+    --card-bg: #FFFFFF;
+    --card-ink: #0F1B2D;
+    --card-slate: #64748B;
+    --card-line: #E5E4E0;
+    --nav-bg:  rgba(13,17,23,0.92);
+    /* inputs siempre blancos */
+    --input-bg:   #FFFFFF;
+    --input-ink:  #0F1B2D;
+    --input-line: #D0CED9;
+    --input-ph:   #9CA3AF;
+    --dark-surface: #0F1B2D;
+    --dark-surface-2: #1A2E48;
+  }
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  min-height: 100vh;
+  font-size: 14px;
+  line-height: 1.5;
+  overflow-x: hidden;
+}
+
+/* ── NAV ─── */
+nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 28px;
+  background: var(--nav-bg);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--line);
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  text-decoration: none;
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--navy);
+  letter-spacing: -0.4px;
+}
+
+.logo-icon {
+  width: 28px; height: 28px;
+  background: var(--dark-surface);
+  border-radius: 7px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.logo-icon svg { width: 13px; height: 13px; }
+
+.logo-dot { color: var(--emerald); }
+
+.nav-right { display: flex; align-items: center; gap: 8px; }
+
+.nav-link {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--slate);
+  text-decoration: none;
+  padding: 6px 14px;
+  border-radius: 20px;
+  transition: color 0.2s, background 0.2s;
+}
+.nav-link:hover { color: var(--navy); background: var(--bg-3); }
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11.5px;
+  font-weight: 600;
+  padding: 4px 12px;
+  border-radius: 20px;
+}
+
+.badge-em {
+  background: var(--em-light);
+  color: var(--emerald);
+  border: 1px solid rgba(5,150,105,0.2);
+}
+
+/* ── PAGE HEADER ─── */
+.page-header {
+  padding: 40px 28px 32px;
+  max-width: 1060px;
+  margin: 0 auto;
+  animation: fadeUp 0.5s ease both;
+}
+
+.page-eyebrow {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--emerald);
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.page-eyebrow::before {
+  content: '';
+  width: 18px; height: 2px;
+  background: var(--emerald);
+  border-radius: 1px;
+}
+
+.page-header h1 {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: clamp(26px, 4vw, 38px);
+  font-weight: 800;
+  color: var(--navy);
+  letter-spacing: -1.5px;
+  line-height: 1.1;
+  margin-bottom: 8px;
+}
+
+.page-header p {
+  font-size: 14.5px;
+  color: var(--slate);
+}
+
+/* ── WRAP ─── */
+.wrap {
+  max-width: 1060px;
+  margin: 0 auto;
+  padding: 0 20px 120px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.span-2 { grid-column: 1 / -1; }
+
+@media (max-width: 720px) {
+  .grid { grid-template-columns: 1fr; }
+  .span-2 { grid-column: 1; }
+  .wrap { padding: 0 12px 120px; }
+  .page-header { padding: 28px 12px 20px; }
+  nav { padding: 0 14px; }
+}
+
+/* ── CARD ─── */
+.card {
+  background: var(--card-bg);
+  border: 1px solid var(--card-line);
+  border-radius: var(--r-lg);
+  padding: 22px 20px;
+  color: var(--card-ink);
+  transition: border-color 0.2s, box-shadow 0.25s;
+  animation: cardIn 0.5s ease both;
+}
+
+.card:hover {
+  border-color: #C8C6C0;
+  box-shadow: 0 4px 24px rgba(15,27,45,0.08);
+}
+
+.card:nth-child(1) { animation-delay: 0.05s; }
+.card:nth-child(2) { animation-delay: 0.1s; }
+.card:nth-child(3) { animation-delay: 0.15s; }
+.card:nth-child(4) { animation-delay: 0.2s; }
+.card:nth-child(5) { animation-delay: 0.25s; }
+.card:nth-child(6) { animation-delay: 0.3s; }
+
+@keyframes cardIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 18px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--card-line);
+}
+
+.card-icon {
+  width: 32px; height: 32px;
+  background: #F4F4F2;
+  border: 1px solid var(--card-line);
+  border-radius: 9px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.card-icon svg { width: 14px; height: 14px; color: var(--card-ink); }
+
+.card-title {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--card-ink);
+  letter-spacing: -0.2px;
+}
+
+/* ── FIELDS ─── */
+.field { margin-bottom: 10px; }
+.field:last-child { margin-bottom: 0; }
+
+label {
+  display: block;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--card-slate);
+  margin-bottom: 5px;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="tel"],
+input[type="date"],
+input[type="number"],
+select,
+textarea {
+  width: 100%;
+  padding: 9px 12px;
+  border: 1.5px solid var(--input-line, var(--line));
+  border-radius: var(--r);
+  font-family: 'Inter', sans-serif;
+  font-size: 13.5px;
+  font-weight: 400;
+  color: var(--input-ink, var(--ink));
+  background: var(--input-bg);
+  transition: border-color 0.2s, box-shadow 0.2s;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+input::placeholder { color: var(--input-ph, var(--slate-3)); }
+
+input:focus, select:focus, textarea:focus {
+  border-color: var(--emerald);
+  box-shadow: 0 0 0 3px rgba(5,150,105,0.1);
+  outline: none;
+}
+
+select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2394A3B8' stroke-width='2.5'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 11px center;
+  background-color: var(--input-bg);
+  padding-right: 34px;
+  cursor: pointer;
+}
+
+textarea { resize: vertical; min-height: 80px; }
+
+.row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+
+/* ── TOGGLE ─── */
+.toggle-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 12px;
+  background: #F4F4F2;
+  border-radius: var(--r);
+  border: 1.5px solid #E5E4E0;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+}
+.toggle-row:hover { border-color: #C8C6C0; background: #EEECEA; }
+
+.toggle-row label {
+  margin: 0; text-transform: none;
+  font-size: 13.5px; font-weight: 500;
+  color: #0F1B2D; letter-spacing: 0;
+  cursor: pointer;
+}
+
+.toggle { position: relative; width: 38px; height: 21px; flex-shrink: 0; }
+.toggle input { opacity: 0; width: 0; height: 0; }
+
+.slider {
+  position: absolute; inset: 0;
+  background: #CBD5E1;
+  border-radius: 21px;
+  cursor: pointer;
+  transition: 0.25s cubic-bezier(0.4,0,0.2,1);
+}
+.slider::before {
+  content: '';
+  position: absolute;
+  width: 15px; height: 15px;
+  left: 3px; top: 3px;
+  background: white;
+  border-radius: 50%;
+  transition: 0.25s cubic-bezier(0.4,0,0.2,1);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.15);
+}
+.toggle input:checked + .slider {
+  background: var(--emerald);
+}
+.toggle input:checked + .slider::before { transform: translateX(17px); }
+
+.irpf-field { display: none; margin-top: 8px; }
+.irpf-field.visible { display: block; animation: slideDown 0.22s ease; }
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.info-box {
+  background: #D1FAE5;
+  border: 1px solid rgba(5,150,105,0.2);
+  border-radius: var(--r);
+  padding: 9px 12px;
+  font-size: 12px;
+  color: #065F46;
+  margin-top: 8px;
+  line-height: 1.55;
+}
+
+/* ── LINES TABLE ─── */
+.lines-head {
+  display: grid;
+  grid-template-columns: 1fr 64px 96px 84px 34px;
+  gap: 6px;
+  padding: 8px 10px;
+  background: #F4F4F2;
+  border-radius: 8px;
+  margin-bottom: 6px;
+  border: 1px solid #E5E4E0;
+}
+
+.lines-head span {
+  font-size: 9px;
+  font-weight: 700;
+  color: #64748B;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+}
+.lines-head span:nth-child(4),
+.lines-head span:last-child { text-align: right; }
+
+.line-row {
+  display: grid;
+  grid-template-columns: 1fr 64px 96px 84px 34px;
+  gap: 6px;
+  margin-bottom: 6px;
+  align-items: center;
+  animation: fadeSlideIn 0.22s ease;
+}
+
+@keyframes fadeSlideIn {
+  from { opacity: 0; transform: translateY(5px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.line-row input { padding: 8px 10px; font-size: 13px; height: 36px; }
+
+.line-total {
+  font-variant-numeric: tabular-nums;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #0F1B2D;
+  text-align: right;
+}
+
+.btn-remove {
+  width: 32px; height: 32px;
+  border: 1.5px solid #E5E4E0;
+  border-radius: 8px;
+  background: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #94A3B8;
+  font-size: 16px;
+  transition: all 0.2s;
+  padding: 0; flex-shrink: 0;
+}
+.btn-remove:hover { background: #FFF1F2; border-color: #FECDD3; color: var(--rose); }
+
+.btn-add-line {
+  margin-top: 4px;
+  padding: 9px 14px;
+  border: 1.5px dashed #CBD5E1;
+  border-radius: var(--r);
+  background: none;
+  color: #64748B;
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  width: 100%;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+.btn-add-line:hover {
+  border-color: var(--emerald);
+  color: var(--emerald);
+  background: #D1FAE5;
+}
+
+/* ── TOTALS ─── */
+.totals-box {
+  margin-top: 20px;
+  background: #F4F4F2;
+  border: 1.5px solid #E5E4E0;
+  border-radius: var(--r-lg);
+  padding: 18px 20px;
+}
+
+.total-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 5px 0;
+  border-bottom: 1px solid #E5E4E0;
+}
+.total-row:last-of-type { border-bottom: none; }
+.total-row .t-label { font-size: 13px; color: #64748B; }
+.total-row .t-val {
+  font-variant-numeric: tabular-nums;
+  font-size: 13px;
+  font-weight: 600;
+  color: #0F1B2D;
+}
+
+.total-row.irpf .t-label,
+.total-row.irpf .t-val { color: var(--rose); }
+
+.total-final {
+  margin-top: 14px;
+  background: var(--dark-surface);
+  border-radius: var(--r-lg);
+  padding: 16px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: box-shadow 0.2s;
+}
+
+.total-final:hover { box-shadow: 0 4px 20px rgba(15,27,45,0.15); }
+
+.total-final .tf-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: rgba(255,255,255,0.5);
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+}
+
+.total-final .tf-amount {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 28px;
+  font-weight: 800;
+  color: white;
+  letter-spacing: -1px;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── ACTIONS BAR ─── */
+.actions-bar {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  z-index: 100;
+  background: var(--nav-bg);
+  backdrop-filter: blur(20px);
+  border-top: 1px solid var(--line);
+  padding: 12px 24px;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.btn-clear {
+  padding: 0 18px;
+  height: 44px;
+  background: var(--card-bg);
+  border: 1.5px solid var(--line);
+  border-radius: var(--r);
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--slate);
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+.btn-clear:hover {
+  border-color: #FECDD3;
+  color: var(--rose);
+  background: #FFF1F2;
+}
+
+.btn-pdf {
+  flex: 1;
+  height: 44px;
+  background: var(--dark-surface);
+  color: white;
+  border: none;
+  border-radius: var(--r);
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  letter-spacing: -0.2px;
+  transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+  box-shadow: 0 2px 12px rgba(15,27,45,0.2);
+}
+.btn-pdf:hover {
+  background: var(--dark-surface-2);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 24px rgba(15,27,45,0.25);
+}
+.btn-pdf:active { transform: translateY(0); }
+
+/* ── TOAST ─── */
+.toast {
+  position: fixed;
+  bottom: 72px;
+  left: 50%;
+  transform: translateX(-50%) translateY(10px);
+  background: var(--dark-surface);
+  color: white;
+  font-size: 13px;
+  font-weight: 500;
+  padding: 10px 20px;
+  border-radius: 24px;
+  opacity: 0;
+  transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
+  pointer-events: none;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+.toast-dot { width: 6px; height: 6px; background: var(--em-mid); border-radius: 50%; }
+
+/* ── ANIMATIONS ─── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── RESPONSIVE ─── */
+@media (max-width: 560px) {
+  .lines-head,
+  .line-row { grid-template-columns: 1fr 48px 76px 68px 30px; gap: 4px; }
+  .lines-head span { font-size: 8px; }
+  .total-final .tf-amount { font-size: 24px; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="gestio-landing.html" class="logo">
+    <div class="logo-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+    </div>
+    gestio<span class="logo-dot">.es</span>
+  </a>
+  <div class="nav-right">
+    <a href="gestio-landing.html" class="nav-link">← Inicio</a>
+    <span class="badge badge-em">Gratis</span>
+  </div>
+</nav>
+
+<!-- PAGE HEADER -->
+<div class="page-header">
+  <div class="page-eyebrow">Herramienta #1</div>
+  <h1>Generador de facturas</h1>
+  <p>Rellena los campos, descarga el PDF. Sin registro, sin coste.</p>
+</div>
+
+<!-- WRAP -->
+<div class="wrap">
+  <div class="grid">
+
+    <!-- EMISOR -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </div>
+        <div class="card-title">Tus datos</div>
+      </div>
+      <div class="field"><label>Nombre / Razón social</label><input type="text" id="emisor_nombre" placeholder="Tu nombre o empresa"></div>
+      <div class="field"><label>NIF / CIF</label><input type="text" id="emisor_nif" placeholder="12345678A"></div>
+      <div class="field"><label>Dirección</label><input type="text" id="emisor_dir" placeholder="Calle, número, piso"></div>
+      <div class="row-2">
+        <div class="field"><label>CP y Ciudad</label><input type="text" id="emisor_ciudad" placeholder="28001 Madrid"></div>
+        <div class="field"><label>Provincia</label><input type="text" id="emisor_provincia" placeholder="Madrid"></div>
+      </div>
+      <div class="row-2">
+        <div class="field"><label>Email</label><input type="email" id="emisor_email" placeholder="tu@email.com"></div>
+        <div class="field"><label>Teléfono</label><input type="tel" id="emisor_tel" placeholder="600 000 000"></div>
+      </div>
+    </div>
+
+    <!-- CLIENTE -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
+        </div>
+        <div class="card-title">Datos del cliente</div>
+      </div>
+      <div class="field"><label>Nombre / Razón social</label><input type="text" id="cliente_nombre" placeholder="Nombre del cliente"></div>
+      <div class="field"><label>NIF / CIF</label><input type="text" id="cliente_nif" placeholder="87654321B"></div>
+      <div class="field"><label>Dirección</label><input type="text" id="cliente_dir" placeholder="Calle, número, piso"></div>
+      <div class="row-2">
+        <div class="field"><label>CP y Ciudad</label><input type="text" id="cliente_ciudad" placeholder="08001 Barcelona"></div>
+        <div class="field"><label>Provincia</label><input type="text" id="cliente_provincia" placeholder="Barcelona"></div>
+      </div>
+      <div class="row-2">
+        <div class="field"><label>Email</label><input type="email" id="cliente_email" placeholder="cliente@email.com"></div>
+        <div class="field"><label>Teléfono</label><input type="tel" id="cliente_tel" placeholder="600 000 000"></div>
+      </div>
+    </div>
+
+    <!-- DATOS FACTURA -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        </div>
+        <div class="card-title">Datos de la factura</div>
+      </div>
+      <div class="row-2">
+        <div class="field"><label>Número</label><input type="text" id="factura_num" placeholder="2025-001"></div>
+        <div class="field"><label>Fecha emisión</label><input type="date" id="factura_fecha"></div>
+      </div>
+      <div class="row-2">
+        <div class="field"><label>Vencimiento</label><input type="date" id="factura_vence"></div>
+        <div class="field"><label>Forma de pago</label>
+          <select id="factura_pago">
+            <option>Transferencia bancaria</option>
+            <option>Efectivo</option>
+            <option>Cheque</option>
+            <option>Domiciliación bancaria</option>
+            <option>PayPal</option>
+          </select>
+        </div>
+      </div>
+      <div class="field"><label>IBAN (opcional)</label><input type="text" id="factura_iban" placeholder="ES00 0000 0000 0000 0000 0000"></div>
+    </div>
+
+    <!-- IMPUESTOS -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+        </div>
+        <div class="card-title">Impuestos</div>
+      </div>
+      <div class="field">
+        <label>Tipo de IVA</label>
+        <select id="iva_tipo" onchange="calcularTotales()">
+          <option value="21">21% — General</option>
+          <option value="10">10% — Reducido</option>
+          <option value="4">4% — Superreducido</option>
+          <option value="0">0% — Exento / intracomunitario</option>
+        </select>
+      </div>
+      <div class="field">
+        <div class="toggle-row" onclick="document.getElementById('irpf_toggle').click()">
+          <label>Aplicar retención IRPF</label>
+          <label class="toggle" onclick="event.stopPropagation()">
+            <input type="checkbox" id="irpf_toggle" onchange="toggleIRPF()">
+            <span class="slider"></span>
+          </label>
+        </div>
+        <div class="irpf-field" id="irpf_field">
+          <select id="irpf_tipo" onchange="calcularTotales()" style="margin-top:6px">
+            <option value="15">15% — General autónomos</option>
+            <option value="7">7% — Nuevos autónomos (1er año)</option>
+            <option value="19">19%</option>
+          </select>
+        </div>
+      </div>
+      <div class="info-box">
+        El IRPF solo aplica si eres autónomo y facturas a empresas o profesionales.
+      </div>
+    </div>
+
+    <!-- LÍNEAS -->
+    <div class="card span-2">
+      <div class="card-header">
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+        </div>
+        <div class="card-title">Conceptos y servicios</div>
+      </div>
+
+      <div class="lines-head">
+        <span>Descripción</span>
+        <span>Uds.</span>
+        <span>Precio/ud.</span>
+        <span style="text-align:right">Total</span>
+        <span></span>
+      </div>
+
+      <div id="lineas"></div>
+
+      <button class="btn-add-line" onclick="addLinea()">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Añadir concepto
+      </button>
+
+      <div class="totals-box">
+        <div class="total-row">
+          <span class="t-label">Base imponible</span>
+          <span class="t-val" id="t_base">0,00 €</span>
+        </div>
+        <div class="total-row">
+          <span class="t-label" id="label_iva">IVA (21%)</span>
+          <span class="t-val" id="t_iva">0,00 €</span>
+        </div>
+        <div class="total-row irpf" id="row_irpf" style="display:none">
+          <span class="t-label" id="label_irpf">IRPF (−15%)</span>
+          <span class="t-val" id="t_irpf">−0,00 €</span>
+        </div>
+        <div class="total-final">
+          <div class="tf-label">Total a pagar</div>
+          <span class="tf-amount" id="t_total">0,00 €</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- NOTAS -->
+    <div class="card span-2">
+      <div class="card-header">
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+        </div>
+        <div class="card-title">Notas adicionales <span style="font-weight:400;color:var(--slate-2)">(opcional)</span></div>
+      </div>
+      <textarea id="notas" placeholder="Condiciones de pago, observaciones, agradecimientos al cliente..."></textarea>
+    </div>
+
+  </div>
+</div>
+
+<div class="actions-bar">
+  <button class="btn-clear" onclick="limpiarFormulario()">Limpiar</button>
+  <button class="btn-pdf" onclick="generarPDF()">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+    Descargar factura PDF
+  </button>
+</div>
+
+<div class="toast" id="toast">
+  <span class="toast-dot"></span>
+  PDF descargado
+</div>
+
+<script>
+let lineas = [], ctr = 0;
+
+window.onload = () => {
+  const hoy = new Date();
+  document.getElementById('factura_fecha').value = hoy.toISOString().split('T')[0];
+  const v = new Date(hoy); v.setDate(v.getDate() + 30);
+  document.getElementById('factura_vence').value = v.toISOString().split('T')[0];
+  document.getElementById('factura_num').value = `${hoy.getFullYear()}-001`;
+  addLinea();
+};
+
+function addLinea() {
+  const id = ++ctr;
+  lineas.push(id);
+  const div = document.createElement('div');
+  div.className = 'line-row'; div.id = `linea_${id}`;
+  div.innerHTML = `
+    <input type="text" placeholder="Descripción del servicio" id="desc_${id}">
+    <input type="number" value="1" min="0" step="0.01" id="qty_${id}" oninput="calcularTotales()">
+    <input type="number" placeholder="0,00" min="0" step="0.01" id="precio_${id}" oninput="calcularTotales()">
+    <div class="line-total" id="ltotal_${id}">0,00 €</div>
+    <button class="btn-remove" onclick="removeLinea(${id})" title="Eliminar">×</button>
+  `;
+  document.getElementById('lineas').appendChild(div);
+  calcularTotales();
+}
+
+function removeLinea(id) {
+  if (lineas.length === 1) return;
+  const el = document.getElementById(`linea_${id}`);
+  el.style.opacity = '0'; el.style.transform = 'translateX(-6px)';
+  el.style.transition = 'all 0.18s ease';
+  setTimeout(() => { lineas = lineas.filter(l => l !== id); el.remove(); calcularTotales(); }, 180);
+}
+
+function calcularTotales() {
+  let base = 0;
+  lineas.forEach(id => {
+    const qty   = parseFloat(document.getElementById(`qty_${id}`)?.value)    || 0;
+    const price = parseFloat(document.getElementById(`precio_${id}`)?.value) || 0;
+    const tot   = qty * price;
+    const el    = document.getElementById(`ltotal_${id}`);
+    if (el) el.textContent = fmt(tot);
+    base += tot;
+  });
+
+  const ivaPct  = parseFloat(document.getElementById('iva_tipo').value);
+  const iva     = base * ivaPct / 100;
+  const irpfOn  = document.getElementById('irpf_toggle').checked;
+  const irpfPct = parseFloat(document.getElementById('irpf_tipo').value);
+  const irpf    = irpfOn ? base * irpfPct / 100 : 0;
+  const total   = base + iva - irpf;
+
+  document.getElementById('t_base').textContent  = fmt(base);
+  document.getElementById('t_iva').textContent   = fmt(iva);
+  document.getElementById('t_total').textContent = fmt(total);
+  document.getElementById('label_iva').textContent = `IVA (${ivaPct}%)`;
+
+  const rowIrpf = document.getElementById('row_irpf');
+  if (irpfOn) {
+    rowIrpf.style.display = 'flex';
+    document.getElementById('t_irpf').textContent     = `−${fmt(irpf)}`;
+    document.getElementById('label_irpf').textContent = `IRPF (−${irpfPct}%)`;
+  } else { rowIrpf.style.display = 'none'; }
+}
+
+function fmt(n) { return n.toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' €'; }
+
+function toggleIRPF() {
+  document.getElementById('irpf_field').classList.toggle('visible', document.getElementById('irpf_toggle').checked);
+  calcularTotales();
+}
+
+function limpiarFormulario() {
+  if (!confirm('¿Limpiar todos los datos?')) return;
+  document.querySelectorAll('input[type="text"],input[type="email"],input[type="tel"],input[type="number"],textarea').forEach(el => el.value = '');
+  lineas = []; ctr = 0;
+  document.getElementById('lineas').innerHTML = '';
+  window.onload();
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.querySelector('.toast-dot').nextSibling.textContent = ' ' + msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+function g(id) { return document.getElementById(id)?.value?.trim() || ''; }
+
+// ─────────────────────────────────────────────
+// PDF — DISEÑO BLANCO PROFESIONAL
+// ─────────────────────────────────────────────
+function generarPDF() {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ unit: 'mm', format: 'a4' });
+  const W = 210, M = 18, gutter = 120;
+
+  // Paleta clara profesional
+  const black   = [15,  27,  45];
+  const gray1   = [80,  90, 110];
+  const gray2   = [130, 140, 155];
+  const gray3   = [200, 205, 215];
+  const green   = [5,   150, 105];
+  const greenLt = [209, 250, 229];
+  const bg      = [248, 248, 247];
+  const white   = [255, 255, 255];
+  const rose    = [225, 29,  72];
+  const divider = [230, 230, 228];
+
+  let y = 0;
+
+  // ── FONDO BLANCO ──
+  doc.setFillColor(...white);
+  doc.rect(0, 0, W, 297, 'F');
+
+  // ── CABECERA SUPERIOR ── franja gris muy suave
+  doc.setFillColor(...bg);
+  doc.rect(0, 0, W, 52, 'F');
+
+  // Acento verde izquierdo
+  doc.setFillColor(...green);
+  doc.rect(0, 0, 3, 52, 'F');
+
+  // Separador cabecera
+  doc.setFillColor(...divider);
+  doc.rect(0, 52, W, 0.4, 'F');
+
+  // FACTURA — título
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(24);
+  doc.setTextColor(...black);
+  doc.text('FACTURA', M + 4, 22);
+
+  // Número de factura
+  const numFact = g('factura_num') || '—';
+  doc.setFillColor(...greenLt);
+  doc.roundedRect(M + 4, 26, 42, 8, 2, 2, 'F');
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(8);
+  doc.setTextColor(...green);
+  doc.text(`Nº  ${numFact}`, M + 7, 31.5);
+
+  // Fechas — derecha
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(7.5);
+  doc.setTextColor(...gray1);
+  doc.text('FECHA DE EMISIÓN', W - M, 16, { align: 'right' });
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(10);
+  doc.setTextColor(...black);
+  doc.text(g('factura_fecha') ? fmtFecha(g('factura_fecha')) : '—', W - M, 23, { align: 'right' });
+
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(7.5);
+  doc.setTextColor(...gray1);
+  doc.text('VENCIMIENTO', W - M, 33, { align: 'right' });
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(9);
+  doc.setTextColor(...gray2);
+  doc.text(g('factura_vence') ? fmtFecha(g('factura_vence')) : '—', W - M, 39.5, { align: 'right' });
+
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(7.5);
+  doc.setTextColor(...gray2);
+  doc.text(`FORMA DE PAGO: ${g('factura_pago') || 'Transferencia bancaria'}`.toUpperCase(), W - M, 46.5, { align: 'right' });
+
+  y = 64;
+
+  // ── EMISOR / CLIENTE ──
+  // Etiquetas
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(7);
+  doc.setTextColor(...green);
+  doc.text('DE', M, y);
+  doc.text('PARA', gutter, y);
+  y += 5;
+
+  // Nombres
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(11);
+  doc.setTextColor(...black);
+  const eName = g('emisor_nombre') || '—';
+  const cName = g('cliente_nombre') || '—';
+  doc.text(eName, M, y);
+  doc.text(cName, gutter, y);
+  y += 5.5;
+
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(8.5);
+  doc.setTextColor(...gray1);
+
+  const eLines = [
+    g('emisor_nif') ? `NIF: ${g('emisor_nif')}` : null,
+    g('emisor_dir'),
+    g('emisor_ciudad') + (g('emisor_provincia') ? `, ${g('emisor_provincia')}` : ''),
+    g('emisor_email'),
+    g('emisor_tel'),
+  ].filter(Boolean);
+
+  const cLines = [
+    g('cliente_nif') ? `NIF: ${g('cliente_nif')}` : null,
+    g('cliente_dir'),
+    g('cliente_ciudad') + (g('cliente_provincia') ? `, ${g('cliente_provincia')}` : ''),
+    g('cliente_email'),
+    g('cliente_tel'),
+  ].filter(Boolean);
+
+  const maxL = Math.max(eLines.length, cLines.length);
+  for (let i = 0; i < maxL; i++) {
+    doc.text(eLines[i] || '', M, y);
+    doc.text(cLines[i] || '', gutter, y);
+    y += 5;
+  }
+
+  y += 4;
+
+  // IBAN
+  if (g('factura_iban')) {
+    doc.setFillColor(...bg);
+    doc.roundedRect(M, y, W - M * 2, 7.5, 1.5, 1.5, 'F');
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(7.5);
+    doc.setTextColor(...gray2);
+    doc.text('IBAN:', M + 4, y + 4.8);
+    doc.setFont('helvetica', 'normal');
+    doc.setTextColor(...black);
+    doc.text(g('factura_iban'), M + 16, y + 4.8);
+    y += 13;
+  }
+
+  // Divisor
+  doc.setFillColor(...divider);
+  doc.rect(M, y, W - M * 2, 0.4, 'F');
+  y += 8;
+
+  // ── TABLA LÍNEAS ──
+  const cols = { desc: M, qty: 137, price: 157, total: W - M };
+  const thH = 8;
+
+  // Cabecera tabla
+  doc.setFillColor(...black);
+  doc.roundedRect(M, y, W - M * 2, thH, 2, 2, 'F');
+
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(7.5);
+  doc.setTextColor(...white);
+  doc.text('DESCRIPCIÓN', cols.desc + 4, y + 5.2);
+  doc.text('CANT.', cols.qty, y + 5.2, { align: 'right' });
+  doc.text('PRECIO', cols.price, y + 5.2, { align: 'right' });
+  doc.text('TOTAL', cols.total, y + 5.2, { align: 'right' });
+  y += thH;
+
+  let base = 0;
+  let alt = false;
+  lineas.forEach((id, idx) => {
+    const desc  = document.getElementById(`desc_${id}`)?.value?.trim() || '';
+    const qty   = parseFloat(document.getElementById(`qty_${id}`)?.value) || 0;
+    const price = parseFloat(document.getElementById(`precio_${id}`)?.value) || 0;
+    const tot   = qty * price;
+    base += tot;
+
+    if (alt) {
+      doc.setFillColor(...bg);
+      doc.rect(M, y, W - M * 2, 8, 'F');
+    }
+    alt = !alt;
+
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(8.5);
+    doc.setTextColor(...black);
+    const txtLines = doc.splitTextToSize(desc || '(sin descripción)', 104);
+    doc.text(txtLines, cols.desc + 4, y + 5.5);
+
+    doc.setTextColor(...gray1);
+    doc.text(fmtN(qty), cols.qty, y + 5.5, { align: 'right' });
+    doc.text(fmtN(price) + ' €', cols.price, y + 5.5, { align: 'right' });
+
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(...black);
+    doc.text(fmtN(tot) + ' €', cols.total, y + 5.5, { align: 'right' });
+    y += 8;
+  });
+
+  // Borde tabla
+  doc.setDrawColor(...divider);
+  doc.setLineWidth(0.3);
+  doc.roundedRect(M, y - lineas.length * 8 - thH, W - M * 2, lineas.length * 8 + thH, 2, 2, 'S');
+
+  y += 8;
+
+  // ── TOTALES ──
+  const ivaPct  = parseFloat(document.getElementById('iva_tipo').value);
+  const iva     = base * ivaPct / 100;
+  const irpfOn  = document.getElementById('irpf_toggle').checked;
+  const irpfPct = parseFloat(document.getElementById('irpf_tipo').value);
+  const irpf    = irpfOn ? base * irpfPct / 100 : 0;
+  const total   = base + iva - irpf;
+
+  const totX = 126;
+  const drawTRow = (label, val, bold, color) => {
+    doc.setFont('helvetica', bold ? 'bold' : 'normal');
+    doc.setFontSize(8.5);
+    doc.setTextColor(...(color || gray1));
+    doc.text(label, totX, y);
+    doc.setTextColor(...(color || (bold ? black : gray1)));
+    doc.text(val, W - M, y, { align: 'right' });
+    doc.setFillColor(...divider);
+    doc.rect(totX, y + 2, W - M - totX, 0.3, 'F');
+    y += 7.5;
+  };
+
+  drawTRow('Base imponible', fmtN(base) + ' €');
+  drawTRow(`IVA (${ivaPct}%)`, fmtN(iva) + ' €');
+  if (irpfOn) drawTRow(`IRPF (−${irpfPct}%)`, `−${fmtN(irpf)} €`, false, rose);
+
+  y += 2;
+
+  // Total final — caja sólida navy
+  doc.setFillColor(...black);
+  doc.roundedRect(totX - 4, y, W - M - totX + 4, 14, 2, 2, 'F');
+  doc.setFillColor(...green);
+  doc.roundedRect(totX - 4, y, 3, 14, 1.5, 1.5, 'F');
+  doc.rect(totX - 4 + 1.5, y, 1.5, 14, 'F');
+
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(7.5);
+  doc.setTextColor(180, 190, 200);
+  doc.text('TOTAL A PAGAR', totX + 3, y + 9);
+
+  doc.setFontSize(12);
+  doc.setTextColor(...white);
+  doc.text(fmtN(total) + ' €', W - M - 1, y + 9.5, { align: 'right' });
+  y += 20;
+
+  // ── NOTAS ──
+  const notas = g('notas');
+  if (notas) {
+    doc.setFillColor(...bg);
+    doc.roundedRect(M, y, W - M * 2, 22, 2, 2, 'F');
+    doc.setFillColor(...green);
+    doc.roundedRect(M, y, 3, 22, 1.5, 1.5, 'F');
+    doc.rect(M + 1.5, y, 1.5, 22, 'F');
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(7.5);
+    doc.setTextColor(...green);
+    doc.text('OBSERVACIONES', M + 7, y + 7);
+    doc.setFont('helvetica', 'normal');
+    doc.setTextColor(...gray1);
+    const nLines = doc.splitTextToSize(notas, W - M * 2 - 14);
+    doc.text(nLines, M + 7, y + 13);
+    y += 28;
+  }
+
+  // ── FOOTER ──
+  doc.setFillColor(...bg);
+  doc.rect(0, 283, W, 14, 'F');
+  doc.setFillColor(...divider);
+  doc.rect(0, 283, W, 0.3, 'F');
+  doc.setFillColor(...green);
+  doc.rect(0, 283, 3, 14, 'F');
+
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(7);
+  doc.setTextColor(...gray2);
+  doc.text('Generado con gestio.es — Herramientas gratuitas para autónomos y pymes de España', W / 2, 292, { align: 'center' });
+
+  const filename = `factura_${g('factura_num') || 'gestio'}.pdf`;
+  const blob = doc.output('blob');
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(() => { document.body.removeChild(a); URL.revokeObjectURL(url); }, 200);
+  showToast('PDF descargado');
+}
+
+function fmtN(n) {
+  return n.toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+
+function fmtFecha(s) {
+  const [y, m, d] = s.split('-'); return `${d}/${m}/${y}`;
+}
+</script>
+</body>
+</html>

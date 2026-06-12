@@ -1,0 +1,1069 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="color-scheme" content="light dark">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>gestio.es — Herramientas de gestión gratuitas para autónomos y pymes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300;12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  color-scheme: light dark;
+  --navy:    #0F1B2D;
+  --navy-2:  #1A2E48;
+  --navy-3:  #243b55;
+  --emerald: #059669;
+  --em-light:#D1FAE5;
+  --em-mid:  #6EE7B7;
+  --slate:   #64748B;
+  --slate-2: #94A3B8;
+  --slate-3: #CBD5E1;
+  --bg:      #FAFAF9;
+  --bg-2:    #F4F4F2;
+  --bg-3:    #EEECEA;
+  --ink:     #0F1B2D;
+  --white:   #FFFFFF;
+  --line:    #E5E4E0;
+  --amber:   #D97706;
+  --rose:    #E11D48;
+  /* card bg for light */
+  --card-bg: #FFFFFF;
+  --nav-bg:  rgba(250,250,249,0.88);
+  --how-bg:  #0F1B2D;
+  --trust-bg:#FFFFFF;
+  --btn-primary-bg:  #0F1B2D;
+  --btn-primary-txt: #ffffff;
+  --btn-secondary-bg:  #ffffff;
+  --btn-secondary-txt: #0F1B2D;
+  /* Siempre oscuro independientemente del modo */
+  --dark-surface: #0F1B2D;
+  --dark-surface-2: #1A2E48;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg:      #0D1117;
+    --bg-2:    #161B22;
+    --bg-3:    #1C2128;
+    --ink:     #E6EDF3;
+    --white:   #161B22;
+    --line:    rgba(255,255,255,0.08);
+    --slate:   #8B949E;
+    --slate-2: #6E7681;
+    --slate-3: #484F58;
+    --navy:    #E6EDF3;
+    --navy-2:  #C9D1D9;
+    --em-light:rgba(5,150,105,0.15);
+    --card-bg: #161B22;
+    --nav-bg:  rgba(13,17,23,0.92);
+    --how-bg:  #0D1117;
+    --trust-bg:#161B22;
+    --btn-primary-bg:  var(--emerald);
+    --btn-primary-txt: #fff;
+    --btn-secondary-bg:  rgba(255,255,255,0.07);
+    --btn-secondary-txt: #E6EDF3;
+    /* dark-surface: siempre navy oscuro, no cambia */
+    --dark-surface: #0F1B2D;
+    --dark-surface-2: #1A2E48;
+  }
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  overflow-x: hidden;
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+/* ── GRID BACKGROUND ─── */
+.grid-bg {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background-image:
+    linear-gradient(rgba(15,27,45,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(15,27,45,0.04) 1px, transparent 1px);
+  background-size: 48px 48px;
+  mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, black 40%, transparent 100%);
+}
+
+/* ── NAV ─── */
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 32px;
+  background: var(--nav-bg);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--line);
+  transition: box-shadow 0.3s;
+}
+
+nav.scrolled { box-shadow: 0 2px 24px rgba(15,27,45,0.07); }
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--navy);
+  letter-spacing: -0.5px;
+}
+
+.logo-icon {
+  width: 30px; height: 30px;
+  background: var(--dark-surface);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.logo-icon svg { width: 15px; height: 15px; }
+
+.logo-dot {
+  color: var(--emerald);
+}
+
+.nav-links {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.nav-pill {
+  padding: 7px 16px;
+  border-radius: 20px;
+  font-size: 13.5px;
+  font-weight: 500;
+  color: var(--slate);
+  text-decoration: none;
+  transition: color 0.2s, background 0.2s;
+  white-space: nowrap;
+}
+.nav-pill:hover { color: var(--navy); background: var(--bg-3); }
+
+.nav-cta {
+  padding: 8px 20px;
+  background: var(--dark-surface);
+  color: white;
+  border-radius: 20px;
+  font-size: 13.5px;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: background 0.2s, transform 0.15s;
+}
+.nav-cta:hover { background: var(--dark-surface-2); transform: translateY(-1px); }
+
+/* ── HERO ─── */
+.hero {
+  position: relative;
+  z-index: 1;
+  padding: 140px 32px 100px;
+  max-width: 1100px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 16px 6px 10px;
+  background: var(--em-light);
+  border: 1px solid rgba(5,150,105,0.2);
+  border-radius: 24px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--emerald);
+  margin-bottom: 32px;
+  animation: fadeUp 0.6s ease both;
+}
+
+.badge-dot {
+  width: 6px; height: 6px;
+  background: var(--emerald);
+  border-radius: 50%;
+  animation: livePulse 2s ease-in-out infinite;
+}
+
+@keyframes livePulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.4); opacity: 0.6; }
+}
+
+.hero h1 {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: clamp(40px, 7vw, 76px);
+  font-weight: 800;
+  color: var(--navy);
+  letter-spacing: -3px;
+  line-height: 1.02;
+  margin-bottom: 24px;
+  animation: fadeUp 0.6s ease 0.1s both;
+}
+
+.hero h1 em {
+  font-style: normal;
+  color: var(--emerald);
+  position: relative;
+}
+
+.hero h1 em::after {
+  content: '';
+  position: absolute;
+  bottom: 4px;
+  left: 0; right: 0;
+  height: 3px;
+  background: var(--em-mid);
+  border-radius: 2px;
+  transform: scaleX(0);
+  transform-origin: left;
+  animation: underlineIn 0.6s ease 0.7s both;
+}
+
+@keyframes underlineIn {
+  to { transform: scaleX(1); }
+}
+
+.hero p {
+  font-size: clamp(15px, 2vw, 18px);
+  color: var(--slate);
+  max-width: 520px;
+  margin: 0 auto 40px;
+  line-height: 1.7;
+  font-weight: 400;
+  animation: fadeUp 0.6s ease 0.2s both;
+}
+
+.hero-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+  animation: fadeUp 0.6s ease 0.3s both;
+}
+
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 28px;
+  background: var(--dark-surface);
+  color: white;
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+  box-shadow: 0 4px 20px rgba(15,27,45,0.2);
+}
+.btn-primary:hover {
+  background: var(--dark-surface-2);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 32px rgba(15,27,45,0.25);
+}
+
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 24px;
+  background: var(--card-bg);
+  color: var(--ink);
+  border: 1.5px solid var(--line);
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 500;
+  text-decoration: none;
+  transition: border-color 0.2s, transform 0.15s, box-shadow 0.2s;
+}
+.btn-secondary:hover {
+  border-color: var(--slate-3);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(15,27,45,0.08);
+}
+
+/* ── TRUST STRIP ─── */
+.trust-strip {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 32px;
+  padding: 24px 32px;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  background: var(--card-bg);
+  flex-wrap: wrap;
+}
+
+.trust-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--slate);
+}
+
+.trust-icon {
+  width: 20px; height: 20px;
+  color: var(--emerald);
+}
+
+/* ── TOOLS SECTION ─── */
+.section {
+  position: relative;
+  z-index: 1;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 80px 32px;
+}
+
+.section-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--emerald);
+  margin-bottom: 16px;
+}
+
+.section-label::before {
+  content: '';
+  width: 20px; height: 2px;
+  background: var(--emerald);
+  border-radius: 1px;
+}
+
+.section-title {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: clamp(28px, 4vw, 42px);
+  font-weight: 700;
+  color: var(--navy);
+  letter-spacing: -1.5px;
+  line-height: 1.1;
+  margin-bottom: 12px;
+}
+
+.section-sub {
+  font-size: 16px;
+  color: var(--slate);
+  margin-bottom: 48px;
+  max-width: 460px;
+}
+
+/* ── TOOLS GRID ─── */
+.tools-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+@media (max-width: 900px) { .tools-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 560px) { .tools-grid { grid-template-columns: 1fr; } }
+
+.tool-card {
+  position: relative;
+  background: var(--card-bg);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 28px 24px 24px;
+  text-decoration: none;
+  color: inherit;
+  transition: transform 0.25s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.25s ease, border-color 0.2s;
+  overflow: hidden;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.tool-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--emerald), #34D399);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.3s ease;
+}
+
+.tool-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 20px 60px rgba(15,27,45,0.1);
+  border-color: var(--slate-3);
+}
+.tool-card:hover::before { transform: scaleX(1); }
+
+.tool-card.featured {
+  /* igual que el resto, sin distinción */
+}
+
+.tool-card.coming-soon {
+  opacity: 0.55;
+  cursor: default;
+}
+.tool-card.coming-soon:hover { transform: none; box-shadow: none; }
+.tool-card.coming-soon::before { display: none; }
+
+.tool-icon {
+  width: 44px; height: 44px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.tool-icon.em  { background: var(--em-light); }
+.tool-icon.ink { background: rgba(255,255,255,0.1); }
+.tool-icon.sl  { background: #F0FDF9; }
+.tool-icon.am  { background: #FFFBEB; }
+.tool-icon.ro  { background: #FFF1F2; }
+.tool-icon svg { width: 20px; height: 20px; }
+
+.tool-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+}
+
+.tool-name {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: -0.4px;
+  color: inherit;
+}
+
+.tool-desc {
+  font-size: 13.5px;
+  color: var(--slate);
+  line-height: 1.5;
+}
+
+
+
+.tool-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 20px;
+  margin-top: auto;
+  align-self: flex-start;
+}
+
+.tag-live    { background: var(--em-light); color: var(--emerald); }
+.tag-soon    { background: var(--bg-3); color: var(--slate); }
+.tag-gratis  { background: var(--em-light); color: var(--emerald); }
+
+.tag-dot { width: 5px; height: 5px; background: currentColor; border-radius: 50%; }
+
+.tool-arrow {
+  position: absolute;
+  top: 24px; right: 24px;
+  width: 28px; height: 28px;
+  border-radius: 8px;
+  background: var(--bg-2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--slate);
+  transition: background 0.2s, color 0.2s, transform 0.2s;
+}
+.tool-card:hover .tool-arrow {
+  background: var(--emerald);
+  color: white;
+  transform: rotate(-45deg);
+}
+.tool-card.featured .tool-arrow {
+  background: rgba(255,255,255,0.1);
+  color: white;
+}
+.tool-card.featured:hover .tool-arrow { background: var(--emerald); }
+
+/* ── HOW IT WORKS ─── */
+.how-section {
+  position: relative;
+  z-index: 1;
+  background: var(--dark-surface);
+  padding: 80px 32px;
+  overflow: hidden;
+}
+
+.how-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.how-section .section-label { color: var(--em-mid); }
+.how-section .section-label::before { background: var(--em-mid); }
+.how-section .section-title { color: white; }
+.how-section .section-sub { color: rgba(255,255,255,0.5); }
+
+.how-bg {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+  background-size: 48px 48px;
+  pointer-events: none;
+}
+
+.how-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+@media (max-width: 720px) { .how-grid { grid-template-columns: 1fr; } }
+
+.how-card {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 16px;
+  padding: 28px 24px;
+  position: relative;
+  transition: background 0.2s, border-color 0.2s;
+}
+.how-card:hover {
+  background: rgba(255,255,255,0.07);
+  border-color: rgba(255,255,255,0.15);
+}
+
+.how-num {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 48px;
+  font-weight: 800;
+  color: rgba(255,255,255,0.07);
+  line-height: 1;
+  margin-bottom: 20px;
+  letter-spacing: -2px;
+}
+
+.how-title {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 17px;
+  font-weight: 700;
+  color: white;
+  margin-bottom: 8px;
+  letter-spacing: -0.3px;
+}
+
+.how-desc {
+  font-size: 13.5px;
+  color: rgba(255,255,255,0.5);
+  line-height: 1.6;
+}
+
+.how-step-icon {
+  width: 36px; height: 36px;
+  background: rgba(5,150,105,0.15);
+  border: 1px solid rgba(5,150,105,0.25);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+.how-step-icon svg { width: 17px; height: 17px; color: var(--em-mid); }
+
+/* ── FAQ ─── */
+.faq-section {
+  position: relative;
+  z-index: 1;
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 80px 32px;
+}
+
+.faq-item {
+  border-bottom: 1px solid var(--line);
+}
+
+.faq-q {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 0;
+  background: none;
+  border: none;
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--navy);
+  cursor: pointer;
+  text-align: left;
+  gap: 16px;
+  transition: color 0.2s;
+}
+.faq-q:hover { color: var(--emerald); }
+
+.faq-icon {
+  width: 24px; height: 24px;
+  border-radius: 50%;
+  background: var(--bg-3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: background 0.2s, transform 0.3s;
+}
+.faq-item.open .faq-icon {
+  background: var(--emerald);
+  transform: rotate(45deg);
+}
+.faq-icon svg { width: 12px; height: 12px; color: var(--slate); }
+.faq-item.open .faq-icon svg { color: white; }
+
+.faq-a {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s cubic-bezier(0.4,0,0.2,1), padding 0.3s ease;
+  font-size: 14.5px;
+  color: var(--slate);
+  line-height: 1.7;
+  padding: 0;
+}
+.faq-item.open .faq-a {
+  max-height: 300px;
+  padding-bottom: 20px;
+}
+
+/* ── CTA BAND ─── */
+.cta-band {
+  position: relative;
+  z-index: 1;
+  background: var(--emerald);
+  overflow: hidden;
+}
+
+.cta-band-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 64px 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 32px;
+  flex-wrap: wrap;
+}
+
+.cta-band-bg {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.07) 1px, transparent 1px);
+  background-size: 40px 40px;
+  pointer-events: none;
+}
+
+.cta-band h2 {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: clamp(24px, 4vw, 38px);
+  font-weight: 700;
+  color: white;
+  letter-spacing: -1.5px;
+  line-height: 1.1;
+}
+
+.cta-band p {
+  font-size: 15px;
+  color: rgba(255,255,255,0.75);
+  margin-top: 8px;
+}
+
+.btn-white {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 28px;
+  background: white;
+  color: var(--emerald);
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 700;
+  text-decoration: none;
+  transition: transform 0.15s, box-shadow 0.2s;
+  white-space: nowrap;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+}
+.btn-white:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+}
+
+/* ── FOOTER ─── */
+footer {
+  position: relative;
+  z-index: 1;
+  background: var(--dark-surface);
+  color: rgba(255,255,255,0.45);
+  text-align: center;
+  padding: 28px 32px;
+  font-size: 13px;
+}
+
+footer a { color: rgba(255,255,255,0.6); text-decoration: none; }
+footer a:hover { color: white; }
+
+/* ── SCROLL REVEAL ─── */
+.reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.6s ease, transform 0.6s cubic-bezier(0.34,1.3,0.64,1);
+}
+.reveal.visible { opacity: 1; transform: translateY(0); }
+.reveal-delay-1 { transition-delay: 0.1s; }
+.reveal-delay-2 { transition-delay: 0.2s; }
+.reveal-delay-3 { transition-delay: 0.3s; }
+
+/* ── ANIMATIONS ─── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── RESPONSIVE ─── */
+@media (max-width: 640px) {
+  nav { padding: 0 16px; }
+  .hero { padding: 100px 16px 60px; }
+  .section { padding: 60px 16px; }
+  .faq-section { padding: 60px 16px; }
+  .trust-strip { gap: 20px; padding: 20px 16px; }
+  .cta-band-inner { flex-direction: column; align-items: flex-start; }
+}
+
+/* ── CURSOR GLOW ─── */
+.cursor-glow {
+  position: fixed;
+  width: 400px;
+  height: 400px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(5,150,105,0.08) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+  transform: translate(-50%, -50%);
+  transition: left 0.4s ease, top 0.4s ease;
+}
+</style>
+</head>
+<body>
+
+<div class="grid-bg"></div>
+<div class="cursor-glow" id="cursorGlow"></div>
+
+<!-- NAV -->
+<nav id="mainNav">
+  <a href="#" class="logo">
+    <div class="logo-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+    </div>
+    gestio<span class="logo-dot">.es</span>
+  </a>
+  <div class="nav-links">
+    <a href="#herramientas" class="nav-pill">Herramientas</a>
+    <a href="#herramientas" class="nav-cta">Empezar gratis →</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-badge">
+    <span class="badge-dot"></span>
+    Herramienta #1 disponible ahora
+  </div>
+  <h1>Gestiona tu empresa<br>sin <em>complicaciones</em></h1>
+  <p>Facturas, nóminas, albaranes y más. Herramientas gratuitas para autónomos y pymes españolas. Sin registro. Sin letra pequeña.</p>
+  <div class="hero-actions">
+    <a href="facturas.html" class="btn-primary">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+      Crear factura gratis
+    </a>
+    <a href="#herramientas" class="btn-secondary">
+      Ver todas las herramientas
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+    </a>
+  </div>
+</section>
+
+<!-- TRUST STRIP -->
+<div class="trust-strip">
+  <div class="trust-item">
+    <svg class="trust-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+    Sin registro requerido
+  </div>
+  <div class="trust-item">
+    <svg class="trust-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+    Listo en menos de 2 minutos
+  </div>
+  <div class="trust-item">
+    <svg class="trust-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+    100% gratuito siempre
+  </div>
+  <div class="trust-item">
+    <svg class="trust-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+    Tus datos no se guardan
+  </div>
+  <div class="trust-item">
+    <svg class="trust-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+    Diseñado para autónomos
+  </div>
+</div>
+
+<!-- TOOLS SECTION -->
+<section class="section" id="herramientas">
+  <div class="reveal">
+    <div class="section-label">Herramientas</div>
+    <h2 class="section-title">Todo lo que necesitas,<br>sin nada que no uses</h2>
+    <p class="section-sub">Cada herramienta hace una cosa y la hace bien. Sin dashboards infinitos ni curvas de aprendizaje.</p>
+  </div>
+
+  <div class="tools-grid">
+
+    <!-- Factura - LIVE -->
+    <a href="facturas.html" class="tool-card featured reveal reveal-delay-1">
+      <div class="tool-arrow">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </div>
+      <div class="tool-icon ink">
+        <svg viewBox="0 0 24 24" fill="none" stroke="var(--em-mid)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+      </div>
+      <div class="tool-meta">
+        <div class="tool-name">Generador de facturas</div>
+        <div class="tool-desc">Crea facturas profesionales con IVA e IRPF. Descarga en PDF al instante.</div>
+      </div>
+      <span class="tool-tag tag-live"><span class="tag-dot"></span>Disponible</span>
+    </a>
+
+    <!-- Nómina -->
+    <a href="nominas.html" class="tool-card featured reveal reveal-delay-2">
+      <div class="tool-icon sl">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/><line x1="12" y1="12" x2="12" y2="16"/><line x1="10" y1="14" x2="14" y2="14"/></svg>
+      </div>
+      <div class="tool-meta">
+        <div class="tool-name">Calculadora de nóminas</div>
+        <div class="tool-desc">Calcula nóminas con IRPF, Seguridad Social y deducciones. Exporta al PDF.</div>
+      </div>
+      <div class="tool-arrow">→</div>
+    </a>
+
+    <!-- Albarán -->
+    <div class="tool-card coming-soon reveal reveal-delay-3">
+      <div class="tool-icon am">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#D97706" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/></svg>
+      </div>
+      <div class="tool-meta">
+        <div class="tool-name">Generador de albaranes</div>
+        <div class="tool-desc">Albaranes de entrega rápidos y profesionales, listos para firmar.</div>
+      </div>
+      <span class="tool-tag tag-soon">Próximamente</span>
+    </div>
+
+    <!-- Control de gastos -->
+    <div class="tool-card coming-soon reveal">
+      <div class="tool-icon ro">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#E11D48" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+      </div>
+      <div class="tool-meta">
+        <div class="tool-name">Control de gastos</div>
+        <div class="tool-desc">Registra y categoriza gastos deducibles. Exporta el resumen trimestral.</div>
+      </div>
+      <span class="tool-tag tag-soon">Próximamente</span>
+    </div>
+
+    <!-- Gestor de flota -->
+    <div class="tool-card coming-soon reveal reveal-delay-1">
+      <div class="tool-icon em">
+        <svg viewBox="0 0 24 24" fill="none" stroke="var(--emerald)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13" rx="2"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+      </div>
+      <div class="tool-meta">
+        <div class="tool-name">Gestor de turnos / flota</div>
+        <div class="tool-desc">Planifica turnos y rutas de tu equipo. Ideal para pequeñas flotas.</div>
+      </div>
+      <span class="tool-tag tag-soon">Próximamente</span>
+    </div>
+
+    <!-- Presupuestos -->
+    <div class="tool-card coming-soon reveal reveal-delay-2">
+      <div class="tool-icon sl">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+      </div>
+      <div class="tool-meta">
+        <div class="tool-name">Generador de presupuestos</div>
+        <div class="tool-desc">Presupuestos profesionales que se convierten en factura con un clic.</div>
+      </div>
+      <span class="tool-tag tag-soon">Próximamente</span>
+    </div>
+
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how-section">
+  <div class="how-bg"></div>
+  <div class="how-inner">
+    <div class="reveal">
+      <div class="section-label">¿Cómo funciona?</div>
+      <h2 class="section-title" style="color:white">Tres pasos. Ni uno más.</h2>
+      <p class="section-sub">Sin tutoriales, sin manuales. Si puedes rellenar un formulario, puedes usar gestio.es.</p>
+    </div>
+
+    <div class="how-grid">
+      <div class="how-card reveal reveal-delay-1">
+        <div class="how-num">01</div>
+        <div class="how-step-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+        </div>
+        <div class="how-title">Rellena los datos</div>
+        <div class="how-desc">Tus datos, los del cliente, los servicios y el tipo de IVA. Campos claros y directos.</div>
+      </div>
+      <div class="how-card reveal reveal-delay-2">
+        <div class="how-num">02</div>
+        <div class="how-step-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        </div>
+        <div class="how-title">Revisa la vista previa</div>
+        <div class="how-desc">Los totales se calculan solos. IRPF, IVA, base imponible — todo al instante.</div>
+      </div>
+      <div class="how-card reveal reveal-delay-3">
+        <div class="how-num">03</div>
+        <div class="how-step-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        </div>
+        <div class="how-title">Descarga el PDF</div>
+        <div class="how-desc">Un PDF limpio, profesional, listo para enviar. Gratis, sin marcas de agua.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="faq-section">
+  <div class="reveal">
+    <div class="section-label">FAQ</div>
+    <h2 class="section-title">Preguntas frecuentes</h2>
+    <p class="section-sub" style="margin-bottom:40px">Respuestas cortas a las dudas más comunes.</p>
+  </div>
+
+  <div class="faq-item reveal">
+    <button class="faq-q" onclick="toggleFaq(this)">
+      ¿Es realmente gratis? ¿Sin trampas?
+      <div class="faq-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
+    </button>
+    <div class="faq-a">Sí, totalmente gratuito. El modelo de negocio es AdSense: hay anuncios en la página, pero las herramientas son 100% funcionales sin pagar nada ni registrarse. Jamás.</div>
+  </div>
+
+  <div class="faq-item reveal">
+    <button class="faq-q" onclick="toggleFaq(this)">
+      ¿Guardáis mis datos o facturas?
+      <div class="faq-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
+    </button>
+    <div class="faq-a">No. Todo funciona en tu navegador. Ni tus datos ni tus facturas se envían a ningún servidor. Al cerrar la pestaña desaparecen por completo.</div>
+  </div>
+
+  <div class="faq-item reveal">
+    <button class="faq-q" onclick="toggleFaq(this)">
+      ¿Las facturas son válidas legalmente en España?
+      <div class="faq-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
+    </button>
+    <div class="faq-a">Sí. El generador incluye todos los campos obligatorios según la normativa española: número de factura, fecha, NIF emisor y receptor, descripción, base imponible, tipo de IVA e importe total. Eres responsable de que los datos sean correctos.</div>
+  </div>
+
+  <div class="faq-item reveal">
+    <button class="faq-q" onclick="toggleFaq(this)">
+      ¿Cuándo estarán las demás herramientas?
+      <div class="faq-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
+    </button>
+    <div class="faq-a">Estamos desarrollando la calculadora de nóminas como segunda herramienta. El objetivo es lanzar una nueva cada pocas semanas, siempre manteniendo el mismo estándar de calidad y cero fricciones.</div>
+  </div>
+
+</section>
+
+<!-- CTA BAND -->
+<div class="cta-band">
+  <div class="cta-band-bg"></div>
+  <div class="cta-band-inner">
+    <div>
+      <h2>Tu primera factura,<br>lista en 2 minutos.</h2>
+      <p>Sin cuenta. Sin tarjeta. Solo tú y tu factura.</p>
+    </div>
+    <a href="facturas.html" class="btn-white">
+      Generar factura gratis →
+    </a>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <p>© 2025 gestio.es — Herramientas gratuitas para autónomos y pymes &nbsp;·&nbsp; <a href="#">Aviso legal</a> &nbsp;·&nbsp; <a href="#">Privacidad</a></p>
+</footer>
+
+<script>
+// Scroll nav shadow
+window.addEventListener('scroll', () => {
+  document.getElementById('mainNav').classList.toggle('scrolled', window.scrollY > 10);
+});
+
+// Cursor glow
+document.addEventListener('mousemove', e => {
+  const g = document.getElementById('cursorGlow');
+  g.style.left = e.clientX + 'px';
+  g.style.top  = e.clientY + 'px';
+});
+
+// Scroll reveal
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } });
+}, { threshold: 0.1 });
+
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+// FAQ
+function toggleFaq(btn) {
+  const item = btn.parentElement;
+  const isOpen = item.classList.contains('open');
+  document.querySelectorAll('.faq-item.open').forEach(el => el.classList.remove('open'));
+  if (!isOpen) item.classList.add('open');
+}
+
+// Smooth scroll for anchor links
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    const target = document.querySelector(a.getAttribute('href'));
+    if (target) { e.preventDefault(); target.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+  });
+});
+</script>
+</body>
+</html>
