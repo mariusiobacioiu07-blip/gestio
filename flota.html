@@ -1,0 +1,1913 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="color-scheme" content="light dark">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gestor de Turnos y Flota gratis para autónomos — gestio.es</title>
+<meta name="description" content="Planifica turnos, asigna rutas y gestiona tu flota de vehículos. Gratis, sin registro, 100% en tu navegador.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://gestio.es/flota.html">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://gestio.es/flota.html">
+<meta property="og:title" content="Gestor de Turnos y Flota gratis — gestio.es">
+<meta property="og:description" content="Planifica turnos y rutas de tu equipo. Ideal para pequeñas flotas. Gratis, sin registro.">
+<meta property="og:locale" content="es_ES">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,700;12..96,800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  color-scheme: light dark;
+  --navy:    #0F1B2D;
+  --navy-2:  #1A2E48;
+  --emerald: #059669;
+  --em-light:#D1FAE5;
+  --em-mid:  #6EE7B7;
+  --slate:   #64748B;
+  --slate-2: #94A3B8;
+  --slate-3: #CBD5E1;
+  --bg:      #FAFAF9;
+  --bg-2:    #F4F4F2;
+  --bg-3:    #EEECEA;
+  --ink:     #0F1B2D;
+  --white:   #FFFFFF;
+  --line:    #E5E4E0;
+  --line-2:  #D0CEC9;
+  --rose:    #E11D48;
+  --amber:   #D97706;
+  --amber-light: #FEF3C7;
+  --violet:  #7C3AED;
+  --violet-light: #EDE9FE;
+  --r:       10px;
+  --r-lg:    14px;
+  --card-bg: #FFFFFF;
+  --card-ink: #0F1B2D;
+  --card-slate: #64748B;
+  --card-line: #E5E4E0;
+  --nav-bg:  rgba(250,250,249,0.92);
+  --input-bg:   #FFFFFF;
+  --input-ink:  #0F1B2D;
+  --input-line: #E5E4E0;
+  --input-ph:   #CBD5E1;
+  --dark-surface: #0F1B2D;
+  --dark-surface-2: #1A2E48;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg:      #0D1117;
+    --bg-2:    #161B22;
+    --bg-3:    #1C2128;
+    --ink:     #E6EDF3;
+    --white:   #161B22;
+    --line:    rgba(255,255,255,0.08);
+    --line-2:  rgba(255,255,255,0.13);
+    --slate:   #8B949E;
+    --slate-2: #6E7681;
+    --slate-3: #484F58;
+    --navy:    #E6EDF3;
+    --navy-2:  #C9D1D9;
+    --em-light:rgba(5,150,105,0.15);
+    --amber-light: rgba(217,119,6,0.15);
+    --violet-light: rgba(124,58,237,0.15);
+    --card-bg: #FFFFFF;
+    --card-ink: #0F1B2D;
+    --card-slate: #64748B;
+    --card-line: #E5E4E0;
+    --nav-bg:  rgba(13,17,23,0.92);
+    --input-bg:   #FFFFFF;
+    --input-ink:  #0F1B2D;
+    --input-line: #D0CED9;
+    --input-ph:   #9CA3AF;
+    --dark-surface: #0F1B2D;
+    --dark-surface-2: #1A2E48;
+  }
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  min-height: 100vh;
+  font-size: 14px;
+  line-height: 1.5;
+  overflow-x: hidden;
+}
+
+/* ── NAV ─── */
+nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 28px;
+  background: var(--nav-bg);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--line);
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  text-decoration: none;
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--navy);
+  letter-spacing: -0.4px;
+}
+
+.logo-icon {
+  width: 28px; height: 28px;
+  background: var(--dark-surface);
+  border-radius: 7px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.logo-icon svg { width: 14px; height: 14px; }
+
+.nav-right { display: flex; align-items: center; gap: 8px; }
+
+.nav-link {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--slate);
+  text-decoration: none;
+  padding: 6px 14px;
+  border-radius: 20px;
+  transition: color 0.2s, background 0.2s;
+}
+.nav-link:hover { color: var(--navy); background: var(--bg-3); }
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11.5px;
+  font-weight: 600;
+  padding: 4px 12px;
+  border-radius: 20px;
+}
+.badge-em {
+  background: var(--em-light);
+  color: var(--emerald);
+  border: 1px solid rgba(5,150,105,0.2);
+}
+
+/* ── PAGE HEADER ─── */
+.page-header {
+  padding: 40px 28px 32px;
+  max-width: 1060px;
+  margin: 0 auto;
+  animation: fadeUp 0.5s ease both;
+}
+
+.page-header h1 {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: clamp(26px, 4vw, 38px);
+  font-weight: 800;
+  color: var(--navy);
+  letter-spacing: -1.5px;
+  line-height: 1.1;
+  margin-bottom: 8px;
+}
+
+.page-header p {
+  font-size: 14.5px;
+  color: var(--slate);
+}
+
+/* ── TABS ─── */
+.tabs-bar {
+  max-width: 1060px;
+  margin: 0 auto;
+  padding: 0 20px 16px;
+  display: flex;
+  gap: 6px;
+}
+
+.tab-btn {
+  padding: 8px 18px;
+  border-radius: 20px;
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  border: 1.5px solid var(--line);
+  background: var(--card-bg);
+  color: var(--slate);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.tab-btn:hover { border-color: var(--emerald); color: var(--emerald); }
+.tab-btn.active {
+  background: var(--dark-surface);
+  color: white;
+  border-color: var(--dark-surface);
+}
+
+/* ── WRAP ─── */
+.wrap {
+  max-width: 1060px;
+  margin: 0 auto;
+  padding: 0 20px 120px;
+}
+
+.tab-pane { display: none; }
+.tab-pane.active { display: block; }
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.span-2 { grid-column: 1 / -1; }
+
+/* ── CARD ─── */
+.card {
+  background: var(--card-bg);
+  border: 1px solid var(--card-line);
+  border-radius: var(--r-lg);
+  padding: 22px 20px;
+  color: var(--card-ink);
+  transition: border-color 0.2s, box-shadow 0.25s;
+  animation: cardIn 0.5s ease both;
+}
+.card:hover {
+  border-color: #C8C6C0;
+  box-shadow: 0 4px 24px rgba(15,27,45,0.08);
+}
+
+@keyframes cardIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 18px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--card-line);
+}
+
+.card-header-left { display: flex; align-items: center; gap: 10px; }
+
+.card-icon {
+  width: 32px; height: 32px;
+  background: #F4F4F2;
+  border: 1px solid var(--card-line);
+  border-radius: 9px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.card-icon svg { width: 14px; height: 14px; color: var(--card-ink); }
+
+.card-title {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--card-ink);
+  letter-spacing: -0.2px;
+}
+.card-sub { font-size: 11.5px; color: var(--card-slate); margin-top: 2px; font-weight: 400; }
+
+/* ── FIELDS ─── */
+.field { margin-bottom: 10px; }
+.field:last-child { margin-bottom: 0; }
+
+label {
+  display: block;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--card-slate);
+  margin-bottom: 5px;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  line-height: 1.3;
+}
+
+input[type="text"],
+input[type="date"],
+input[type="time"],
+input[type="number"],
+select,
+textarea {
+  width: 100%;
+  padding: 9px 12px;
+  border: 1.5px solid var(--input-line, var(--line));
+  border-radius: var(--r);
+  font-family: 'Inter', sans-serif;
+  font-size: 13.5px;
+  font-weight: 400;
+  color: var(--input-ink, var(--ink));
+  background: var(--input-bg);
+  transition: border-color 0.2s, box-shadow 0.2s;
+  -webkit-appearance: none;
+  appearance: none;
+}
+input::placeholder { color: var(--input-ph, var(--slate-3)); }
+
+input:focus, select:focus, textarea:focus {
+  border-color: var(--emerald);
+  box-shadow: 0 0 0 3px rgba(5,150,105,0.1);
+  outline: none;
+}
+
+select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2394A3B8' stroke-width='2.5'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 11px center;
+  background-color: var(--input-bg);
+  padding-right: 34px;
+  cursor: pointer;
+}
+
+.row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+
+.info-box {
+  background: #D1FAE5;
+  border: 1px solid rgba(5,150,105,0.2);
+  border-radius: var(--r);
+  padding: 9px 12px;
+  font-size: 12px;
+  color: #065F46;
+  margin-top: 8px;
+  line-height: 1.55;
+}
+.info-box.amber {
+  background: var(--amber-light);
+  border-color: rgba(217,119,6,0.25);
+  color: #92400E;
+}
+.info-box.violet {
+  background: var(--violet-light);
+  border-color: rgba(124,58,237,0.25);
+  color: #5B21B6;
+}
+
+/* ── CONDUCTOR / VEHÍCULO CARD ─── */
+.items-list { display: flex; flex-direction: column; gap: 10px; }
+
+.item-card {
+  border: 1.5px solid var(--card-line);
+  border-radius: var(--r-lg);
+  padding: 14px;
+  background: #FBFBFA;
+  animation: fadeSlideIn 0.22s ease;
+  position: relative;
+}
+@media (prefers-color-scheme: dark) { .item-card { background: #1C2128; } }
+
+@keyframes fadeSlideIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.item-card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.item-num {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--card-slate);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+}
+
+.btn-remove {
+  width: 30px; height: 30px;
+  border: 1.5px solid var(--card-line);
+  border-radius: 8px;
+  background: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--slate-2);
+  font-size: 16px;
+  transition: all 0.2s;
+  padding: 0; flex-shrink: 0;
+}
+.btn-remove:hover { background: #FFF1F2; border-color: #FECDD3; color: var(--rose); }
+
+.item-row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 8px; }
+.item-row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px; }
+.item-row-full { margin-bottom: 8px; }
+.item-card .field { margin-bottom: 0; }
+
+/* ── TURNO CARD ─── */
+.turno-card {
+  border: 1.5px solid var(--card-line);
+  border-radius: var(--r-lg);
+  padding: 14px;
+  background: #FBFBFA;
+  animation: fadeSlideIn 0.22s ease;
+  position: relative;
+}
+@media (prefers-color-scheme: dark) { .turno-card { background: #1C2128; } }
+
+.turno-card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.turno-num {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--card-slate);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+}
+
+.turno-row-4 { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 8px; margin-bottom: 8px; }
+.turno-row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 8px; }
+.turno-row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px; }
+.turno-row-full { margin-bottom: 8px; }
+.turno-card .field { margin-bottom: 0; }
+
+.turno-result {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px dashed var(--card-line);
+  font-size: 12px;
+}
+.turno-result .tr-item { display: flex; flex-direction: column; gap: 2px; }
+.turno-result .tr-label { color: var(--card-slate); font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.6px; }
+.turno-result .tr-val { font-weight: 700; font-variant-numeric: tabular-nums; color: var(--card-ink); }
+.turno-result .tr-val.em { color: var(--emerald); }
+.turno-result .tr-val.am { color: var(--amber); }
+
+/* Estado badge */
+.estado-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 10px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 600;
+}
+.estado-badge.programado { background: var(--em-light); color: var(--emerald); }
+.estado-badge.en-curso   { background: var(--amber-light); color: var(--amber); }
+.estado-badge.completado { background: #F0FDF4; color: #166534; }
+.estado-badge.cancelado  { background: #FFF1F2; color: var(--rose); }
+
+/* ── RESUMEN TURNOS ─── */
+.resumen-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin-bottom: 16px;
+}
+.resumen-stat {
+  background: #F4F4F2;
+  border: 1px solid var(--card-line);
+  border-radius: var(--r);
+  padding: 12px 14px;
+  text-align: center;
+}
+@media (prefers-color-scheme: dark) { .resumen-stat { background: #1C2128; border-color: rgba(255,255,255,0.08); } }
+.resumen-stat .rs-val {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--card-ink);
+  letter-spacing: -1px;
+  line-height: 1;
+}
+.resumen-stat .rs-label { font-size: 11px; color: var(--card-slate); margin-top: 3px; }
+
+/* ── CALENDARIO SEMANAL ─── */
+.week-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  gap: 10px;
+}
+.week-label {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--card-ink);
+  letter-spacing: -0.3px;
+}
+.week-btn {
+  width: 32px; height: 32px;
+  border: 1.5px solid var(--card-line);
+  border-radius: 8px;
+  background: var(--card-bg);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--slate);
+  transition: all 0.2s;
+}
+.week-btn:hover { border-color: var(--emerald); color: var(--emerald); }
+
+.week-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+  margin-bottom: 16px;
+}
+.day-col { min-width: 0; }
+.day-head {
+  text-align: center;
+  font-size: 10.5px;
+  font-weight: 700;
+  color: var(--card-slate);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 4px 2px 6px;
+}
+.day-head .day-num {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--card-ink);
+  margin-top: 2px;
+}
+.day-head.today .day-num {
+  background: var(--emerald);
+  color: white;
+  border-radius: 50%;
+  width: 24px; height: 24px;
+  line-height: 24px;
+  margin: 2px auto 0;
+}
+
+.day-cell {
+  min-height: 50px;
+  border: 1px solid var(--card-line);
+  border-radius: var(--r);
+  padding: 3px;
+  background: var(--input-bg);
+}
+.day-cell.has-turnos { border-color: rgba(5,150,105,0.3); }
+
+.mini-turno {
+  background: var(--em-light);
+  border-left: 3px solid var(--emerald);
+  border-radius: 3px;
+  padding: 2px 4px;
+  font-size: 9.5px;
+  font-weight: 600;
+  color: #065F46;
+  margin-bottom: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: pointer;
+}
+.mini-turno.am {
+  background: var(--amber-light);
+  border-color: var(--amber);
+  color: #92400E;
+}
+.mini-turno.ro {
+  background: #FFF1F2;
+  border-color: var(--rose);
+  color: #9F1239;
+}
+
+/* ── SUMMARY TABLE ─── */
+.summary-table { width: 100%; border-collapse: collapse; margin-bottom: 16px; }
+.summary-table th, .summary-table td {
+  text-align: right;
+  padding: 8px 6px;
+  font-size: 12px;
+  border-bottom: 1px solid var(--card-line);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.summary-table th:first-child, .summary-table td:first-child { text-align: left; white-space: normal; }
+.summary-table th {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--card-slate);
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  border-bottom: 1.5px solid var(--card-line);
+}
+.summary-table tbody tr:last-child td { border-bottom: none; }
+.summary-table-wrap { overflow-x: auto; }
+
+/* ── TOTALS ─── */
+.totals-box {
+  margin-top: 4px;
+  background: #F4F4F2;
+  border: 1.5px solid #E5E4E0;
+  border-radius: var(--r-lg);
+  padding: 18px 20px;
+}
+@media (prefers-color-scheme: dark) { .totals-box { background: #1C2128; border-color: rgba(255,255,255,0.08); } }
+
+.total-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 5px 0;
+  border-bottom: 1px solid var(--card-line);
+}
+.total-row:last-of-type { border-bottom: none; }
+.total-row .t-label { font-size: 13px; color: #64748B; }
+.total-row .t-val {
+  font-variant-numeric: tabular-nums;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--card-ink);
+}
+
+.total-final {
+  margin-top: 14px;
+  background: var(--dark-surface);
+  border-radius: var(--r-lg);
+  padding: 16px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: box-shadow 0.2s;
+}
+.total-final:hover { box-shadow: 0 4px 20px rgba(15,27,45,0.15); }
+.total-final .tf-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: rgba(255,255,255,0.5);
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+}
+.total-final .tf-amount {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 28px;
+  font-weight: 800;
+  color: white;
+  letter-spacing: -1px;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+.total-final .tf-sub { font-size: 11px; color: var(--em-mid); margin-top: 3px; }
+
+/* ── ADD BUTTON ─── */
+.btn-add-line {
+  margin-top: 4px;
+  padding: 10px 14px;
+  border: 1.5px dashed #CBD5E1;
+  border-radius: var(--r);
+  background: none;
+  color: #64748B;
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  width: 100%;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+.btn-add-line:hover {
+  border-color: var(--emerald);
+  color: var(--emerald);
+  background: #D1FAE5;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 30px 10px;
+  color: var(--slate-2);
+  font-size: 13px;
+}
+
+/* ── ACTIONS BAR ─── */
+.actions-bar {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  z-index: 100;
+  background: var(--nav-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-top: 1px solid var(--line);
+  padding: 12px 24px;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.btn-clear {
+  padding: 0 18px;
+  height: 44px;
+  background: var(--card-bg);
+  border: 1.5px solid var(--line);
+  border-radius: var(--r);
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--slate);
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+.btn-clear:hover {
+  border-color: #FECDD3;
+  color: var(--rose);
+  background: #FFF1F2;
+}
+
+.btn-csv {
+  height: 44px;
+  padding: 0 16px;
+  background: var(--card-bg);
+  border: 1.5px solid var(--line);
+  border-radius: var(--r);
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--navy);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+.btn-csv:hover { border-color: var(--emerald); color: var(--emerald); background: var(--em-light); }
+
+.btn-pdf {
+  flex: 1;
+  height: 44px;
+  background: var(--dark-surface);
+  color: white;
+  border: none;
+  border-radius: var(--r);
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  letter-spacing: -0.2px;
+  transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+  box-shadow: 0 2px 12px rgba(15,27,45,0.2);
+}
+.btn-pdf:hover {
+  background: var(--dark-surface-2);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 24px rgba(15,27,45,0.25);
+}
+.btn-pdf:active { transform: translateY(0); }
+.btn-pdf.loading { opacity: 0.7; cursor: not-allowed; pointer-events: none; }
+
+/* ── TOAST ─── */
+.toast {
+  position: fixed;
+  bottom: 72px;
+  left: 50%;
+  transform: translateX(-50%) translateY(10px);
+  background: var(--dark-surface);
+  color: white;
+  font-size: 13px;
+  font-weight: 500;
+  padding: 10px 20px;
+  border-radius: 24px;
+  opacity: 0;
+  transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
+  pointer-events: none;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+.toast-dot { width: 6px; height: 6px; background: var(--em-mid); border-radius: 50%; }
+
+/* ── ANIMATIONS ─── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── RESPONSIVE ─── */
+@media (max-width: 720px) {
+  .grid { grid-template-columns: 1fr; }
+  .span-2 { grid-column: 1; }
+  .wrap { padding: 0 12px 130px; }
+  .page-header { padding: 28px 12px 20px; }
+  nav { padding: 0 14px; }
+  .row-2 { grid-template-columns: 1fr 1fr; }
+  .row-3 { grid-template-columns: 1fr 1fr; }
+  .resumen-grid { grid-template-columns: 1fr 1fr; }
+  .turno-row-4 { grid-template-columns: 1fr 1fr; }
+  .turno-row-3 { grid-template-columns: 1fr 1fr; }
+  .item-row-3 { grid-template-columns: 1fr 1fr; }
+  .week-grid { grid-template-columns: repeat(7,1fr); }
+}
+@media (max-width: 560px) {
+  .row-3 { grid-template-columns: 1fr; }
+  .turno-row-4 { grid-template-columns: 1fr 1fr; }
+  .turno-row-3 { grid-template-columns: 1fr 1fr; }
+  .resumen-grid { grid-template-columns: 1fr 1fr; }
+  .total-final .tf-amount { font-size: 24px; }
+  .actions-bar { flex-wrap: wrap; }
+  .btn-pdf { flex: 1 1 100%; order: 3; }
+  .btn-clear, .btn-csv { flex: 1; }
+  .tabs-bar { flex-wrap: wrap; }
+  .week-grid { overflow-x: auto; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="index.html" class="logo">
+    <div class="logo-icon">
+      <svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="5" y="3" width="10" height="2.5" rx="1" fill="white"/><rect x="3" y="3" width="2.5" height="14" rx="1" fill="white"/><rect x="5" y="14.5" width="10" height="2.5" rx="1" fill="white"/><rect x="10" y="10" width="5" height="2.5" rx="1" fill="#6EE7B7"/></svg>
+    </div>
+    gestio
+  </a>
+  <div class="nav-right">
+    <a href="index.html" class="nav-link">← Inicio</a>
+    <span class="badge badge-em">Gratis</span>
+  </div>
+</nav>
+
+<!-- PAGE HEADER -->
+<div class="page-header">
+  <h1>Gestor de turnos y flota</h1>
+  <p>Planifica turnos, asigna conductores y vehículos, y registra las rutas de tu equipo. Todo en tu navegador.</p>
+</div>
+
+<!-- TABS -->
+<div class="tabs-bar">
+  <button class="tab-btn active" onclick="switchTab('turnos')">Turnos</button>
+  <button class="tab-btn" onclick="switchTab('conductores')">Conductores</button>
+  <button class="tab-btn" onclick="switchTab('vehiculos')">Vehículos</button>
+  <button class="tab-btn" onclick="switchTab('resumen')">Resumen</button>
+</div>
+
+<!-- WRAP -->
+<div class="wrap">
+
+  <!-- ═══ TAB: TURNOS ═══ -->
+  <div class="tab-pane active" id="pane-turnos">
+    <div class="grid">
+
+      <!-- Semana actual -->
+      <div class="card span-2">
+        <div class="card-header">
+          <div class="card-header-left">
+            <div class="card-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            </div>
+            <div>
+              <div class="card-title">Vista semanal</div>
+              <div class="card-sub">Turnos de la semana en curso</div>
+            </div>
+          </div>
+          <div style="display:flex;gap:6px;">
+            <button class="week-btn" onclick="prevWeek()" title="Semana anterior">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
+            </button>
+            <button class="week-btn" onclick="nextWeek()" title="Semana siguiente">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+            </button>
+          </div>
+        </div>
+        <div class="week-nav">
+          <div class="week-label" id="weekLabel">—</div>
+        </div>
+        <div class="week-grid" id="weekGrid"><!-- JS --></div>
+        <div class="resumen-grid" id="resumenStats">
+          <div class="resumen-stat"><div class="rs-val" id="stat-total">0</div><div class="rs-label">Turnos totales</div></div>
+          <div class="resumen-stat"><div class="rs-val" id="stat-horas">0h</div><div class="rs-label">Horas planificadas</div></div>
+          <div class="resumen-stat"><div class="rs-val" id="stat-conductores">0</div><div class="rs-label">Conductores activos</div></div>
+          <div class="resumen-stat"><div class="rs-val" id="stat-km">0</div><div class="rs-label">km estimados</div></div>
+        </div>
+      </div>
+
+      <!-- Lista de turnos -->
+      <div class="card span-2">
+        <div class="card-header">
+          <div class="card-header-left">
+            <div class="card-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+            </div>
+            <div>
+              <div class="card-title">Turnos planificados</div>
+              <div class="card-sub" id="turnos-count">0 turnos</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="items-list" id="turnosList">
+          <div class="empty-state" id="turnosEmpty">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin:0 auto 8px;display:block;color:var(--slate-3)"><rect x="1" y="3" width="15" height="13" rx="2"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+            Sin turnos todavía. Añade el primero abajo.
+          </div>
+        </div>
+
+        <button class="btn-add-line" onclick="addTurno()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Añadir turno
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ═══ TAB: CONDUCTORES ═══ -->
+  <div class="tab-pane" id="pane-conductores">
+    <div class="grid">
+
+      <div class="card span-2">
+        <div class="card-header">
+          <div class="card-header-left">
+            <div class="card-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            </div>
+            <div>
+              <div class="card-title">Conductores / Personal</div>
+              <div class="card-sub" id="conductores-count">0 conductores</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="items-list" id="conductoresList">
+          <div class="empty-state" id="conductoresEmpty">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin:0 auto 8px;display:block;color:var(--slate-3)"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+            Sin conductores. Añade el primero.
+          </div>
+        </div>
+
+        <button class="btn-add-line" onclick="addConductor()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Añadir conductor
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ═══ TAB: VEHÍCULOS ═══ -->
+  <div class="tab-pane" id="pane-vehiculos">
+    <div class="grid">
+
+      <div class="card span-2">
+        <div class="card-header">
+          <div class="card-header-left">
+            <div class="card-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13" rx="2"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+            </div>
+            <div>
+              <div class="card-title">Vehículos de la flota</div>
+              <div class="card-sub" id="vehiculos-count">0 vehículos</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="items-list" id="vehiculosList">
+          <div class="empty-state" id="vehiculosEmpty">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin:0 auto 8px;display:block;color:var(--slate-3)"><rect x="1" y="3" width="15" height="13" rx="2"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+            Sin vehículos. Añade el primero.
+          </div>
+        </div>
+
+        <button class="btn-add-line" onclick="addVehiculo()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Añadir vehículo
+        </button>
+      </div>
+
+    </div>
+  </div>
+  <!-- ═══ TAB: RESUMEN ═══ -->
+  <div class="tab-pane" id="pane-resumen">
+    <div class="grid">
+
+      <!-- Empresa -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-header-left">
+            <div class="card-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+            </div>
+            <div>
+              <div class="card-title">Datos de empresa</div>
+              <div class="card-sub">Para el encabezado del PDF</div>
+            </div>
+          </div>
+        </div>
+        <div class="field"><label>Nombre empresa / autónomo</label><input type="text" id="empresa_nombre" placeholder="Transportes García, S.L."></div>
+        <div class="field"><label>NIF / CIF</label><input type="text" id="empresa_nif" placeholder="B12345678"></div>
+        <div class="field"><label>Responsable</label><input type="text" id="empresa_responsable" placeholder="Juan García Martínez"></div>
+        <div class="field"><label>Período del informe</label><input type="month" id="empresa_periodo"></div>
+      </div>
+
+      <!-- Resumen por conductor -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-header-left">
+            <div class="card-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+            </div>
+            <div>
+              <div class="card-title">Resumen por conductor</div>
+              <div class="card-sub">Horas y km acumulados</div>
+            </div>
+          </div>
+        </div>
+        <div class="summary-table-wrap">
+          <table class="summary-table" id="resumenConductoresTable">
+            <thead>
+              <tr>
+                <th>Conductor</th>
+                <th>Turnos</th>
+                <th>Horas</th>
+                <th>km</th>
+              </tr>
+            </thead>
+            <tbody id="resumenConductoresTbody">
+              <tr><td colspan="4" style="text-align:center;color:var(--card-slate);padding:16px">Sin datos</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Resumen por vehículo -->
+      <div class="card span-2">
+        <div class="card-header">
+          <div class="card-header-left">
+            <div class="card-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13" rx="2"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+            </div>
+            <div>
+              <div class="card-title">Resumen por vehículo</div>
+              <div class="card-sub">Uso y kilómetros</div>
+            </div>
+          </div>
+        </div>
+        <div class="summary-table-wrap">
+          <table class="summary-table" id="resumenVehiculosTable">
+            <thead>
+              <tr>
+                <th>Vehículo</th>
+                <th>Matrícula</th>
+                <th>Turnos</th>
+                <th>Horas</th>
+                <th>km estimados</th>
+              </tr>
+            </thead>
+            <tbody id="resumenVehiculosTbody">
+              <tr><td colspan="5" style="text-align:center;color:var(--card-slate);padding:16px">Sin datos</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="totals-box">
+          <div class="total-row"><span class="t-label">Total turnos planificados</span><span class="t-val" id="tot-turnos">0</span></div>
+          <div class="total-row"><span class="t-label">Total horas</span><span class="t-val" id="tot-horas">0h 0min</span></div>
+          <div class="total-row"><span class="t-label">Total km estimados</span><span class="t-val" id="tot-km">0 km</span></div>
+        </div>
+        <div class="total-final">
+          <div>
+            <div class="tf-label">Conductores activos</div>
+            <div class="tf-amount" id="tot-conductores-final">0</div>
+            <div class="tf-sub" id="tot-vehiculos-sub">0 vehículos en flota</div>
+          </div>
+          <div style="text-align:right;">
+            <div style="font-size:11px;color:rgba(255,255,255,0.45);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;">Vehículos activos</div>
+            <div style="font-family:'Bricolage Grotesque',sans-serif;font-size:28px;font-weight:800;color:var(--em-mid);letter-spacing:-1px;" id="tot-vehiculos-final">0</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<!-- ACTIONS BAR -->
+<div class="actions-bar">
+  <button class="btn-clear" onclick="confirmClear()">Limpiar todo</button>
+  <button class="btn-csv" onclick="exportCSV()">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+    CSV
+  </button>
+  <button class="btn-pdf" id="btnPDF" onclick="exportPDF()">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+    Descargar PDF
+  </button>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"><div class="toast-dot"></div><span id="toastMsg"></span></div>
+
+<script>
+// ═══════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════
+let conductores = [];
+let vehiculos   = [];
+let turnos      = [];
+let cId = 0, vId = 0, tId = 0;
+let currentWeekStart = getMonday(new Date());
+
+// ═══════════════════════════════════════════════════
+// HELPERS
+// ═══════════════════════════════════════════════════
+function g(id) { const el = document.getElementById(id); return el ? el.value.trim() : ''; }
+function fmtN(n, dec=1) { return n.toLocaleString('es-ES', { minimumFractionDigits: dec, maximumFractionDigits: dec }); }
+
+function showToast(msg, err=false) {
+  const t = document.getElementById('toast');
+  const d = t.querySelector('.toast-dot');
+  document.getElementById('toastMsg').textContent = msg;
+  d.style.background = err ? '#E11D48' : '#6EE7B7';
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+function switchTab(tab) {
+  document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('pane-' + tab).classList.add('active');
+  event.target.classList.add('active');
+  if (tab === 'resumen') buildResumen();
+}
+
+function getMonday(d) {
+  const date = new Date(d);
+  const day  = date.getDay();
+  const diff = date.getDate() - day + (day === 0 ? -6 : 1);
+  date.setDate(diff);
+  date.setHours(0,0,0,0);
+  return date;
+}
+
+function addDays(d, n) {
+  const r = new Date(d);
+  r.setDate(r.getDate() + n);
+  return r;
+}
+
+function dateStr(d) {
+  return d.toISOString().slice(0,10);
+}
+
+function fmtDate(str) {
+  if (!str) return '—';
+  const [y,m,day] = str.split('-');
+  return `${day}/${m}/${y}`;
+}
+
+function calcDuration(inicio, fin) {
+  if (!inicio || !fin) return 0;
+  const [h1,m1] = inicio.split(':').map(Number);
+  const [h2,m2] = fin.split(':').map(Number);
+  let mins = (h2*60+m2) - (h1*60+m1);
+  if (mins < 0) mins += 24*60;
+  return mins;
+}
+
+function prevWeek() { currentWeekStart = addDays(currentWeekStart, -7); renderWeek(); }
+function nextWeek() { currentWeekStart = addDays(currentWeekStart, 7);  renderWeek(); }
+
+// ═══════════════════════════════════════════════════
+// WEEK VIEW
+// ═══════════════════════════════════════════════════
+const DIAS = ['Lun','Mar','Mié','Jue','Vie','Sáb','Dom'];
+
+function renderWeek() {
+  const grid  = document.getElementById('weekGrid');
+  const label = document.getElementById('weekLabel');
+  const today = dateStr(new Date());
+  const days  = Array.from({length:7}, (_,i) => addDays(currentWeekStart, i));
+
+  const from = fmtDate(dateStr(days[0]));
+  const to   = fmtDate(dateStr(days[6]));
+  label.textContent = `${from} — ${to}`;
+
+  grid.innerHTML = '';
+  days.forEach((day, i) => {
+    const ds = dateStr(day);
+    const isToday = ds === today;
+    const dayTurnos = turnos.filter(t => t.fecha === ds);
+
+    const col = document.createElement('div');
+    col.className = 'day-col';
+
+    const head = document.createElement('div');
+    head.className = 'day-head' + (isToday ? ' today' : '');
+    head.innerHTML = `<span>${DIAS[i]}</span><span class="day-num">${day.getDate()}</span>`;
+
+    const cell = document.createElement('div');
+    cell.className = 'day-cell' + (dayTurnos.length ? ' has-turnos' : '');
+
+    dayTurnos.forEach(t => {
+      const div = document.createElement('div');
+      const colors = ['', 'am', 'ro'];
+      const ci = conductores.findIndex(c => c.id === t.conductorId);
+      div.className = 'mini-turno ' + (colors[ci % 3] || '');
+      const cname = conductores.find(c=>c.id===t.conductorId)?.nombre || '?';
+      div.textContent = `${t.horaInicio||'?'} ${cname}`;
+      div.title = `${cname} · ${t.horaInicio}–${t.horaFin} · ${t.ruta||'Sin ruta'}`;
+      cell.appendChild(div);
+    });
+
+    col.appendChild(head);
+    col.appendChild(cell);
+    grid.appendChild(col);
+  });
+
+  updateStats();
+}
+
+function updateStats() {
+  const from = currentWeekStart;
+  const to   = addDays(from, 6);
+  const weekDates = Array.from({length:7}, (_,i) => dateStr(addDays(from,i)));
+  const wt = turnos.filter(t => weekDates.includes(t.fecha));
+
+  document.getElementById('stat-total').textContent = wt.length;
+  const totalMins = wt.reduce((s,t) => s + calcDuration(t.horaInicio, t.horaFin), 0);
+  document.getElementById('stat-horas').textContent = Math.floor(totalMins/60) + 'h';
+  const uniqC = [...new Set(wt.map(t=>t.conductorId).filter(Boolean))].length;
+  document.getElementById('stat-conductores').textContent = uniqC;
+  const totalKm = wt.reduce((s,t) => s + (parseFloat(t.km)||0), 0);
+  document.getElementById('stat-km').textContent = Math.round(totalKm);
+}
+
+// ═══════════════════════════════════════════════════
+// CONDUCTORES
+// ═══════════════════════════════════════════════════
+function addConductor() {
+  cId++;
+  conductores.push({ id: cId });
+  renderConductores();
+  refreshSelects();
+}
+
+function removeConductor(id) {
+  conductores = conductores.filter(c => c.id !== id);
+  renderConductores();
+  refreshSelects();
+  showToast('Conductor eliminado');
+}
+
+function renderConductores() {
+  const list  = document.getElementById('conductoresList');
+  const empty = document.getElementById('conductoresEmpty');
+  const count = document.getElementById('conductores-count');
+
+  list.querySelectorAll('.item-card').forEach(el => el.remove());
+  count.textContent = conductores.length + ' conductor' + (conductores.length===1?'':'es');
+  empty.style.display = conductores.length ? 'none' : 'block';
+
+  conductores.forEach((c, idx) => {
+    const card = document.createElement('div');
+    card.className = 'item-card';
+    card.id = 'ccard-' + c.id;
+    card.innerHTML = `
+      <div class="item-card-head">
+        <div class="item-num">Conductor ${idx+1}</div>
+        <button class="btn-remove" onclick="removeConductor(${c.id})" title="Eliminar">✕</button>
+      </div>
+      <div class="item-row-3">
+        <div class="field" style="grid-column:1/3"><label>Nombre completo</label><input type="text" id="c_nombre_${c.id}" placeholder="María López García" oninput="saveConductor(${c.id})"></div>
+        <div class="field"><label>DNI / NIE</label><input type="text" id="c_dni_${c.id}" placeholder="12345678A" oninput="saveConductor(${c.id})"></div>
+      </div>
+      <div class="item-row-3">
+        <div class="field"><label>Teléfono</label><input type="text" id="c_tel_${c.id}" placeholder="612 345 678" oninput="saveConductor(${c.id})"></div>
+        <div class="field"><label>Carnet</label>
+          <select id="c_carnet_${c.id}" onchange="saveConductor(${c.id})">
+            <option value="B">B — Turismo / furgoneta</option>
+            <option value="C">C — Camión</option>
+            <option value="C+E">C+E — Camión + remolque</option>
+            <option value="D">D — Autobús</option>
+            <option value="A">A — Moto</option>
+          </select>
+        </div>
+        <div class="field"><label>Estado</label>
+          <select id="c_estado_${c.id}" onchange="saveConductor(${c.id})">
+            <option value="activo">Activo</option>
+            <option value="baja">Baja</option>
+            <option value="vacaciones">Vacaciones</option>
+          </select>
+        </div>
+      </div>
+      <div class="field item-row-full"><label>Notas</label><input type="text" id="c_notas_${c.id}" placeholder="Observaciones..." oninput="saveConductor(${c.id})"></div>`;
+    list.appendChild(card);
+  });
+}
+
+function saveConductor(id) {
+  const c = conductores.find(c => c.id === id);
+  if (!c) return;
+  c.nombre  = document.getElementById('c_nombre_'  + id)?.value.trim() || '';
+  c.dni     = document.getElementById('c_dni_'     + id)?.value.trim() || '';
+  c.tel     = document.getElementById('c_tel_'     + id)?.value.trim() || '';
+  c.carnet  = document.getElementById('c_carnet_'  + id)?.value || 'B';
+  c.estado  = document.getElementById('c_estado_'  + id)?.value || 'activo';
+  c.notas   = document.getElementById('c_notas_'   + id)?.value.trim() || '';
+  refreshSelects();
+}
+
+// ═══════════════════════════════════════════════════
+// VEHÍCULOS
+// ═══════════════════════════════════════════════════
+function addVehiculo() {
+  vId++;
+  vehiculos.push({ id: vId });
+  renderVehiculos();
+  refreshSelects();
+}
+
+function removeVehiculo(id) {
+  vehiculos = vehiculos.filter(v => v.id !== id);
+  renderVehiculos();
+  refreshSelects();
+  showToast('Vehículo eliminado');
+}
+
+function renderVehiculos() {
+  const list  = document.getElementById('vehiculosList');
+  const empty = document.getElementById('vehiculosEmpty');
+  const count = document.getElementById('vehiculos-count');
+
+  list.querySelectorAll('.item-card').forEach(el => el.remove());
+  count.textContent = vehiculos.length + ' vehículo' + (vehiculos.length===1?'':'s');
+  empty.style.display = vehiculos.length ? 'none' : 'block';
+
+  vehiculos.forEach((v, idx) => {
+    const card = document.createElement('div');
+    card.className = 'item-card';
+    card.id = 'vcard-' + v.id;
+    card.innerHTML = `
+      <div class="item-card-head">
+        <div class="item-num">Vehículo ${idx+1}</div>
+        <button class="btn-remove" onclick="removeVehiculo(${v.id})" title="Eliminar">✕</button>
+      </div>
+      <div class="item-row-3">
+        <div class="field" style="grid-column:1/3"><label>Marca y modelo</label><input type="text" id="v_modelo_${v.id}" placeholder="Mercedes Sprinter 316 CDI" oninput="saveVehiculo(${v.id})"></div>
+        <div class="field"><label>Matrícula</label><input type="text" id="v_matricula_${v.id}" placeholder="1234 ABC" oninput="saveVehiculo(${v.id})" style="text-transform:uppercase"></div>
+      </div>
+      <div class="item-row-3">
+        <div class="field"><label>Tipo</label>
+          <select id="v_tipo_${v.id}" onchange="saveVehiculo(${v.id})">
+            <option value="furgoneta">Furgoneta</option>
+            <option value="camion">Camión</option>
+            <option value="turismo">Turismo</option>
+            <option value="autobus">Autobús / minibús</option>
+            <option value="moto">Moto / scooter</option>
+            <option value="otro">Otro</option>
+          </select>
+        </div>
+        <div class="field"><label>Año</label><input type="number" id="v_anio_${v.id}" placeholder="${new Date().getFullYear()}" min="1990" max="${new Date().getFullYear()+1}" oninput="saveVehiculo(${v.id})"></div>
+        <div class="field"><label>Estado</label>
+          <select id="v_estado_${v.id}" onchange="saveVehiculo(${v.id})">
+            <option value="operativo">Operativo</option>
+            <option value="taller">En taller</option>
+            <option value="baja">Dado de baja</option>
+          </select>
+        </div>
+      </div>
+      <div class="item-row-2">
+        <div class="field"><label>Km actuales</label><input type="number" id="v_km_${v.id}" placeholder="0" min="0" oninput="saveVehiculo(${v.id})"></div>
+        <div class="field"><label>Próxima ITV</label><input type="date" id="v_itv_${v.id}" oninput="saveVehiculo(${v.id})"></div>
+      </div>
+      <div class="field item-row-full"><label>Notas</label><input type="text" id="v_notas_${v.id}" placeholder="Observaciones..." oninput="saveVehiculo(${v.id})"></div>`;
+    list.appendChild(card);
+  });
+}
+
+function saveVehiculo(id) {
+  const v = vehiculos.find(v => v.id === id);
+  if (!v) return;
+  v.modelo    = document.getElementById('v_modelo_'   + id)?.value.trim() || '';
+  v.matricula = document.getElementById('v_matricula_'+ id)?.value.trim().toUpperCase() || '';
+  v.tipo      = document.getElementById('v_tipo_'     + id)?.value || 'furgoneta';
+  v.anio      = document.getElementById('v_anio_'     + id)?.value.trim() || '';
+  v.estado    = document.getElementById('v_estado_'   + id)?.value || 'operativo';
+  v.km        = parseFloat(document.getElementById('v_km_' + id)?.value) || 0;
+  v.itv       = document.getElementById('v_itv_'      + id)?.value || '';
+  v.notas     = document.getElementById('v_notas_'    + id)?.value.trim() || '';
+  refreshSelects();
+}
+
+// ═══════════════════════════════════════════════════
+// TURNOS
+// ═══════════════════════════════════════════════════
+function addTurno() {
+  tId++;
+  turnos.push({ id: tId, fecha: dateStr(new Date()) });
+  renderTurnos();
+  renderWeek();
+}
+
+function removeTurno(id) {
+  turnos = turnos.filter(t => t.id !== id);
+  renderTurnos();
+  renderWeek();
+  showToast('Turno eliminado');
+}
+
+function renderTurnos() {
+  const list  = document.getElementById('turnosList');
+  const empty = document.getElementById('turnosEmpty');
+  const count = document.getElementById('turnos-count');
+
+  list.querySelectorAll('.turno-card').forEach(el => el.remove());
+  count.textContent = turnos.length + ' turno' + (turnos.length===1?'':'s');
+  empty.style.display = turnos.length ? 'none' : 'block';
+
+  turnos.forEach((t, idx) => {
+    const card = document.createElement('div');
+    card.className = 'turno-card';
+    card.id = 'tcard-' + t.id;
+
+    const conductorOpts = conductores.map(c =>
+      `<option value="${c.id}"${t.conductorId===c.id?' selected':''}>${c.nombre||'Conductor '+c.id}</option>`
+    ).join('');
+    const vehiculoOpts = vehiculos.map(v =>
+      `<option value="${v.id}"${t.vehiculoId===v.id?' selected':''}>${v.matricula||v.modelo||'Vehículo '+v.id}</option>`
+    ).join('');
+
+    const mins = calcDuration(t.horaInicio, t.horaFin);
+    const horas = Math.floor(mins/60);
+    const minsR = mins % 60;
+    const durTxt = mins > 0 ? `${horas}h ${minsR}min` : '—';
+
+    card.innerHTML = `
+      <div class="turno-card-head">
+        <div class="turno-num">Turno ${idx+1}</div>
+        <button class="btn-remove" onclick="removeTurno(${t.id})" title="Eliminar">✕</button>
+      </div>
+      <div class="turno-row-4">
+        <div class="field"><label>Fecha</label><input type="date" id="t_fecha_${t.id}" value="${t.fecha||''}" onchange="saveTurno(${t.id})"></div>
+        <div class="field"><label>Hora inicio</label><input type="time" id="t_inicio_${t.id}" value="${t.horaInicio||''}" onchange="saveTurno(${t.id})"></div>
+        <div class="field"><label>Hora fin</label><input type="time" id="t_fin_${t.id}" value="${t.horaFin||''}" onchange="saveTurno(${t.id})"></div>
+        <div class="field"><label>Estado</label>
+          <select id="t_estado_${t.id}" onchange="saveTurno(${t.id})">
+            <option value="programado"${(t.estado||'programado')==='programado'?' selected':''}>Programado</option>
+            <option value="en-curso"${t.estado==='en-curso'?' selected':''}>En curso</option>
+            <option value="completado"${t.estado==='completado'?' selected':''}>Completado</option>
+            <option value="cancelado"${t.estado==='cancelado'?' selected':''}>Cancelado</option>
+          </select>
+        </div>
+      </div>
+      <div class="turno-row-2">
+        <div class="field">
+          <label>Conductor</label>
+          <select id="t_conductor_${t.id}" onchange="saveTurno(${t.id})">
+            <option value="">— Sin asignar —</option>
+            ${conductorOpts}
+          </select>
+        </div>
+        <div class="field">
+          <label>Vehículo</label>
+          <select id="t_vehiculo_${t.id}" onchange="saveTurno(${t.id})">
+            <option value="">— Sin asignar —</option>
+            ${vehiculoOpts}
+          </select>
+        </div>
+      </div>
+      <div class="turno-row-3">
+        <div class="field" style="grid-column:1/3"><label>Ruta / descripción</label><input type="text" id="t_ruta_${t.id}" value="${t.ruta||''}" placeholder="Madrid → Valencia, reparto zona norte..." oninput="saveTurno(${t.id})"></div>
+        <div class="field"><label>km estimados</label><input type="number" id="t_km_${t.id}" value="${t.km||''}" placeholder="0" min="0" oninput="saveTurno(${t.id})"></div>
+      </div>
+      <div class="turno-result">
+        <div class="tr-item"><div class="tr-label">Duración</div><div class="tr-val em" id="trdur_${t.id}">${durTxt}</div></div>
+        <div class="tr-item"><div class="tr-label">Estado</div><div class="tr-val"><span class="estado-badge ${t.estado||'programado'}" id="trest_${t.id}">${estadoLabel(t.estado||'programado')}</span></div></div>
+        <div class="tr-item"><div class="tr-label">km</div><div class="tr-val am" id="trkm_${t.id}">${t.km ? t.km+' km' : '—'}</div></div>
+      </div>`;
+    list.appendChild(card);
+  });
+}
+
+function estadoLabel(e) {
+  const map = { programado:'Programado', 'en-curso':'En curso', completado:'Completado', cancelado:'Cancelado' };
+  return map[e] || e;
+}
+
+function saveTurno(id) {
+  const t = turnos.find(t => t.id === id);
+  if (!t) return;
+  t.fecha      = document.getElementById('t_fecha_'    + id)?.value || '';
+  t.horaInicio = document.getElementById('t_inicio_'   + id)?.value || '';
+  t.horaFin    = document.getElementById('t_fin_'      + id)?.value || '';
+  t.estado     = document.getElementById('t_estado_'   + id)?.value || 'programado';
+  t.ruta       = document.getElementById('t_ruta_'     + id)?.value.trim() || '';
+  t.km         = parseFloat(document.getElementById('t_km_'+id)?.value) || 0;
+  const cVal   = document.getElementById('t_conductor_' + id)?.value;
+  t.conductorId = cVal ? parseInt(cVal) : null;
+  const vVal   = document.getElementById('t_vehiculo_' + id)?.value;
+  t.vehiculoId = vVal ? parseInt(vVal) : null;
+
+  // Update result row
+  const mins = calcDuration(t.horaInicio, t.horaFin);
+  const h = Math.floor(mins/60), m = mins%60;
+  const durEl = document.getElementById('trdur_' + id);
+  if (durEl) durEl.textContent = mins > 0 ? `${h}h ${m}min` : '—';
+  const estEl = document.getElementById('trest_' + id);
+  if (estEl) { estEl.className = 'estado-badge ' + t.estado; estEl.textContent = estadoLabel(t.estado); }
+  const kmEl = document.getElementById('trkm_' + id);
+  if (kmEl) kmEl.textContent = t.km ? t.km + ' km' : '—';
+
+  renderWeek();
+}
+
+function refreshSelects() {
+  turnos.forEach(t => {
+    const cSel = document.getElementById('t_conductor_' + t.id);
+    const vSel = document.getElementById('t_vehiculo_'  + t.id);
+    if (cSel) {
+      const prev = t.conductorId;
+      cSel.innerHTML = '<option value="">— Sin asignar —</option>' +
+        conductores.map(c => `<option value="${c.id}"${c.id===prev?' selected':''}>${c.nombre||'Conductor '+c.id}</option>`).join('');
+    }
+    if (vSel) {
+      const prev = t.vehiculoId;
+      vSel.innerHTML = '<option value="">— Sin asignar —</option>' +
+        vehiculos.map(v => `<option value="${v.id}"${v.id===prev?' selected':''}>${v.matricula||v.modelo||'Vehículo '+v.id}</option>`).join('');
+    }
+  });
+}
+
+// ═══════════════════════════════════════════════════
+// RESUMEN
+// ═══════════════════════════════════════════════════
+function buildResumen() {
+  const byConductor = {};
+  const byVehiculo  = {};
+
+  turnos.forEach(t => {
+    const mins = calcDuration(t.horaInicio, t.horaFin);
+    if (t.conductorId) {
+      if (!byConductor[t.conductorId]) byConductor[t.conductorId] = { turnos:0, mins:0, km:0 };
+      byConductor[t.conductorId].turnos++;
+      byConductor[t.conductorId].mins += mins;
+      byConductor[t.conductorId].km   += t.km||0;
+    }
+    if (t.vehiculoId) {
+      if (!byVehiculo[t.vehiculoId]) byVehiculo[t.vehiculoId] = { turnos:0, mins:0, km:0 };
+      byVehiculo[t.vehiculoId].turnos++;
+      byVehiculo[t.vehiculoId].mins += mins;
+      byVehiculo[t.vehiculoId].km   += t.km||0;
+    }
+  });
+
+  // Conductores table
+  const ctb = document.getElementById('resumenConductoresTbody');
+  if (Object.keys(byConductor).length) {
+    ctb.innerHTML = Object.entries(byConductor).map(([id, v]) => {
+      const c = conductores.find(c=>c.id===parseInt(id));
+      const h = Math.floor(v.mins/60), m = v.mins%60;
+      return `<tr><td>${c?.nombre||'Conductor '+id}</td><td>${v.turnos}</td><td>${h}h ${m}min</td><td>${Math.round(v.km)} km</td></tr>`;
+    }).join('');
+  } else {
+    ctb.innerHTML = '<tr><td colspan="4" style="text-align:center;color:var(--card-slate);padding:16px">Sin datos</td></tr>';
+  }
+
+  // Vehículos table
+  const vtb = document.getElementById('resumenVehiculosTbody');
+  if (Object.keys(byVehiculo).length) {
+    vtb.innerHTML = Object.entries(byVehiculo).map(([id, v]) => {
+      const ve = vehiculos.find(v=>v.id===parseInt(id));
+      const h = Math.floor(v.mins/60), m = v.mins%60;
+      return `<tr><td>${ve?.modelo||'Vehículo '+id}</td><td>${ve?.matricula||'—'}</td><td>${v.turnos}</td><td>${h}h ${m}min</td><td>${Math.round(v.km)} km</td></tr>`;
+    }).join('');
+  } else {
+    vtb.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--card-slate);padding:16px">Sin datos</td></tr>';
+  }
+
+  // Totals
+  const totMins = turnos.reduce((s,t)=>s+calcDuration(t.horaInicio,t.horaFin),0);
+  const totKm   = turnos.reduce((s,t)=>s+(t.km||0),0);
+  const uniqC   = [...new Set(turnos.map(t=>t.conductorId).filter(Boolean))].length;
+  const uniqV   = [...new Set(turnos.map(t=>t.vehiculoId).filter(Boolean))].length;
+  const h = Math.floor(totMins/60), m = totMins%60;
+
+  document.getElementById('tot-turnos').textContent = turnos.length;
+  document.getElementById('tot-horas').textContent  = `${h}h ${m}min`;
+  document.getElementById('tot-km').textContent     = Math.round(totKm) + ' km';
+  document.getElementById('tot-conductores-final').textContent = conductores.length;
+  document.getElementById('tot-vehiculos-final').textContent   = vehiculos.length;
+  document.getElementById('tot-vehiculos-sub').textContent     = `${uniqV} vehículo${uniqV===1?'':'s'} en uso`;
+}
+
+// ═══════════════════════════════════════════════════
+// EXPORT CSV
+// ═══════════════════════════════════════════════════
+function exportCSV() {
+  if (!turnos.length) { showToast('Sin turnos para exportar', true); return; }
+  const rows = [['Fecha','Conductor','Vehículo','Hora inicio','Hora fin','Duración (min)','Ruta','km','Estado']];
+  turnos.forEach(t => {
+    const c  = conductores.find(c=>c.id===t.conductorId);
+    const v  = vehiculos.find(v=>v.id===t.vehiculoId);
+    const mins = calcDuration(t.horaInicio, t.horaFin);
+    rows.push([
+      t.fecha||'', c?.nombre||'', v?.matricula||v?.modelo||'',
+      t.horaInicio||'', t.horaFin||'', mins||0,
+      t.ruta||'', t.km||0, estadoLabel(t.estado||'programado')
+    ]);
+  });
+  const csv = rows.map(r => r.map(v => `"${String(v).replace(/"/g,'""')}"`).join(',')).join('\n');
+  const blob = new Blob(['\uFEFF'+csv], { type: 'text/csv;charset=utf-8;' });
+  const url  = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'turnos_flota.csv';
+  document.body.appendChild(a); a.click();
+  setTimeout(() => { document.body.removeChild(a); URL.revokeObjectURL(url); }, 200);
+  showToast('CSV descargado');
+}
+
+// ═══════════════════════════════════════════════════
+// EXPORT PDF
+// ═══════════════════════════════════════════════════
+async function exportPDF() {
+  const btn = document.getElementById('btnPDF');
+  const origHTML = btn.innerHTML;
+  btn.classList.add('loading');
+  btn.disabled = true;
+  btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="animation:spin 1s linear infinite"><path d="M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0z" opacity=".25"/><path d="M21 12a9 9 0 0 1-9 9"/></svg> Generando...';
+
+  try {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF({ unit: 'mm', format: 'a4' });
+    const W = 210, M = 16, H = 297;
+
+    const black   = [15,27,45];
+    const gray1   = [80,90,110];
+    const gray2   = [130,140,155];
+    const green   = [5,150,105];
+    const greenLt = [209,250,229];
+    const bg      = [248,248,247];
+    const white   = [255,255,255];
+    const divider = [230,230,228];
+    const amber   = [217,119,6];
+
+    let y = 0, page = 1;
+
+    const empresa  = g('empresa_nombre')     || '—';
+    const nif      = g('empresa_nif')        || '';
+    const resp     = g('empresa_responsable')|| '';
+    const periodo  = g('empresa_periodo')    || '';
+    const perLabel = periodo ? new Date(periodo+'-01').toLocaleDateString('es-ES',{month:'long',year:'numeric'}) : 'Sin período';
+
+    function drawHeader() {
+      doc.setFillColor(...white); doc.rect(0,0,W,H,'F');
+      doc.setFillColor(...bg);   doc.rect(0,0,W,38,'F');
+      doc.setFillColor(...green); doc.rect(0,0,3,38,'F');
+      doc.setFillColor(...divider); doc.rect(0,38,W,0.4,'F');
+
+      doc.setFont('helvetica','bold'); doc.setFontSize(20);
+      doc.setTextColor(...black);
+      doc.text('INFORME DE TURNOS Y FLOTA', M+4, 17);
+
+      doc.setFillColor(...greenLt); doc.roundedRect(M+4,22,52,8,2,2,'F');
+      doc.setFont('helvetica','bold'); doc.setFontSize(8);
+      doc.setTextColor(...green);
+      doc.text(perLabel.toUpperCase(), M+7, 27.5);
+
+      doc.setFont('helvetica','bold'); doc.setFontSize(11);
+      doc.setTextColor(...black);
+      doc.text(empresa, W-M, 14, { align:'right' });
+      doc.setFont('helvetica','normal'); doc.setFontSize(8.5);
+      doc.setTextColor(...gray1);
+      if (nif)  doc.text('NIF: '+nif, W-M, 20, { align:'right' });
+      if (resp) doc.text(resp,        W-M, 26, { align:'right' });
+      y = 48;
+    }
+
+    function drawFooter() {
+      doc.setFillColor(...bg);  doc.rect(0,283,W,14,'F');
+      doc.setFillColor(...divider); doc.rect(0,283,W,0.3,'F');
+      doc.setFillColor(...green); doc.rect(0,283,3,14,'F');
+      doc.setFont('helvetica','normal'); doc.setFontSize(7);
+      doc.setTextColor(...gray2);
+      doc.text(`Generado con gestio.es — Página ${page}`, W/2, 292, { align:'center' });
+    }
+
+    function checkPageBreak(needed) {
+      if (y + needed > 278) {
+        drawFooter(); doc.addPage(); page++; drawHeader();
+      }
+    }
+
+    drawHeader();
+
+    // ── Resumen estadísticas ──
+    const totMins = turnos.reduce((s,t)=>s+calcDuration(t.horaInicio,t.horaFin),0);
+    const totKm   = turnos.reduce((s,t)=>s+(t.km||0),0);
+    const h = Math.floor(totMins/60), mi = totMins%60;
+
+    const stats = [
+      { label:'TURNOS', val: turnos.length },
+      { label:'HORAS',  val: `${h}h ${mi}m` },
+      { label:'KM EST.', val: Math.round(totKm)+' km' },
+      { label:'CONDUCTORES', val: conductores.length },
+    ];
+    const sw = (W - M*2) / 4;
+    stats.forEach((s,i) => {
+      const x = M + i*sw;
+      doc.setFillColor(...bg); doc.roundedRect(x, y, sw-3, 18, 2,2,'F');
+      doc.setFont('helvetica','bold'); doc.setFontSize(14);
+      doc.setTextColor(...black);
+      doc.text(String(s.val), x + sw/2 - 1.5, y+11, { align:'center' });
+      doc.setFont('helvetica','normal'); doc.setFontSize(7);
+      doc.setTextColor(...gray1);
+      doc.text(s.label, x + sw/2 - 1.5, y+16.5, { align:'center' });
+    });
+    y += 26;
+
+    // ── Tabla turnos ──
+    doc.setFont('helvetica','bold'); doc.setFontSize(10);
+    doc.setTextColor(...black);
+    doc.text('DETALLE DE TURNOS', M, y);
+    y += 6;
+
+    const cols = { fecha:M, cond:M+18, ruta:M+62, ini:148, fin:164, dur:180, km:W-M };
+    const thH = 7;
+
+    function drawTHead() {
+      doc.setFillColor(...black); doc.roundedRect(M,y,W-M*2,thH,1.5,1.5,'F');
+      doc.setFont('helvetica','bold'); doc.setFontSize(7); doc.setTextColor(...white);
+      doc.text('FECHA',     cols.fecha+2, y+4.6);
+      doc.text('CONDUCTOR', cols.cond+2,  y+4.6);
+      doc.text('RUTA',      cols.ruta+2,  y+4.6);
+      doc.text('INICIO',    cols.ini,     y+4.6, { align:'right' });
+      doc.text('FIN',       cols.fin,     y+4.6, { align:'right' });
+      doc.text('DUR.',      cols.dur,     y+4.6, { align:'right' });
+      doc.text('KM',        cols.km,      y+4.6, { align:'right' });
+      y += thH;
+    }
+
+    drawTHead();
+    let alt = false;
+    const sorted = [...turnos].sort((a,b)=>(a.fecha||'').localeCompare(b.fecha||''));
+    sorted.forEach(t => {
+      checkPageBreak(8);
+      if (alt) { doc.setFillColor(...bg); doc.rect(M,y,W-M*2,7,'F'); }
+      alt = !alt;
+      const c = conductores.find(c=>c.id===t.conductorId);
+      const mins = calcDuration(t.horaInicio, t.horaFin);
+      const dh = Math.floor(mins/60), dm = mins%60;
+      doc.setFont('helvetica','normal'); doc.setFontSize(7.5); doc.setTextColor(...black);
+      doc.text(fmtDate(t.fecha), cols.fecha+2, y+4.8);
+      doc.setFont('helvetica','bold');
+      doc.text(doc.splitTextToSize(c?.nombre||'—',40)[0], cols.cond+2, y+4.8);
+      doc.setFont('helvetica','normal'); doc.setTextColor(...gray1);
+      doc.text(doc.splitTextToSize(t.ruta||'—',46)[0], cols.ruta+2, y+4.8);
+      doc.setTextColor(...black);
+      doc.text(t.horaInicio||'—', cols.ini,  y+4.8, { align:'right' });
+      doc.text(t.horaFin||'—',    cols.fin,  y+4.8, { align:'right' });
+      doc.setTextColor(...green);
+      doc.text(mins>0?`${dh}h${dm}m`:'—', cols.dur, y+4.8, { align:'right' });
+      doc.setTextColor(...black);
+      doc.text(t.km ? Math.round(t.km)+' km' : '—', cols.km, y+4.8, { align:'right' });
+      y += 7;
+    });
+
+    y += 8;
+    checkPageBreak(50);
+
+    // ── Resumen por conductor ──
+    doc.setFillColor(...divider); doc.rect(M,y,W-M*2,0.4,'F'); y += 8;
+    doc.setFont('helvetica','bold'); doc.setFontSize(10); doc.setTextColor(...black);
+    doc.text('RESUMEN POR CONDUCTOR', M, y); y += 6;
+
+    const byCond = {};
+    turnos.forEach(t => {
+      if (!t.conductorId) return;
+      if (!byCond[t.conductorId]) byCond[t.conductorId] = { turnos:0, mins:0, km:0 };
+      byCond[t.conductorId].turnos++;
+      byCond[t.conductorId].mins += calcDuration(t.horaInicio, t.horaFin);
+      byCond[t.conductorId].km   += t.km||0;
+    });
+
+    const c2 = { nombre:M, turnos:120, horas:148, km:W-M };
+    doc.setFontSize(7); doc.setTextColor(...gray1);
+    doc.text('CONDUCTOR',c2.nombre,y); doc.text('TURNOS',c2.turnos,y,{align:'right'});
+    doc.text('HORAS',c2.horas,y,{align:'right'}); doc.text('KM',c2.km,y,{align:'right'});
+    y += 2; doc.setFillColor(...divider); doc.rect(M,y,W-M*2,0.3,'F'); y += 5;
+
+    Object.entries(byCond).forEach(([id,v]) => {
+      checkPageBreak(7);
+      const c = conductores.find(c=>c.id===parseInt(id));
+      const h2 = Math.floor(v.mins/60), m2 = v.mins%60;
+      doc.setFont('helvetica','normal'); doc.setFontSize(8); doc.setTextColor(...black);
+      doc.text(c?.nombre||'—',         c2.nombre, y);
+      doc.setTextColor(...gray1);
+      doc.text(String(v.turnos),        c2.turnos, y, {align:'right'});
+      doc.setTextColor(...green);
+      doc.text(`${h2}h ${m2}min`,       c2.horas,  y, {align:'right'});
+      doc.setTextColor(...black);
+      doc.text(Math.round(v.km)+' km',  c2.km,     y, {align:'right'});
+      y += 6;
+    });
+
+    y += 6; checkPageBreak(30);
+    doc.setFillColor(...bg);
+    doc.roundedRect(M, y, W-M*2, 22, 2,2,'F');
+    doc.setFont('helvetica','normal'); doc.setFontSize(8.5); doc.setTextColor(...gray1);
+    doc.text('Total turnos',    M+6, y+7);
+    doc.text('Total horas',     M+6, y+13);
+    doc.text('Total km',        M+6, y+19);
+    doc.setFont('helvetica','bold'); doc.setTextColor(...black);
+    doc.text(String(turnos.length),              W-M-50, y+7,  {align:'right'});
+    doc.setTextColor(...green);
+    doc.text(`${h}h ${mi}min`,                   W-M-50, y+13, {align:'right'});
+    doc.setTextColor(...black);
+    doc.text(Math.round(totKm)+' km',            W-M-50, y+19, {align:'right'});
+
+    doc.setFillColor(...black); doc.roundedRect(W-M-44, y+3, 44, 16, 2,2,'F');
+    doc.setFillColor(...green); doc.roundedRect(W-M-44, y+3, 3,  16, 1.5,1.5,'F');
+    doc.rect(W-M-44+1.5, y+3, 1.5, 16, 'F');
+    doc.setFont('helvetica','bold'); doc.setFontSize(7); doc.setTextColor(180,190,200);
+    doc.text('CONDUCTORES / VEHÍCULOS', W-M-38, y+9);
+    doc.setFontSize(11); doc.setTextColor(...white);
+    doc.text(`${conductores.length} / ${vehiculos.length}`, W-M-4, y+18, { align:'right' });
+
+    y += 30; checkPageBreak(14);
+    doc.setFont('helvetica','normal'); doc.setFontSize(7.5); doc.setTextColor(...gray2);
+    const aviso = doc.splitTextToSize('Este informe es una herramienta de planificación interna y no constituye un registro oficial de jornada laboral. Cumple con la normativa vigente sobre registro horario y conserva los documentos originales.', W-M*2);
+    doc.text(aviso, M, y);
+
+    drawFooter();
+
+    const filename = `informe_flota_${periodo||'sin_periodo'}.pdf`;
+    const blob = doc.output('blob');
+    const url  = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href=url; a.download=filename;
+    document.body.appendChild(a); a.click();
+    setTimeout(()=>{ document.body.removeChild(a); URL.revokeObjectURL(url); }, 200);
+    showToast('PDF descargado');
+
+  } catch(err) {
+    showToast('Error al generar el PDF', true);
+    console.error(err);
+  } finally {
+    btn.classList.remove('loading');
+    btn.disabled = false;
+    btn.innerHTML = origHTML;
+  }
+}
+
+// ═══════════════════════════════════════════════════
+// CLEAR
+// ═══════════════════════════════════════════════════
+function confirmClear() {
+  if (!confirm('¿Limpiar todos los turnos, conductores y vehículos? Esta acción no se puede deshacer.')) return;
+  conductores = []; vehiculos = []; turnos = [];
+  cId = 0; vId = 0; tId = 0;
+  renderConductores(); renderVehiculos(); renderTurnos(); renderWeek();
+  showToast('Datos limpiados');
+}
+
+// ═══════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════
+// Spin keyframe for loading button
+const style = document.createElement('style');
+style.textContent = '@keyframes spin { to { transform: rotate(360deg); } }';
+document.head.appendChild(style);
+
+// Set today's date on empresa_periodo
+document.getElementById('empresa_periodo').value =
+  new Date().toISOString().slice(0,7);
+
+renderWeek();
+</script>
+</body>
+</html>
