@@ -1,0 +1,1485 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="color-scheme" content="light dark">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Generador de Contratos gratis — gestio.es</title>
+<meta name="description" content="Crea contratos de servicios, obra o arrendamiento y descarga el PDF al instante. Gratis, sin registro, 100% en tu navegador.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://gestio.es/contratos.html">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://gestio.es/contratos.html">
+<meta property="og:title" content="Generador de Contratos gratis — gestio.es">
+<meta property="og:description" content="Contratos profesionales listos para firmar. PDF instantáneo. Sin registro ni coste.">
+<meta property="og:locale" content="es_ES">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,700;12..96,800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  color-scheme: light dark;
+  --navy:    #0F1B2D;
+  --navy-2:  #1A2E48;
+  --emerald: #059669;
+  --em-light:#D1FAE5;
+  --em-mid:  #6EE7B7;
+  --slate:   #64748B;
+  --slate-2: #94A3B8;
+  --slate-3: #CBD5E1;
+  --bg:      #FAFAF9;
+  --bg-2:    #F4F4F2;
+  --bg-3:    #EEECEA;
+  --ink:     #0F1B2D;
+  --white:   #FFFFFF;
+  --line:    #E5E4E0;
+  --line-2:  #D0CEC9;
+  --rose:    #E11D48;
+  --amber:   #D97706;
+  --r:       10px;
+  --r-lg:    14px;
+  --card-bg: #FFFFFF;
+  --card-ink: #0F1B2D;
+  --card-slate: #64748B;
+  --card-line: #E5E4E0;
+  --nav-bg:  rgba(250,250,249,0.92);
+  --input-bg:   #FFFFFF;
+  --input-ink:  #0F1B2D;
+  --input-line: #E5E4E0;
+  --input-ph:   #CBD5E1;
+  --dark-surface: #0F1B2D;
+  --dark-surface-2: #1A2E48;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg:      #0D1117;
+    --bg-2:    #161B22;
+    --bg-3:    #1C2128;
+    --ink:     #E6EDF3;
+    --white:   #161B22;
+    --line:    rgba(255,255,255,0.08);
+    --line-2:  rgba(255,255,255,0.13);
+    --slate:   #8B949E;
+    --slate-2: #6E7681;
+    --slate-3: #484F58;
+    --navy:    #E6EDF3;
+    --navy-2:  #C9D1D9;
+    --em-light:rgba(5,150,105,0.15);
+    --card-bg: #FFFFFF;
+    --card-ink: #0F1B2D;
+    --card-slate: #64748B;
+    --card-line: #E5E4E0;
+    --nav-bg:  rgba(13,17,23,0.92);
+    --input-bg:   #FFFFFF;
+    --input-ink:  #0F1B2D;
+    --input-line: #D0CED9;
+    --input-ph:   #9CA3AF;
+    --dark-surface: #0F1B2D;
+    --dark-surface-2: #1A2E48;
+  }
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  min-height: 100vh;
+  font-size: 14px;
+  line-height: 1.5;
+  overflow-x: hidden;
+}
+
+/* ── NAV ─── */
+nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 28px;
+  background: var(--nav-bg);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--line);
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  text-decoration: none;
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--navy);
+  letter-spacing: -0.4px;
+}
+
+.logo-icon {
+  width: 28px; height: 28px;
+  background: var(--dark-surface);
+  border-radius: 7px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.logo-icon svg { width: 13px; height: 13px; }
+.logo-dot { color: var(--emerald); }
+
+.nav-right { display: flex; align-items: center; gap: 8px; }
+
+.nav-link {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--slate);
+  text-decoration: none;
+  padding: 6px 14px;
+  border-radius: 20px;
+  transition: color 0.2s, background 0.2s;
+}
+.nav-link:hover { color: var(--navy); background: var(--bg-3); }
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11.5px;
+  font-weight: 600;
+  padding: 4px 12px;
+  border-radius: 20px;
+}
+.badge-em {
+  background: var(--em-light);
+  color: var(--emerald);
+  border: 1px solid rgba(5,150,105,0.2);
+}
+
+/* ── PAGE HEADER ─── */
+.page-header {
+  padding: 40px 28px 32px;
+  max-width: 1060px;
+  margin: 0 auto;
+  animation: fadeUp 0.5s ease both;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.page-eyebrow {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--emerald);
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.page-eyebrow::before {
+  content: '';
+  width: 18px; height: 2px;
+  background: var(--emerald);
+  border-radius: 1px;
+}
+
+.page-header h1 {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: clamp(26px, 4vw, 38px);
+  font-weight: 800;
+  color: var(--navy);
+  letter-spacing: -1.5px;
+  line-height: 1.1;
+  margin-bottom: 8px;
+}
+
+.page-header p {
+  font-size: 14.5px;
+  color: var(--slate);
+}
+
+/* ── WRAP ─── */
+.wrap {
+  max-width: 1060px;
+  margin: 0 auto;
+  padding: 0 20px 120px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.span-2 { grid-column: 1 / -1; }
+
+@media (max-width: 720px) {
+  .grid { grid-template-columns: 1fr; }
+  .span-2 { grid-column: 1; }
+  .wrap { padding: 0 12px 120px; }
+  .page-header { padding: 28px 12px 20px; }
+  nav { padding: 0 14px; }
+}
+
+/* ── CARD ─── */
+.card {
+  background: var(--card-bg);
+  border: 1px solid var(--card-line);
+  border-radius: var(--r-lg);
+  padding: 22px 20px;
+  color: var(--card-ink);
+  transition: border-color 0.2s, box-shadow 0.25s;
+  animation: cardIn 0.5s ease both;
+}
+.card:hover {
+  border-color: #C8C6C0;
+  box-shadow: 0 4px 24px rgba(15,27,45,0.08);
+}
+.card:nth-child(1) { animation-delay: 0.05s; }
+.card:nth-child(2) { animation-delay: 0.1s; }
+.card:nth-child(3) { animation-delay: 0.15s; }
+.card:nth-child(4) { animation-delay: 0.2s; }
+.card:nth-child(5) { animation-delay: 0.25s; }
+.card:nth-child(6) { animation-delay: 0.3s; }
+
+@keyframes cardIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 18px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--card-line);
+}
+
+.card-icon {
+  width: 32px; height: 32px;
+  background: #F4F4F2;
+  border: 1px solid var(--card-line);
+  border-radius: 9px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.card-icon svg { width: 14px; height: 14px; color: var(--card-ink); }
+
+.card-title {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--card-ink);
+  letter-spacing: -0.2px;
+}
+
+/* ── FIELDS ─── */
+.field { margin-bottom: 10px; }
+.field:last-child { margin-bottom: 0; }
+
+label {
+  display: block;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--card-slate);
+  margin-bottom: 5px;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="tel"],
+input[type="date"],
+input[type="number"],
+select,
+textarea {
+  width: 100%;
+  padding: 9px 12px;
+  border: 1.5px solid var(--input-line, var(--line));
+  border-radius: var(--r);
+  font-family: 'Inter', sans-serif;
+  font-size: 13.5px;
+  font-weight: 400;
+  color: var(--input-ink, var(--ink));
+  background: var(--input-bg);
+  transition: border-color 0.2s, box-shadow 0.2s;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+input::placeholder { color: var(--input-ph, var(--slate-3)); }
+
+input:focus, select:focus, textarea:focus {
+  border-color: var(--emerald);
+  box-shadow: 0 0 0 3px rgba(5,150,105,0.1);
+  outline: none;
+}
+
+select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2394A3B8' stroke-width='2.5'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 11px center;
+  background-color: var(--input-bg);
+  padding-right: 34px;
+  cursor: pointer;
+}
+
+textarea { resize: vertical; min-height: 80px; }
+
+.row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+
+/* ── TIPO CONTRATO SELECTOR ─── */
+.tipo-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-bottom: 0;
+}
+@media (max-width: 500px) { .tipo-grid { grid-template-columns: repeat(2, 1fr); } }
+
+.tipo-btn {
+  border: 1.5px solid var(--card-line);
+  border-radius: var(--r);
+  background: var(--input-bg);
+  padding: 12px 10px;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+.tipo-btn:hover { border-color: var(--emerald); }
+.tipo-btn.active {
+  border-color: var(--emerald);
+  background: #F0FDF9;
+  box-shadow: 0 0 0 3px rgba(5,150,105,0.1);
+}
+
+.tipo-btn-icon {
+  width: 28px; height: 28px;
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  background: #F4F4F2;
+}
+.tipo-btn.active .tipo-btn-icon { background: var(--em-light); }
+.tipo-btn-icon svg { width: 14px; height: 14px; }
+
+.tipo-btn-label {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--card-slate);
+  line-height: 1.2;
+}
+.tipo-btn.active .tipo-btn-label { color: var(--emerald); }
+
+/* ── CLAUSULAS ─── */
+.clausula-row {
+  border: 1.5px solid var(--card-line);
+  border-radius: var(--r);
+  background: var(--input-bg);
+  margin-bottom: 8px;
+  overflow: hidden;
+  animation: fadeSlideIn 0.22s ease;
+}
+@keyframes fadeSlideIn {
+  from { opacity: 0; transform: translateY(5px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.clausula-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  background: #F4F4F2;
+  border-bottom: 1px solid var(--card-line);
+}
+.clausula-num {
+  width: 20px; height: 20px;
+  background: var(--dark-surface);
+  color: white;
+  border-radius: 6px;
+  font-size: 10px;
+  font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.clausula-title-input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--card-ink);
+  padding: 0;
+  outline: none;
+}
+.clausula-title-input::placeholder { color: var(--card-slate); }
+.clausula-body-input {
+  width: 100%;
+  border: none;
+  background: transparent;
+  font-size: 12.5px;
+  color: var(--card-ink);
+  padding: 10px 12px;
+  resize: vertical;
+  min-height: 70px;
+  outline: none;
+  font-family: 'Inter', sans-serif;
+  line-height: 1.55;
+}
+.btn-remove-cl {
+  width: 26px; height: 26px;
+  border: 1.5px solid #E5E4E0;
+  border-radius: 7px;
+  background: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--slate-2);
+  font-size: 16px;
+  line-height: 1;
+  flex-shrink: 0;
+  transition: background 0.15s, color 0.15s;
+}
+.btn-remove-cl:hover { background: #FFF1F2; color: var(--rose); border-color: #FECDD3; }
+
+/* ── ADD CLAUSULA BTN ─── */
+.btn-add-cl {
+  width: 100%;
+  padding: 9px;
+  border: 1.5px dashed var(--card-line);
+  border-radius: var(--r);
+  background: none;
+  cursor: pointer;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--slate);
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+  transition: border-color 0.2s, color 0.2s, background 0.2s;
+}
+.btn-add-cl:hover { border-color: var(--emerald); color: var(--emerald); background: #F0FDF9; }
+
+/* ── INFO BOX ─── */
+.info-box {
+  background: #D1FAE5;
+  border: 1px solid rgba(5,150,105,0.2);
+  border-radius: var(--r);
+  padding: 9px 12px;
+  font-size: 12px;
+  color: #065F46;
+  margin-top: 8px;
+  line-height: 1.55;
+}
+
+/* ── BOTTOM BAR ─── */
+.bottom-bar {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  z-index: 50;
+  background: var(--nav-bg);
+  backdrop-filter: blur(16px);
+  border-top: 1px solid var(--line);
+  padding: 12px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.btn-ghost {
+  padding: 9px 18px;
+  border: 1.5px solid var(--line);
+  border-radius: 22px;
+  background: none;
+  font-family: 'Inter', sans-serif;
+  font-size: 13.5px;
+  font-weight: 500;
+  color: var(--slate);
+  cursor: pointer;
+  transition: border-color 0.2s, color 0.2s;
+}
+.btn-ghost:hover { border-color: #C8C6C0; color: var(--ink); }
+
+.btn-primary {
+  padding: 11px 26px;
+  background: var(--dark-surface);
+  color: white;
+  border: none;
+  border-radius: 22px;
+  font-family: 'Inter', sans-serif;
+  font-size: 13.5px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex; align-items: center; gap: 8px;
+  transition: background 0.2s, transform 0.15s;
+}
+.btn-primary:hover { background: var(--dark-surface-2); transform: translateY(-1px); }
+.btn-primary svg { width: 15px; height: 15px; }
+
+/* ── TOAST ─── */
+.toast {
+  position: fixed;
+  bottom: 76px;
+  left: 50%;
+  transform: translateX(-50%) translateY(12px);
+  background: var(--dark-surface);
+  color: white;
+  padding: 9px 18px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 500;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s, transform 0.2s;
+  white-space: nowrap;
+  display: flex; align-items: center; gap: 8px;
+  z-index: 200;
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+.toast-dot {
+  width: 7px; height: 7px;
+  background: var(--emerald);
+  border-radius: 50%;
+}
+
+/* ── SECTION DIVIDER ─── */
+.section-gap { margin-top: 12px; }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="index.html" class="logo">
+    <div class="logo-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3" y="3" width="18" height="18" rx="3"/><path d="M3 9h18M9 21V9"/>
+      </svg>
+    </div>
+    gestio<span class="logo-dot">.</span>es
+  </a>
+  <div class="nav-right">
+    <a href="facturas.html" class="nav-link">Facturas</a>
+    <span class="badge badge-em">
+      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+      Contratos
+    </span>
+  </div>
+</nav>
+
+<!-- PAGE HEADER -->
+<div class="page-header">
+  <div class="page-eyebrow">Generador gratuito</div>
+  <h1>Contratos listos<br>para firmar</h1>
+  <p>Servicios, obra, arrendamiento, compraventa, colaboración o NDA. Rellena los datos y descarga el PDF. Sin registro, sin letra pequeña.</p>
+</div>
+
+<div class="wrap">
+  <div class="grid">
+
+    <!-- TIPO DE CONTRATO -->
+    <div class="card span-2">
+      <div class="card-header">
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3m0 14v3m10-10h-3M5 12H2m15.07-7.07-2.12 2.12M9.05 14.95l-2.12 2.12m12.14 0-2.12-2.12M9.05 9.05 6.93 6.93"/></svg>
+        </div>
+        <span class="card-title">Tipo de contrato</span>
+      </div>
+      <div class="tipo-grid">
+        <button class="tipo-btn active" onclick="setTipo('servicios', this)">
+          <div class="tipo-btn-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 7H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"/><path d="M16 3H8l-2 4h12l-2-4z"/></svg>
+          </div>
+          <span class="tipo-btn-label">Prestación<br>de servicios</span>
+        </button>
+        <button class="tipo-btn" onclick="setTipo('obra', this)">
+          <div class="tipo-btn-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#D97706" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="15" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/><line x1="12" y1="12" x2="12" y2="17"/><line x1="9.5" y1="14.5" x2="14.5" y2="14.5"/></svg>
+          </div>
+          <span class="tipo-btn-label">Contrato<br>de obra</span>
+        </button>
+        <button class="tipo-btn" onclick="setTipo('arrendamiento', this)">
+          <div class="tipo-btn-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#6366F1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+          </div>
+          <span class="tipo-btn-label">Arrendamiento<br>/ alquiler</span>
+        </button>
+        <button class="tipo-btn" onclick="setTipo('compraventa', this)">
+          <div class="tipo-btn-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#E11D48" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+          </div>
+          <span class="tipo-btn-label">Compraventa<br>de bien</span>
+        </button>
+        <button class="tipo-btn" onclick="setTipo('colaboracion', this)">
+          <div class="tipo-btn-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#0891B2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          </div>
+          <span class="tipo-btn-label">Colaboración<br>/ autónomo</span>
+        </button>
+        <button class="tipo-btn" onclick="setTipo('nda', this)">
+          <div class="tipo-btn-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#7C3AED" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          </div>
+          <span class="tipo-btn-label">Confidencialidad<br>(NDA)</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- DATOS DEL CONTRATO -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        </div>
+        <span class="card-title">Datos del contrato</span>
+      </div>
+      <div class="field">
+        <label>Número / referencia</label>
+        <input type="text" id="contrato_num" placeholder="CONT-2026-001">
+      </div>
+      <div class="row-2">
+        <div class="field">
+          <label>Fecha de firma</label>
+          <input type="date" id="contrato_fecha">
+        </div>
+        <div class="field">
+          <label>Lugar de firma</label>
+          <input type="text" id="contrato_lugar" placeholder="Madrid">
+        </div>
+      </div>
+      <div class="row-2">
+        <div class="field">
+          <label>Fecha de inicio</label>
+          <input type="date" id="contrato_inicio">
+        </div>
+        <div class="field">
+          <label>Fecha de fin <span style="font-weight:400;text-transform:none;letter-spacing:0">(opcional)</span></label>
+          <input type="date" id="contrato_fin">
+        </div>
+      </div>
+      <div class="field">
+        <label>Objeto del contrato</label>
+        <textarea id="contrato_objeto" placeholder="Descripción del servicio, obra o bien arrendado…" rows="3"></textarea>
+      </div>
+    </div>
+
+    <!-- CONTRAPRESTACIÓN ECONÓMICA -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+        </div>
+        <span class="card-title">Contraprestación económica</span>
+      </div>
+      <div class="field">
+        <label>Importe / precio</label>
+        <input type="number" id="precio_total" placeholder="0,00" min="0" step="0.01" oninput="calcPrecio()">
+      </div>
+      <div class="row-2">
+        <div class="field">
+          <label>IVA aplicable (%)</label>
+          <select id="iva_tipo" onchange="calcPrecio()">
+            <option value="0">Exento / 0%</option>
+            <option value="4">Superreducido 4%</option>
+            <option value="10">Reducido 10%</option>
+            <option value="21" selected>General 21%</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Forma de pago</label>
+          <select id="forma_pago">
+            <option>Transferencia bancaria</option>
+            <option>Domiciliación bancaria</option>
+            <option>Efectivo</option>
+            <option>Cheque</option>
+            <option>Bizum</option>
+          </select>
+        </div>
+      </div>
+      <div class="field">
+        <label>Periodicidad del pago</label>
+        <select id="periodicidad">
+          <option value="unico">Pago único</option>
+          <option value="mensual">Mensual</option>
+          <option value="trimestral">Trimestral</option>
+          <option value="anual">Anual</option>
+          <option value="hitos">Por hitos / entregables</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>IBAN (opcional)</label>
+        <input type="text" id="contrato_iban" placeholder="ES00 0000 0000 0000 0000 0000">
+      </div>
+      <!-- Resumen precio -->
+      <div style="background:#F4F4F2;border:1px solid #E5E4E0;border-radius:var(--r);padding:12px 14px;margin-top:10px;display:flex;flex-direction:column;gap:5px;">
+        <div style="display:flex;justify-content:space-between;font-size:12px;color:#64748B;">
+          <span>Base imponible</span>
+          <span id="p_base" style="font-variant-numeric:tabular-nums">—</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:12px;color:#64748B;">
+          <span id="p_iva_label">IVA (21%)</span>
+          <span id="p_iva" style="font-variant-numeric:tabular-nums">—</span>
+        </div>
+        <div style="height:1px;background:#E5E4E0;margin:2px 0;"></div>
+        <div style="display:flex;justify-content:space-between;font-size:13.5px;font-weight:700;color:#0F1B2D;">
+          <span>Total</span>
+          <span id="p_total" style="font-variant-numeric:tabular-nums;color:#059669">—</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- PARTE A — QUIEN PRESTA / ARRIENDA / CONTRATA -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </div>
+        <span class="card-title" id="label_parte_a">La parte prestadora</span>
+      </div>
+      <div class="row-2">
+        <div class="field">
+          <label>Nombre / razón social</label>
+          <input type="text" id="a_nombre" placeholder="Empresa o persona física">
+        </div>
+        <div class="field">
+          <label>NIF / CIF</label>
+          <input type="text" id="a_nif" placeholder="A12345678">
+        </div>
+      </div>
+      <div class="field">
+        <label>Domicilio</label>
+        <input type="text" id="a_dir" placeholder="Calle, número, piso…">
+      </div>
+      <div class="row-2">
+        <div class="field">
+          <label>Municipio</label>
+          <input type="text" id="a_ciudad" placeholder="Madrid">
+        </div>
+        <div class="field">
+          <label>Código postal</label>
+          <input type="text" id="a_cp" placeholder="28001">
+        </div>
+      </div>
+      <div class="row-2">
+        <div class="field">
+          <label>Email</label>
+          <input type="email" id="a_email" placeholder="contacto@empresa.es">
+        </div>
+        <div class="field">
+          <label>Teléfono</label>
+          <input type="tel" id="a_tel" placeholder="+34 600 000 000">
+        </div>
+      </div>
+      <div class="field">
+        <label>En calidad de</label>
+        <input type="text" id="a_cargo" placeholder="Administrador único, Autónomo…">
+      </div>
+    </div>
+
+    <!-- PARTE B — QUIEN RECIBE / ARRIENDA / ES CONTRATADO -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        </div>
+        <span class="card-title" id="label_parte_b">La parte contratante</span>
+      </div>
+      <div class="row-2">
+        <div class="field">
+          <label>Nombre / razón social</label>
+          <input type="text" id="b_nombre" placeholder="Empresa o persona física">
+        </div>
+        <div class="field">
+          <label>NIF / CIF</label>
+          <input type="text" id="b_nif" placeholder="B98765432">
+        </div>
+      </div>
+      <div class="field">
+        <label>Domicilio</label>
+        <input type="text" id="b_dir" placeholder="Calle, número, piso…">
+      </div>
+      <div class="row-2">
+        <div class="field">
+          <label>Municipio</label>
+          <input type="text" id="b_ciudad" placeholder="Barcelona">
+        </div>
+        <div class="field">
+          <label>Código postal</label>
+          <input type="text" id="b_cp" placeholder="08001">
+        </div>
+      </div>
+      <div class="row-2">
+        <div class="field">
+          <label>Email</label>
+          <input type="email" id="b_email" placeholder="cliente@empresa.es">
+        </div>
+        <div class="field">
+          <label>Teléfono</label>
+          <input type="tel" id="b_tel" placeholder="+34 611 000 000">
+        </div>
+      </div>
+      <div class="field">
+        <label>En calidad de</label>
+        <input type="text" id="b_cargo" placeholder="Administrador único, Particular…">
+      </div>
+    </div>
+
+    <!-- CLÁUSULAS -->
+    <div class="card span-2 section-gap">
+      <div class="card-header">
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+        </div>
+        <span class="card-title">Cláusulas del contrato</span>
+      </div>
+      <div id="clausulas-list"></div>
+      <button class="btn-add-cl" onclick="addClausula()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Añadir cláusula
+      </button>
+      <div class="info-box" style="margin-top:10px">
+        💡 Puedes editar cualquier cláusula libremente. El PDF reproducirá el texto exacto que escribas.
+      </div>
+    </div>
+
+    <!-- OBSERVACIONES -->
+    <div class="card span-2">
+      <div class="card-header">
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        </div>
+        <span class="card-title">Observaciones adicionales</span>
+      </div>
+      <div class="field" style="margin-bottom:0">
+        <textarea id="observaciones" placeholder="Condiciones adicionales, notas al pie, advertencias legales…" rows="3"></textarea>
+      </div>
+    </div>
+
+  </div><!-- /grid -->
+</div><!-- /wrap -->
+
+<!-- BOTTOM BAR -->
+<div class="bottom-bar">
+  <button class="btn-ghost" onclick="limpiarFormulario()">Limpiar</button>
+  <button class="btn-primary" onclick="generarPDF()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+    Descargar contrato PDF
+  </button>
+</div>
+
+<div class="toast" id="toast">
+  <span class="toast-dot"></span>
+  PDF descargado
+</div>
+
+<script>
+// ── ESTADO ──────────────────────────────────────
+let tipoContrato = 'servicios';
+let clausulaCtr = 0;
+
+// ── TIPO CONTRATO ────────────────────────────────
+function setTipo(tipo, btn) {
+  tipoContrato = tipo;
+  document.querySelectorAll('.tipo-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+
+  const etiquetas = {
+    servicios:    ['La parte prestadora (proveedor)', 'La parte contratante (cliente)'],
+    obra:         ['El contratista',                  'El promotor / comitente'],
+    arrendamiento:['El arrendador (propietario)',     'El arrendatario (inquilino)'],
+    compraventa:  ['El vendedor',                     'El comprador'],
+    colaboracion: ['El colaborador (autónomo)',        'La empresa contratante'],
+    nda:          ['La parte reveladora',              'La parte receptora'],
+  };
+  document.getElementById('label_parte_a').textContent = etiquetas[tipo][0];
+  document.getElementById('label_parte_b').textContent = etiquetas[tipo][1];
+
+  // Reemplazar cláusulas con plantilla del tipo
+  document.getElementById('clausulas-list').innerHTML = '';
+  clausulaCtr = 0;
+  getPlantilla(tipo).forEach(cl => addClausula(cl.titulo, cl.cuerpo));
+}
+
+function getPlantilla(tipo) {
+  const año = new Date().getFullYear();
+  if (tipo === 'servicios') return [
+    { titulo: 'Objeto del contrato', cuerpo: 'La parte prestadora se compromete a prestar los servicios descritos en el presente contrato, conforme a las condiciones establecidas en el mismo.' },
+    { titulo: 'Duración', cuerpo: 'El presente contrato tendrá la duración indicada en la cabecera. Cualquiera de las partes podrá resolver el contrato con un preaviso de 30 días naturales.' },
+    { titulo: 'Precio y forma de pago', cuerpo: 'El precio acordado por los servicios es el indicado en el apartado económico del presente contrato, más el IVA legalmente aplicable. El pago se realizará mediante la forma y periodicidad pactadas.' },
+    { titulo: 'Confidencialidad', cuerpo: 'Ambas partes se comprometen a mantener la más estricta confidencialidad sobre la información que, con motivo de la ejecución del presente contrato, pueda ser conocida por cada una de ellas.' },
+    { titulo: 'Protección de datos', cuerpo: 'En cumplimiento del Reglamento (UE) 2016/679 (RGPD) y la LOPDGDD, los datos personales facilitados serán tratados únicamente para la ejecución del presente contrato y no serán cedidos a terceros.' },
+    { titulo: 'Resolución de conflictos', cuerpo: 'Para la resolución de cualquier controversia derivada del presente contrato, las partes se someten a los Juzgados y Tribunales del domicilio de la parte prestadora, renunciando a cualquier otro fuero que pudiera corresponderles.' },
+  ];
+  if (tipo === 'obra') return [
+    { titulo: 'Objeto de la obra', cuerpo: 'El contratista se compromete a ejecutar la obra descrita en el presente contrato, conforme a las especificaciones técnicas y planos acordados por ambas partes.' },
+    { titulo: 'Plazo de ejecución', cuerpo: 'La obra deberá quedar totalmente terminada en la fecha de fin indicada. Cualquier ampliación del plazo deberá acordarse por escrito entre ambas partes.' },
+    { titulo: 'Precio y certificaciones', cuerpo: 'El precio total de la obra es el indicado, más el IVA legalmente aplicable. Los pagos se realizarán según la periodicidad y forma pactadas, pudiendo acordarse certificaciones de obra parciales.' },
+    { titulo: 'Variaciones y modificaciones', cuerpo: 'Cualquier modificación del proyecto o de las especificaciones técnicas deberá ser acordada por escrito y podrá implicar la revisión del precio y del plazo de ejecución.' },
+    { titulo: 'Recepción de la obra', cuerpo: 'Finalizada la obra, ambas partes levantarán un acta de recepción. El promotor dispondrá de un plazo de 10 días hábiles para comunicar cualquier defecto aparente.' },
+    { titulo: 'Resolución de conflictos', cuerpo: 'Para la resolución de cualquier controversia derivada del presente contrato, las partes se someten a los Juzgados y Tribunales del domicilio del contratista, renunciando a cualquier otro fuero que pudiera corresponderles.' },
+  ];
+  if (tipo === 'arrendamiento') return [
+    { titulo: 'Objeto del arrendamiento', cuerpo: 'El arrendador cede al arrendatario, en régimen de arrendamiento, el uso y disfrute del bien descrito en el objeto del contrato.' },
+    { titulo: 'Duración', cuerpo: 'El arrendamiento tendrá la duración indicada. Salvo denuncia expresa por cualquiera de las partes con 30 días de antelación, el contrato se prorrogará tácitamente por períodos iguales.' },
+    { titulo: 'Renta y forma de pago', cuerpo: 'La renta mensual será el importe pactado, más el IVA aplicable si procede. El arrendatario se compromete a abonarla en los primeros cinco días de cada período, mediante la forma de pago acordada.' },
+    { titulo: 'Fianza', cuerpo: 'El arrendatario entregará al arrendador, en concepto de fianza, el importe equivalente a una mensualidad de renta. Dicha cantidad será devuelta al finalizar el contrato, descontando los posibles desperfectos causados.' },
+    { titulo: 'Uso y mantenimiento', cuerpo: 'El arrendatario se obliga a usar el bien arrendado conforme a su naturaleza y destino pactado, y a realizar a su cargo las reparaciones derivadas del uso ordinario.' },
+    { titulo: 'Resolución de conflictos', cuerpo: 'Para la resolución de cualquier controversia derivada del presente contrato, las partes se someten a los Juzgados y Tribunales del lugar donde radica el bien arrendado.' },
+  ];
+  if (tipo === 'compraventa') return [
+    { titulo: 'Objeto de la compraventa', cuerpo: 'El vendedor vende y transmite al comprador la plena propiedad del bien descrito en el objeto del contrato, libre de cargas, gravámenes y arrendatarios.' },
+    { titulo: 'Precio y forma de pago', cuerpo: 'El precio de venta es el indicado en el apartado económico, más el IVA o impuesto de transmisiones que corresponda según la naturaleza del bien. El pago se realizará mediante la forma acordada en el momento de la firma o en los plazos pactados.' },
+    { titulo: 'Entrega del bien', cuerpo: 'El vendedor se compromete a entregar el bien en el estado en que se encuentra a la firma del presente contrato, libre de ocupantes y con todos los accesorios, documentación y llaves necesarios para su uso.' },
+    { titulo: 'Garantías y saneamiento', cuerpo: 'El vendedor garantiza que el bien es de su legítima propiedad y responderá del saneamiento por evicción y vicios ocultos conforme a lo establecido en el Código Civil.' },
+    { titulo: 'Gastos e impuestos', cuerpo: 'Los gastos derivados de la formalización del presente contrato, incluyendo notaría, registro e impuestos, serán soportados según lo establecido en la normativa vigente y el acuerdo entre las partes.' },
+    { titulo: 'Resolución de conflictos', cuerpo: 'Para la resolución de cualquier controversia derivada del presente contrato, las partes se someten a los Juzgados y Tribunales del lugar donde radique el bien objeto de compraventa.' },
+  ];
+  if (tipo === 'colaboracion') return [
+    { titulo: 'Objeto de la colaboración', cuerpo: 'El colaborador, en calidad de trabajador autónomo independiente, prestará a la empresa los servicios descritos en el objeto del contrato. En ningún caso existirá relación laboral entre las partes, actuando el colaborador con plena autonomía organizativa.' },
+    { titulo: 'Duración', cuerpo: 'El presente acuerdo tendrá la vigencia indicada. Cualquiera de las partes podrá resolverlo anticipadamente mediante preaviso escrito de 15 días naturales, sin que ello genere derecho a indemnización alguna.' },
+    { titulo: 'Honorarios y facturación', cuerpo: 'La empresa abonará al colaborador los honorarios pactados, conforme a la periodicidad y forma de pago acordadas. El colaborador emitirá la correspondiente factura con el IVA y la retención de IRPF aplicables según su situación fiscal.' },
+    { titulo: 'Obligaciones del colaborador', cuerpo: 'El colaborador será responsable del cumplimiento de sus obligaciones fiscales y con la Seguridad Social como trabajador autónomo, debiendo acreditar su alta en el RETA cuando así lo solicite la empresa.' },
+    { titulo: 'Confidencialidad y exclusividad', cuerpo: 'El colaborador se compromete a guardar la más estricta confidencialidad sobre la información obtenida durante la ejecución del contrato. Salvo pacto expreso en contrario, el colaborador podrá prestar servicios a terceros siempre que no supongan competencia desleal.' },
+    { titulo: 'Resolución de conflictos', cuerpo: 'Para la resolución de cualquier controversia derivada del presente contrato, las partes se someten a los Juzgados y Tribunales del domicilio de la empresa contratante.' },
+  ];
+  if (tipo === 'nda') return [
+    { titulo: 'Definición de información confidencial', cuerpo: 'Se considera información confidencial toda aquella que la parte reveladora transmita a la parte receptora, ya sea de forma oral, escrita, digital o por cualquier otro medio, incluyendo sin limitación: datos técnicos, comerciales, financieros, know-how, estrategias, clientes y proveedores.' },
+    { titulo: 'Obligación de confidencialidad', cuerpo: 'La parte receptora se obliga a: (i) mantener estricta confidencialidad sobre la información recibida; (ii) no divulgarla a terceros sin autorización escrita previa; (iii) utilizarla únicamente para los fines del proyecto o relación comercial contemplada en el presente acuerdo.' },
+    { titulo: 'Excepciones', cuerpo: 'Las obligaciones de confidencialidad no serán aplicables a aquella información que: (i) sea o pase a ser de dominio público sin incumplimiento de este acuerdo; (ii) fuese ya conocida por la parte receptora con anterioridad; (iii) sea divulgada por mandato legal o resolución judicial firme.' },
+    { titulo: 'Duración', cuerpo: 'Las obligaciones de confidencialidad establecidas en el presente acuerdo se mantendrán vigentes durante el plazo indicado en el contrato y, en todo caso, durante un mínimo de tres (3) años desde la fecha de firma, independientemente de la resolución de la relación entre las partes.' },
+    { titulo: 'Devolución de información', cuerpo: 'A la finalización del acuerdo o a requerimiento de la parte reveladora, la parte receptora deberá devolver o destruir, a elección de la reveladora, toda la información confidencial recibida, incluyendo copias y reproducciones.' },
+    { titulo: 'Resolución de conflictos', cuerpo: 'Para la resolución de cualquier controversia derivada del presente acuerdo, las partes se someten a los Juzgados y Tribunales del domicilio de la parte reveladora, con renuncia expresa a cualquier otro fuero.' },
+  ];
+  return [];
+}
+
+// ── CLÁUSULAS ────────────────────────────────────
+function addClausula(titulo = '', cuerpo = '') {
+  clausulaCtr++;
+  const id = clausulaCtr;
+  const num = document.getElementById('clausulas-list').children.length + 1;
+  const div = document.createElement('div');
+  div.className = 'clausula-row';
+  div.id = `cl_${id}`;
+  div.innerHTML = `
+    <div class="clausula-head">
+      <div class="clausula-num">${num}</div>
+      <input type="text" class="clausula-title-input" placeholder="Título de la cláusula" value="${escHtml(titulo)}">
+      <button class="btn-remove-cl" onclick="removeClausula(${id})" title="Eliminar cláusula">×</button>
+    </div>
+    <textarea class="clausula-body-input" placeholder="Texto de la cláusula…">${escHtml(cuerpo)}</textarea>
+  `;
+  document.getElementById('clausulas-list').appendChild(div);
+  renumerarClausulas();
+}
+
+function removeClausula(id) {
+  const el = document.getElementById(`cl_${id}`);
+  if (!el) return;
+  el.style.opacity = '0'; el.style.transform = 'translateX(-6px)';
+  el.style.transition = 'all 0.18s ease';
+  setTimeout(() => { el.remove(); renumerarClausulas(); }, 180);
+}
+
+function renumerarClausulas() {
+  document.querySelectorAll('#clausulas-list .clausula-num').forEach((el, i) => {
+    el.textContent = i + 1;
+  });
+}
+
+function escHtml(s) {
+  return (s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ── PRECIO ───────────────────────────────────────
+function calcPrecio() {
+  const base = parseFloat(document.getElementById('precio_total').value) || 0;
+  const ivaPct = parseFloat(document.getElementById('iva_tipo').value);
+  const iva = base * ivaPct / 100;
+  const total = base + iva;
+
+  document.getElementById('p_base').textContent  = base  > 0 ? fmtE(base)  : '—';
+  document.getElementById('p_iva').textContent   = base  > 0 ? fmtE(iva)   : '—';
+  document.getElementById('p_total').textContent = base  > 0 ? fmtE(total) : '—';
+  document.getElementById('p_iva_label').textContent = `IVA (${ivaPct}%)`;
+}
+
+function fmtE(n) {
+  return n.toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' €';
+}
+
+function fmtN(n) {
+  return n.toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+
+function fmtFecha(s) {
+  if (!s) return '—';
+  const [y, m, d] = s.split('-');
+  const meses = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+  return `${parseInt(d)} de ${meses[parseInt(m)-1]} de ${y}`;
+}
+
+// ── INIT ─────────────────────────────────────────
+window.onload = () => {
+  const hoy = new Date();
+  document.getElementById('contrato_fecha').value  = hoy.toISOString().split('T')[0];
+  document.getElementById('contrato_inicio').value = hoy.toISOString().split('T')[0];
+  document.getElementById('contrato_num').value    = `CONT-${hoy.getFullYear()}-001`;
+  setTipo('servicios', document.querySelector('.tipo-btn'));
+};
+
+// ── LIMPIAR ──────────────────────────────────────
+function limpiarFormulario() {
+  if (!confirm('¿Limpiar todos los datos del contrato?')) return;
+  document.querySelectorAll('input[type="text"],input[type="email"],input[type="tel"],input[type="number"],textarea').forEach(el => el.value = '');
+  document.getElementById('clausulas-list').innerHTML = '';
+  clausulaCtr = 0;
+  window.onload();
+}
+
+// ── TOAST ────────────────────────────────────────
+function showToast(msg, isError = false) {
+  const t = document.getElementById('toast');
+  t.querySelector('.toast-dot').nextSibling.textContent = ' ' + msg;
+  t.style.background = isError ? '#E11D48' : '';
+  t.querySelector('.toast-dot').style.background = isError ? 'rgba(255,255,255,0.6)' : '';
+  t.classList.add('show');
+  setTimeout(() => { t.classList.remove('show'); t.style.background = ''; }, isError ? 3500 : 2500);
+}
+
+function g(id) { return document.getElementById(id)?.value?.trim() || ''; }
+
+// ── VALIDACIÓN ───────────────────────────────────
+function validarFormulario() {
+  const errores = [];
+  if (!g('a_nombre'))       errores.push('Nombre Parte A');
+  if (!g('a_nif'))          errores.push('NIF/CIF Parte A');
+  if (!g('b_nombre'))       errores.push('Nombre Parte B');
+  if (!g('b_nif'))          errores.push('NIF/CIF Parte B');
+  if (!g('contrato_objeto'))errores.push('Objeto del contrato');
+  if (errores.length > 0) {
+    showToast('Falta: ' + errores[0] + (errores.length > 1 ? ` (+${errores.length-1})` : ''), true);
+    return false;
+  }
+  return true;
+}
+
+// ── PDF ──────────────────────────────────────────
+async function generarPDF() {
+  if (!validarFormulario()) return;
+
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ unit: 'mm', format: 'a4' });
+  const W = 210, M = 18;
+  const pageH = 297;
+  const footerH = 14;
+  const safeBottom = pageH - footerH - 6;
+
+  // Paleta
+  const black   = [15, 27, 45];
+  const gray1   = [80, 90, 110];
+  const gray2   = [130, 140, 155];
+  const gray3   = [200, 205, 215];
+  const green   = [5, 150, 105];
+  const greenLt = [209, 250, 229];
+  const bg      = [248, 248, 247];
+  const white   = [255, 255, 255];
+  const divider = [230, 230, 228];
+
+  let pageNum = 1;
+
+  // Función footer
+  function drawFooter() {
+    doc.setFillColor(...bg);
+    doc.rect(0, pageH - footerH, W, footerH, 'F');
+    doc.setFillColor(...divider);
+    doc.rect(0, pageH - footerH, W, 0.3, 'F');
+    doc.setFillColor(...green);
+    doc.rect(0, pageH - footerH, 3, footerH, 'F');
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(7);
+    doc.setTextColor(...gray2);
+    doc.text('Generado con gestio.es — Herramientas gratuitas para autónomos y pymes de España', W / 2, pageH - 4.5, { align: 'center' });
+    doc.text(`Página ${pageNum}`, W - M, pageH - 4.5, { align: 'right' });
+  }
+
+  function newPage() {
+    drawFooter();
+    doc.addPage();
+    pageNum++;
+    // Fondo blanco nueva página
+    doc.setFillColor(...white);
+    doc.rect(0, 0, W, pageH, 'F');
+    // Acento lateral verde
+    doc.setFillColor(...green);
+    doc.rect(0, 0, 3, pageH, 'F');
+  }
+
+  function checkPageBreak(y, needed) {
+    if (y + needed > safeBottom) { newPage(); return 24; }
+    return y;
+  }
+
+  // ── CABECERA PRIMERA PÁGINA ──
+  doc.setFillColor(...white);
+  doc.rect(0, 0, W, pageH, 'F');
+
+  // Franja superior
+  doc.setFillColor(...bg);
+  doc.rect(0, 0, W, 58, 'F');
+
+  // Acento verde izquierdo
+  doc.setFillColor(...green);
+  doc.rect(0, 0, 3, 58, 'F');
+
+  // Separador cabecera
+  doc.setFillColor(...divider);
+  doc.rect(0, 58, W, 0.4, 'F');
+
+  // Etiqueta tipo contrato
+  const tiposLabel = { servicios: 'CONTRATO DE PRESTACIÓN DE SERVICIOS', obra: 'CONTRATO DE OBRA', arrendamiento: 'CONTRATO DE ARRENDAMIENTO' };
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(20);
+  doc.setTextColor(...black);
+  doc.text(tiposLabel[tipoContrato] || 'CONTRATO', M + 4, 22);
+
+  // Nº contrato
+  const numContr = g('contrato_num') || '—';
+  doc.setFillColor(...greenLt);
+  doc.roundedRect(M + 4, 27, 52, 8, 2, 2, 'F');
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(8);
+  doc.setTextColor(...green);
+  doc.text(`Ref.  ${numContr}`, M + 7, 32.5);
+
+  // Fecha y lugar — derecha
+  const dateX = W - M;
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(7.5);
+  doc.setTextColor(...gray1);
+  doc.text('FECHA DE FIRMA', dateX, 16, { align: 'right' });
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(9.5);
+  doc.setTextColor(...black);
+  doc.text(fmtFecha(g('contrato_fecha')), dateX, 23, { align: 'right' });
+
+  if (g('contrato_lugar')) {
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(7.5);
+    doc.setTextColor(...gray1);
+    doc.text('LUGAR', dateX, 33, { align: 'right' });
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(9);
+    doc.setTextColor(...gray2);
+    doc.text(g('contrato_lugar'), dateX, 39.5, { align: 'right' });
+  }
+
+  // Vigencia
+  const inicioTxt = fmtFecha(g('contrato_inicio'));
+  const finTxt = g('contrato_fin') ? fmtFecha(g('contrato_fin')) : 'Indefinido';
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(7);
+  doc.setTextColor(...gray2);
+  doc.text(`VIGENCIA: ${inicioTxt} — ${finTxt}`.toUpperCase(), dateX, 49, { align: 'right' });
+
+  let y = 70;
+
+  // ── PARTES ──
+  // Cabeceras DE / PARA
+  const col2 = 120;
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(7);
+  doc.setTextColor(...green);
+  const parteALabel = { servicios: 'PRESTADOR', obra: 'CONTRATISTA', arrendamiento: 'ARRENDADOR', compraventa: 'VENDEDOR', colaboracion: 'COLABORADOR', nda: 'PARTE REVELADORA' };
+  const parteBLabel = { servicios: 'CLIENTE',   obra: 'PROMOTOR',    arrendamiento: 'ARRENDATARIO', compraventa: 'COMPRADOR', colaboracion: 'EMPRESA CONTRATANTE', nda: 'PARTE RECEPTORA' };
+  doc.text(parteALabel[tipoContrato] || 'PARTE A', M, y);
+  doc.text(parteBLabel[tipoContrato] || 'PARTE B', col2, y);
+  y += 5;
+
+  // Nombres en grande
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(11);
+  doc.setTextColor(...black);
+  const aNom = g('a_nombre') || '—';
+  const bNom = g('b_nombre') || '—';
+  // Truncar si es muy largo
+  const maxNomW = 85;
+  const aNomLines = doc.splitTextToSize(aNom, maxNomW);
+  const bNomLines = doc.splitTextToSize(bNom, maxNomW);
+  doc.text(aNomLines[0], M, y);
+  doc.text(bNomLines[0], col2, y);
+  y += 5.5;
+
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(8.5);
+  doc.setTextColor(...gray1);
+
+  const aLines = [
+    g('a_nif') ? `NIF/CIF: ${g('a_nif')}` : null,
+    g('a_cargo') || null,
+    g('a_dir') || null,
+    [g('a_ciudad'), g('a_cp')].filter(Boolean).join('  '),
+    g('a_email') || null,
+    g('a_tel') || null,
+  ].filter(Boolean);
+
+  const bLines = [
+    g('b_nif') ? `NIF/CIF: ${g('b_nif')}` : null,
+    g('b_cargo') || null,
+    g('b_dir') || null,
+    [g('b_ciudad'), g('b_cp')].filter(Boolean).join('  '),
+    g('b_email') || null,
+    g('b_tel') || null,
+  ].filter(Boolean);
+
+  const maxL = Math.max(aLines.length, bLines.length);
+  for (let i = 0; i < maxL; i++) {
+    doc.text(aLines[i] || '', M, y);
+    doc.text(bLines[i] || '', col2, y);
+    y += 5;
+  }
+
+  y += 4;
+
+  // ── OBJETO ──
+  doc.setFillColor(...divider);
+  doc.rect(M, y, W - M*2, 0.4, 'F');
+  y += 7;
+
+  doc.setFillColor(...bg);
+  const objText = g('contrato_objeto') || '—';
+  const objLines = doc.splitTextToSize(objText, W - M*2 - 14);
+  const objH = Math.max(18, objLines.length * 5 + 14);
+  doc.roundedRect(M, y, W - M*2, objH, 2, 2, 'F');
+  doc.setFillColor(...green);
+  doc.roundedRect(M, y, 3, objH, 1.5, 1.5, 'F');
+  doc.rect(M + 1.5, y, 1.5, objH, 'F');
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(7.5);
+  doc.setTextColor(...green);
+  doc.text('OBJETO DEL CONTRATO', M + 7, y + 7);
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(9);
+  doc.setTextColor(...black);
+  doc.text(objLines, M + 7, y + 13);
+  y += objH + 6;
+
+  // ── CONTRAPRESTACIÓN ECONÓMICA ──
+  y = checkPageBreak(y, 28);
+
+  doc.setFillColor(...divider);
+  doc.rect(M, y, W - M*2, 0.4, 'F');
+  y += 7;
+
+  const base    = parseFloat(document.getElementById('precio_total').value) || 0;
+  const ivaPct  = parseFloat(document.getElementById('iva_tipo').value);
+  const iva     = base * ivaPct / 100;
+  const total   = base + iva;
+  const periodo = document.getElementById('periodicidad').options[document.getElementById('periodicidad').selectedIndex].text;
+  const forma   = g('forma_pago') || 'Transferencia bancaria';
+
+  if (base > 0) {
+    // Caja económica
+    doc.setFillColor(...black);
+    doc.roundedRect(M, y, W - M*2, 22, 2, 2, 'F');
+    doc.setFillColor(...green);
+    doc.roundedRect(M, y, 3, 22, 1.5, 1.5, 'F');
+    doc.rect(M + 1.5, y, 1.5, 22, 'F');
+
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(7.5);
+    doc.setTextColor(180, 190, 200);
+    doc.text('CONTRAPRESTACIÓN ECONÓMICA', M + 7, y + 8);
+    doc.text(`Base: ${fmtN(base)} €  ·  IVA (${ivaPct}%): ${fmtN(iva)} €  ·  Pago: ${forma}  ·  Periodicidad: ${periodo}`, M + 7, y + 15);
+
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(14);
+    doc.setTextColor(...white);
+    doc.text(`TOTAL: ${fmtN(total)} €`, W - M - 2, y + 14, { align: 'right' });
+
+    if (g('contrato_iban')) {
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(7.5);
+      doc.setTextColor(160, 175, 190);
+      doc.text(`IBAN: ${g('contrato_iban')}`, M + 7, y + 20);
+    }
+
+    y += 28;
+  }
+
+  // ── CLÁUSULAS ──
+  const clausulaRows = document.querySelectorAll('#clausulas-list .clausula-row');
+
+  if (clausulaRows.length > 0) {
+    y = checkPageBreak(y, 16);
+
+    doc.setFillColor(...divider);
+    doc.rect(M, y, W - M*2, 0.4, 'F');
+    y += 9;
+
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(10);
+    doc.setTextColor(...black);
+    doc.text('ESTIPULACIONES', M, y);
+    y += 8;
+
+    clausulaRows.forEach((row, idx) => {
+      const tit  = row.querySelector('.clausula-title-input')?.value?.trim() || `Cláusula ${idx+1}`;
+      const body = row.querySelector('.clausula-body-input')?.value?.trim() || '';
+      const bodyLines = doc.splitTextToSize(body, W - M*2 - 8);
+      const needed = 10 + bodyLines.length * 5 + 8;
+
+      y = checkPageBreak(y, needed);
+
+      // Encabezado cláusula
+      doc.setFillColor(...bg);
+      doc.roundedRect(M, y, W - M*2, 9, 2, 2, 'F');
+      doc.setFillColor(...black);
+      doc.roundedRect(M, y, 8, 9, 1.5, 1.5, 'F');
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(8);
+      doc.setTextColor(...white);
+      doc.text(String(idx + 1), M + 4, y + 6, { align: 'center' });
+
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(9);
+      doc.setTextColor(...black);
+      doc.text(tit.toUpperCase(), M + 12, y + 6);
+      y += 12;
+
+      if (body) {
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(9);
+        doc.setTextColor(...gray1);
+        // Dividir en chunks si hay muchas líneas
+        const chunkSize = 10;
+        for (let i = 0; i < bodyLines.length; i += chunkSize) {
+          const chunk = bodyLines.slice(i, i + chunkSize);
+          y = checkPageBreak(y, chunk.length * 5 + 4);
+          doc.text(chunk, M + 4, y);
+          y += chunk.length * 5;
+        }
+      }
+      y += 6;
+    });
+  }
+
+  // ── OBSERVACIONES ──
+  const obs = g('observaciones');
+  if (obs) {
+    y = checkPageBreak(y, 20);
+    const obsLines = doc.splitTextToSize(obs, W - M*2 - 14);
+    const obsH = obsLines.length * 5 + 14;
+    y = checkPageBreak(y, obsH);
+
+    doc.setFillColor(...bg);
+    doc.roundedRect(M, y, W - M*2, obsH, 2, 2, 'F');
+    doc.setFillColor(...green);
+    doc.roundedRect(M, y, 3, obsH, 1.5, 1.5, 'F');
+    doc.rect(M + 1.5, y, 1.5, obsH, 'F');
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(7.5);
+    doc.setTextColor(...green);
+    doc.text('OBSERVACIONES ADICIONALES', M + 7, y + 7);
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(9);
+    doc.setTextColor(...gray1);
+    doc.text(obsLines, M + 7, y + 13);
+    y += obsH + 8;
+  }
+
+  // ── BLOQUE DE FIRMAS ──
+  y = checkPageBreak(y, 50);
+
+  doc.setFillColor(...divider);
+  doc.rect(M, y, W - M*2, 0.4, 'F');
+  y += 10;
+
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(9);
+  doc.setTextColor(...black);
+  doc.text('FIRMAS', M, y);
+  y += 10;
+
+  const col2Sig = W/2 + 2;
+  const sigW = (W - M*2)/2 - 4;
+
+  // Caja firma A
+  doc.setDrawColor(...gray3);
+  doc.setLineWidth(0.3);
+  doc.roundedRect(M, y, sigW, 30, 2, 2, 'S');
+  doc.roundedRect(col2Sig, y, sigW, 30, 2, 2, 'S');
+
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(7.5);
+  doc.setTextColor(...green);
+  const sigLabelA = (parteALabel[tipoContrato] || 'PARTE A');
+  const sigLabelB = (parteBLabel[tipoContrato] || 'PARTE B');
+  doc.text(sigLabelA, M + 5, y + 6);
+  doc.text(sigLabelB, col2Sig + 5, y + 6);
+
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(8.5);
+  doc.setTextColor(...black);
+  doc.text(g('a_nombre') || '—', M + 5, y + 12);
+  doc.text(g('b_nombre') || '—', col2Sig + 5, y + 12);
+
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(7.5);
+  doc.setTextColor(...gray2);
+  doc.text(`NIF: ${g('a_nif') || '—'}`, M + 5, y + 18);
+  doc.text(`NIF: ${g('b_nif') || '—'}`, col2Sig + 5, y + 18);
+
+  // Línea firma
+  doc.setDrawColor(...gray3);
+  doc.setLineWidth(0.5);
+  doc.line(M + 5, y + 27, M + sigW - 5, y + 27);
+  doc.line(col2Sig + 5, y + 27, col2Sig + sigW - 5, y + 27);
+
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(7);
+  doc.setTextColor(...gray3);
+  doc.text('Firma y fecha', M + 5, y + 29.5);
+  doc.text('Firma y fecha', col2Sig + 5, y + 29.5);
+
+  // Lugar y fecha abajo
+  y += 38;
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(8.5);
+  doc.setTextColor(...gray2);
+  const lugarFecha = [g('contrato_lugar'), fmtFecha(g('contrato_fecha'))].filter(Boolean).join(', a ');
+  if (lugarFecha.trim() !== ', a —' && lugarFecha) {
+    doc.text(`En ${lugarFecha}.`, M, y);
+  }
+
+  // Footer primera y última página
+  drawFooter();
+
+  // Guardar
+  const filename = `contrato_${(g('contrato_num') || 'gestio').replace(/[^a-zA-Z0-9_-]/g,'_')}.pdf`;
+  const blob = doc.output('blob');
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = filename;
+  document.body.appendChild(a); a.click();
+  setTimeout(() => { document.body.removeChild(a); URL.revokeObjectURL(url); }, 200);
+  showToast('Contrato descargado');
+}
+</script>
+</body>
+</html>
