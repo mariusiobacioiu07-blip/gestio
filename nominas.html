@@ -4,7 +4,15 @@
 <meta charset="UTF-8">
 <meta name="color-scheme" content="light dark">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Calculadora de Nóminas — gestio.es</title>
+<title>Calculadora de Nóminas gratis — gestio.es</title>
+<meta name="description" content="Calcula nóminas con IRPF automático según tablas AEAT 2025, Seguridad Social y deducciones. Descarga la nómina en PDF. Gratis, sin registro.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://gestio.es/nominas.html">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://gestio.es/nominas.html">
+<meta property="og:title" content="Calculadora de Nóminas gratis — gestio.es">
+<meta property="og:description" content="IRPF automático tablas 2025, SS y deducciones. PDF al instante. Sin registro ni coste.">
+<meta property="og:locale" content="es_ES">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,700;12..96,800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -596,7 +604,7 @@ textarea { resize: vertical; min-height: 70px; }
 
 <!-- PAGE HEADER -->
 <div class="page-header">
-  <div class="page-eyebrow">Herramienta #2</div>
+
   <h1>Calculadora de nóminas</h1>
   <p>Calcula el salario neto, retenciones IRPF y cotizaciones a la Seguridad Social. Descarga la nómina en PDF.</p>
 </div>
@@ -1329,7 +1337,7 @@ function actualizarTablaCotizaciones(base, ss_c, ss_d, ss_fp, ss_mei, emp_c, emp
 // LIMPIAR
 // ─────────────────────────────────────────────
 function limpiar() {
-  if (!confirm('¿Limpiar todos los datos?')) return;
+  if (!confirm('¿Limpiar todos los datos de la nómina?')) return;
   document.querySelectorAll('input[type="text"],input[type="email"],input[type="tel"],input[type="number"]').forEach(el => el.value = '');
   document.querySelectorAll('input[type="checkbox"]').forEach(el => { el.checked = false; });
   document.querySelectorAll('.extra-field').forEach(el => el.classList.remove('visible'));
@@ -1339,17 +1347,30 @@ function limpiar() {
 // ─────────────────────────────────────────────
 // TOAST
 // ─────────────────────────────────────────────
-function showToast(msg) {
+function showToast(msg, isError = false) {
   const t = g('toast');
   t.querySelector('.toast-dot').nextSibling.textContent = ' ' + msg;
+  t.style.background = isError ? '#E11D48' : '';
+  t.querySelector('.toast-dot').style.background = isError ? 'rgba(255,255,255,0.6)' : '';
   t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2800);
+  setTimeout(() => { t.classList.remove('show'); t.style.background = ''; }, isError ? 3500 : 2800);
 }
 
 // ─────────────────────────────────────────────
 // PDF
 // ─────────────────────────────────────────────
 function generarPDF() {
+  // Validación mínima
+  const errores = [];
+  if (!gs('empresa_nombre'))  errores.push('Nombre de empresa');
+  if (!gs('empresa_cif'))     errores.push('CIF de empresa');
+  if (!gs('trab_nombre') && !gs('trab_apellidos')) errores.push('Nombre del trabajador');
+  if (!gv('salario_mensual')) errores.push('Salario base');
+  if (errores.length > 0) {
+    showToast('Faltan: ' + errores[0] + (errores.length > 1 ? ` (+${errores.length - 1})` : ''), true);
+    return;
+  }
+
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF({ unit: 'mm', format: 'a4' });
   const W = 210, M = 12;

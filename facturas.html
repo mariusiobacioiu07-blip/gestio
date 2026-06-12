@@ -4,7 +4,15 @@
 <meta charset="UTF-8">
 <meta name="color-scheme" content="light dark">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Generador de Facturas — gestio.es</title>
+<title>Generador de Facturas gratis — gestio.es</title>
+<meta name="description" content="Crea facturas profesionales con IVA e IRPF y descarga el PDF al instante. Gratis, sin registro, 100% en tu navegador.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://gestio.es/facturas.html">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://gestio.es/facturas.html">
+<meta property="og:title" content="Generador de Facturas gratis — gestio.es">
+<meta property="og:description" content="Facturas profesionales con IVA e IRPF. PDF instantáneo. Sin registro ni coste.">
+<meta property="og:locale" content="es_ES">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,700;12..96,800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -683,21 +691,21 @@ textarea { resize: vertical; min-height: 80px; }
 
 <!-- NAV -->
 <nav>
-  <a href="gestio-landing.html" class="logo">
+  <a href="index.html" class="logo">
     <div class="logo-icon">
       <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
     </div>
     gestio<span class="logo-dot">.es</span>
   </a>
   <div class="nav-right">
-    <a href="gestio-landing.html" class="nav-link">← Inicio</a>
+    <a href="index.html" class="nav-link">← Inicio</a>
     <span class="badge badge-em">Gratis</span>
   </div>
 </nav>
 
 <!-- PAGE HEADER -->
 <div class="page-header">
-  <div class="page-eyebrow">Herramienta #1</div>
+
   <h1>Generador de facturas</h1>
   <p>Rellena los campos, descarga el PDF. Sin registro, sin coste.</p>
 </div>
@@ -1005,19 +1013,65 @@ function limpiarFormulario() {
   window.onload();
 }
 
-function showToast(msg) {
+function showToast(msg, isError = false) {
   const t = document.getElementById('toast');
   t.querySelector('.toast-dot').nextSibling.textContent = ' ' + msg;
+  t.style.background = isError ? '#E11D48' : '';
+  t.querySelector('.toast-dot').style.background = isError ? 'rgba(255,255,255,0.6)' : '';
   t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2500);
+  setTimeout(() => { t.classList.remove('show'); t.style.background = ''; }, isError ? 3500 : 2500);
 }
 
 function g(id) { return document.getElementById(id)?.value?.trim() || ''; }
 
 // ─────────────────────────────────────────────
+// VALIDACIÓN
+// ─────────────────────────────────────────────
+function validarFormulario() {
+  const errores = [];
+  if (!g('emisor_nombre')) errores.push('Nombre del emisor');
+  if (!g('emisor_nif'))    errores.push('NIF/CIF del emisor');
+  if (!g('cliente_nombre')) errores.push('Nombre del cliente');
+  if (!g('factura_num'))   errores.push('Número de factura');
+
+  // Al menos un concepto con precio
+  const tieneLinea = lineas.some(id => {
+    const precio = parseFloat(document.getElementById(`precio_${id}`)?.value) || 0;
+    return precio > 0;
+  });
+  if (!tieneLinea) errores.push('Al menos un concepto con precio');
+
+  if (errores.length > 0) {
+    showToast('Faltan: ' + errores[0] + (errores.length > 1 ? ` (+${errores.length - 1})` : ''), true);
+    return false;
+  }
+  return true;
+}
+
+// Convierte SVG/cualquier imagen a PNG via canvas antes de pasarla a jsPDF
+async function logoToJpeg(dataUrl) {
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      canvas.width = img.naturalWidth || 400;
+      canvas.height = img.naturalHeight || 200;
+      const ctx = canvas.getContext('2d');
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.drawImage(img, 0, 0);
+      resolve({ dataUrl: canvas.toDataURL('image/jpeg', 0.95), w: canvas.width, h: canvas.height });
+    };
+    img.onerror = () => resolve(null);
+    img.src = dataUrl;
+  });
+}
+
+// ─────────────────────────────────────────────
 // PDF — DISEÑO BLANCO PROFESIONAL
 // ─────────────────────────────────────────────
 async function generarPDF() {
+  if (!validarFormulario()) return;
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF({ unit: 'mm', format: 'a4' });
   const W = 210, M = 18, gutter = 120;
@@ -1061,19 +1115,15 @@ async function generarPDF() {
   // Logo empresa (si existe) — esquina superior derecha de la cabecera
   if (logoDataUrl) {
     try {
-      const imgFormat = logoDataUrl.startsWith('data:image/png') ? 'PNG'
-                      : logoDataUrl.startsWith('data:image/svg') ? 'SVG'
-                      : 'JPEG';
-      // Máximo 40mm ancho, 24mm alto, alineado a la derecha
       const logoMaxW = 40, logoMaxH = 24;
-      const img = new Image();
-      img.src = logoDataUrl;
-      await new Promise(r => { img.onload = r; img.onerror = r; });
-      const ratio = img.naturalWidth / img.naturalHeight;
-      let lw = logoMaxW, lh = logoMaxW / ratio;
-      if (lh > logoMaxH) { lh = logoMaxH; lw = lh * ratio; }
-      const lx = W - M - lw;
-      doc.addImage(logoDataUrl, imgFormat === 'SVG' ? 'PNG' : imgFormat, lx, 8, lw, lh);
+      const raster = await logoToJpeg(logoDataUrl);
+      if (raster) {
+        const ratio = raster.w / raster.h;
+        let lw = logoMaxW, lh = logoMaxW / ratio;
+        if (lh > logoMaxH) { lh = logoMaxH; lw = lh * ratio; }
+        const lx = W - M - lw;
+        doc.addImage(raster.dataUrl, 'JPEG', lx, 8, lw, lh);
+      }
     } catch(e) { /* si falla el logo, continúa sin él */ }
   }
 
