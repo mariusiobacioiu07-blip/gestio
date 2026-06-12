@@ -582,14 +582,14 @@ textarea { resize: vertical; min-height: 70px; }
 
 <!-- NAV -->
 <nav>
-  <a href="gestio-landing.html" class="logo">
+  <a href="index.html" class="logo">
     <div class="logo-icon">
       <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
     </div>
     gestio<span class="logo-dot">.es</span>
   </a>
   <div class="nav-right">
-    <a href="gestio-landing.html" class="nav-link">← Inicio</a>
+    <a href="index.html" class="nav-link">← Inicio</a>
     <span class="badge badge-em">Gratis</span>
   </div>
 </nav>
@@ -1352,307 +1352,397 @@ function showToast(msg) {
 function generarPDF() {
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF({ unit: 'mm', format: 'a4' });
-  const W = 210, M = 14;
+  const W = 210, M = 12;
   const d = window._nomData || {};
 
-  const black   = [15,  27,  45];
-  const gray1   = [80,  90, 110];
+  // Paleta
+  const navy    = [15,  27,  45];
+  const gray1   = [70,  80,  95];
   const gray2   = [130, 140, 155];
-  const gray3   = [200, 205, 215];
+  const gray3   = [190, 195, 205];
   const green   = [5,   150, 105];
   const greenLt = [209, 250, 229];
-  const bg      = [248, 248, 247];
+  const bgLight = [247, 247, 246];
   const white   = [255, 255, 255];
-  const rose    = [220,  38,  38];
-  const divider = [228, 228, 226];
+  const rose    = [200,  35,  35];
+  const line    = [220, 220, 218];
+  const blueH   = [30,  50,  80]; // cabecera de tabla
 
-  let y = 0;
+  const mes  = MESES[(parseInt(gs('periodo_mes')) || 1) - 1];
+  const anyo = gs('periodo_anyo') || new Date().getFullYear();
+  const empNombre = gs('emp_nombre') || '—';
 
-  // ── CABECERA ──
-  doc.setFillColor(...bg);
-  doc.rect(0, 0, W, 48, 'F');
-  doc.setFillColor(...green);
-  doc.rect(0, 0, 3, 48, 'F');
-  doc.setFillColor(...divider);
-  doc.rect(0, 48, W, 0.3, 'F');
+  // ═══════════════════════════════════════
+  // CABECERA EMPRESA (banda azul oscura)
+  // ═══════════════════════════════════════
+  doc.setFillColor(...navy);
+  doc.rect(0, 0, W, 32, 'F');
 
+  // Nombre empresa
   doc.setFont('helvetica', 'bold');
-  doc.setFontSize(20);
-  doc.setTextColor(...black);
-  doc.text('NÓMINA', M + 4, 19);
+  doc.setFontSize(13);
+  doc.setTextColor(...white);
+  doc.text(empNombre.toUpperCase(), M, 13);
 
-  // Periodo
-  const mes = MESES[(parseInt(gs('periodo_mes')) || 1) - 1];
-  const anyo = gs('periodo_anyo') || '2025';
-  doc.setFillColor(...greenLt);
-  doc.roundedRect(M + 4, 23, 38, 8, 2, 2, 'F');
+  // Línea de datos empresa
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(7.5);
+  doc.setTextColor(180, 200, 220);
+  const empData = [
+    gs('emp_cif') ? `CIF: ${gs('emp_cif')}` : null,
+    gs('emp_dir') || null,
+    gs('emp_ciudad') || null,
+    gs('emp_ccc') ? `CCC: ${gs('emp_ccc')}` : null,
+  ].filter(Boolean).join('   ·   ');
+  if (empData) doc.text(empData, M, 20);
+
+  // Título NÓMINA + periodo — derecha
   doc.setFont('helvetica', 'bold');
   doc.setFontSize(8);
-  doc.setTextColor(...green);
-  doc.text(`${mes.toUpperCase()} ${anyo}`, M + 7, 28.5);
+  doc.setTextColor(180, 200, 220);
+  doc.text('RECIBO DE SALARIOS', W - M, 11, { align: 'right' });
+  doc.setFontSize(11);
+  doc.setTextColor(...white);
+  doc.text(`${mes.toUpperCase()} ${anyo}`, W - M, 20, { align: 'right' });
 
-  // Empresa — derecha cabecera
-  const empNombre = gs('emp_nombre') || 'Empresa';
-  doc.setFont('helvetica', 'bold');
-  doc.setFontSize(9);
-  doc.setTextColor(...black);
-  doc.text(empNombre, W - M, 14, { align: 'right' });
-
-  doc.setFont('helvetica', 'normal');
-  doc.setFontSize(7.5);
-  doc.setTextColor(...gray2);
-  const empLines = [gs('emp_cif'), gs('emp_dir'), gs('emp_ciudad'), gs('emp_ccc') ? `CCC: ${gs('emp_ccc')}` : ''].filter(Boolean);
-  empLines.forEach((l, i) => doc.text(l, W - M, 20 + i * 4.5, { align: 'right' }));
-
-  y = 58;
-
-  // ── TRABAJADOR / CONTRATO ──
-  doc.setFont('helvetica', 'bold');
-  doc.setFontSize(6.5);
-  doc.setTextColor(...green);
-  doc.text('TRABAJADOR', M, y);
-  doc.text('CONTRATO', W / 2 + 4, y);
-  y += 5;
+  // ═══════════════════════════════════════
+  // DATOS TRABAJADOR (banda gris clara)
+  // ═══════════════════════════════════════
+  doc.setFillColor(...bgLight);
+  doc.rect(0, 32, W, 28, 'F');
+  doc.setDrawColor(...line);
+  doc.setLineWidth(0.3);
+  doc.line(0, 60, W, 60);
 
   const trabNombre = `${gs('trab_nombre')} ${gs('trab_apellidos')}`.trim() || '—';
-  doc.setFont('helvetica', 'bold');
-  doc.setFontSize(10);
-  doc.setTextColor(...black);
-  doc.text(trabNombre, M, y);
-
-  doc.setFont('helvetica', 'bold');
-  doc.setFontSize(8.5);
-  doc.text(gs('contrato_tipo') ? gs('contrato_tipo').charAt(0).toUpperCase() + gs('contrato_tipo').slice(1) : '—', W / 2 + 4, y);
-  y += 5;
-
-  doc.setFont('helvetica', 'normal');
-  doc.setFontSize(7.5);
-  doc.setTextColor(...gray1);
-  const trabLines = [
-    gs('trab_dni') ? `DNI: ${gs('trab_dni')}` : null,
-    gs('trab_nss') ? `NSS: ${gs('trab_nss')}` : null,
-    gs('trab_categoria'),
-    `Grupo ${gs('trab_grupo') || '—'} cotización`,
-  ].filter(Boolean);
-
   const jornadaLabel = gs('jornada_tipo') === 'parcial' ? `Parcial ${gv('jornada_pct')}%` : 'Completa';
-  const contLines = [
-    `Jornada: ${jornadaLabel}`,
-    gs('contrato_inicio') ? `Inicio: ${fmtFecha(gs('contrato_inicio'))}` : null,
-    gv('antiguedad') > 0 ? `Antigüedad: ${gv('antiguedad')} año${gv('antiguedad') !== 1 ? 's' : ''}` : null,
-  ].filter(Boolean);
+  const contTipo = gs('contrato_tipo') ? gs('contrato_tipo').charAt(0).toUpperCase() + gs('contrato_tipo').slice(1) : '—';
 
-  const maxL = Math.max(trabLines.length, contLines.length);
-  for (let i = 0; i < maxL; i++) {
-    if (trabLines[i]) doc.text(trabLines[i], M, y);
-    if (contLines[i]) doc.text(contLines[i], W / 2 + 4, y);
-    y += 4.5;
-  }
-  y += 3;
+  // Columnas de datos trabajador
+  const tcols = [
+    { label: 'TRABAJADOR',          val: trabNombre,                               x: M },
+    { label: 'DNI / NIE',           val: gs('trab_dni') || '—',                    x: 76 },
+    { label: 'N.º AFILIACIÓN S.S.', val: gs('trab_nss') || '—',                   x: 112 },
+    { label: 'GRUPO COTIZACIÓN',    val: `Grupo ${gs('trab_grupo') || '—'}`,       x: 158 },
+  ];
+  const bcols = [
+    { label: 'CATEGORÍA / PUESTO',  val: gs('trab_categoria') || '—',              x: M },
+    { label: 'TIPO CONTRATO',       val: contTipo,                                  x: 76 },
+    { label: 'JORNADA',             val: jornadaLabel,                              x: 112 },
+    { label: 'ANTIGÜEDAD',          val: gv('antiguedad') > 0 ? `${gv('antiguedad')} año${gv('antiguedad')!==1?'s':''}` : '—', x: 158 },
+  ];
 
-  // Divider
-  doc.setFillColor(...divider);
-  doc.rect(M, y, W - M * 2, 0.3, 'F');
-  y += 7;
+  [tcols, bcols].forEach((cols, ri) => {
+    const yBase = 38 + ri * 13;
+    cols.forEach(col => {
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(6.5);
+      doc.setTextColor(...gray2);
+      doc.text(col.label, col.x, yBase);
+      doc.setFont('helvetica', ri === 0 ? 'bold' : 'normal');
+      doc.setFontSize(ri === 0 ? 8.5 : 7.5);
+      doc.setTextColor(...navy);
+      doc.text(col.val, col.x, yBase + 5);
+    });
+  });
 
-  // ── TABLA DEVENGOS / DEDUCCIONES ──
-  const col1 = M, col2 = 105, col3 = W - M;
-  const thH = 7;
+  let y = 66;
 
-  // Cabecera izquierda — DEVENGOS
-  doc.setFillColor(...black);
-  doc.roundedRect(col1, y, (col2 - col1) - 4, thH, 1.5, 1.5, 'F');
-  doc.setFont('helvetica', 'bold');
-  doc.setFontSize(7);
-  doc.setTextColor(...white);
-  doc.text('DEVENGOS', col1 + 4, y + 4.8);
-  doc.text('IMPORTE', col2 - 8, y + 4.8, { align: 'right' });
+  // ═══════════════════════════════════════
+  // TABLA DEVENGOS / DEDUCCIONES (lado a lado)
+  // ═══════════════════════════════════════
+  const colMid = 109; // separación central
+  const colR   = W - M;
+  const rowH   = 6.2;
 
-  // Cabecera derecha — DEDUCCIONES
-  doc.setFillColor(...black);
-  doc.roundedRect(col2, y, col3 - col2, thH, 1.5, 1.5, 'F');
-  doc.setFont('helvetica', 'bold');
-  doc.setFontSize(7);
-  doc.setTextColor(...white);
-  doc.text('DEDUCCIONES', col2 + 4, y + 4.8);
-  doc.text('IMPORTE', col3, y + 4.8, { align: 'right' });
-  y += thH;
-
-  // Filas
+  // Filas de datos
   const devengos = [
-    ['Salario base', d.salarioMensual],
-    d.totalComplementos > 0 ? ['Complementos', d.totalComplementos] : null,
-    d.extraImporte > 0      ? ['Paga extra', d.extraImporte] : null,
-    d.especieMensual > 0    ? ['Retrib. en especie', d.especieMensual] : null,
+    ['Salario base',       d.salarioMensual,    30],
+    d.extraImporte > 0  ? ['Paga extra',         d.extraImporte,      30] : null,
+    d.totalComplementos > 0 ? ['Complementos',   d.totalComplementos, 30] : null,
+    d.especieMensual > 0 ? ['Retrib. en especie',d.especieMensual,    30] : null,
   ].filter(Boolean);
 
   const deducciones = [
-    ['Cont. Comunes (4,70%)', d.ss_comunes],
-    d.desemp ? ['Desempleo (1,55%)', d.ss_desemp] : null,
-    d.fp     ? ['Form. Prof. (0,10%)', d.ss_fp] : null,
-    d.mei    ? ['M.E.I. (0,13%)', d.ss_mei] : null,
-    [`IRPF (${(d.irpfPct||0).toFixed(2)}%)`, d.irpfMensual],
-    d.anticipo > 0 ? ['Anticipo', d.anticipo] : null,
-    d.embargo > 0  ? ['Embargo', d.embargo] : null,
-    d.pension > 0  ? ['Plan pensiones', d.pension] : null,
-    d.otras > 0    ? [gs('otras_deduciones_desc') || 'Otras', d.otras] : null,
+    ['I.R.P.F.',            d.irpfMensual,    `${(d.irpfPct||0).toFixed(2)}%`],
+    ['C.C. S.S. (4,70%)',  d.ss_comunes,     '4,70%'],
+    d.desemp ? ['Desempleo (1,55%)', d.ss_desemp, '1,55%'] : null,
+    d.fp     ? ['F. Profesional (0,10%)', d.ss_fp, '0,10%'] : null,
+    d.mei    ? ['M.E.I. (0,13%)',    d.ss_mei,   '0,13%'] : null,
+    d.anticipo > 0 ? ['Anticipo',    d.anticipo, ''] : null,
+    d.embargo > 0  ? ['Embargo jud.',d.embargo,  ''] : null,
+    d.pension > 0  ? ['Plan pensiones', d.pension,''] : null,
+    d.otras > 0    ? [gs('otras_deduciones_desc')||'Otras', d.otras, ''] : null,
   ].filter(Boolean);
 
-  const rowH = 6.5;
-  const maxRows = Math.max(devengos.length, deducciones.length);
-  let alt = false;
+  const maxRows = Math.max(devengos.length, deducciones.length, 5);
+  const tableH  = 8 + maxRows * rowH + 8; // header + rows + footer
 
+  // ── Cabeceras de tabla ──
+  // DEVENGOS
+  doc.setFillColor(...navy);
+  doc.rect(M, y, colMid - M - 2, 8, 'F');
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(7);
+  doc.setTextColor(...white);
+  doc.text('DEVENGOS',       M + 3,          y + 5.5);
+  doc.text('DÍAS',           M + 68,         y + 5.5, { align: 'right' });
+  doc.text('IMPORTE',        colMid - 5,     y + 5.5, { align: 'right' });
+
+  // DEDUCCIONES
+  doc.setFillColor(50, 30, 30);
+  doc.rect(colMid + 2, y, colR - colMid - 2, 8, 'F');
+  doc.setTextColor(...white);
+  doc.text('DEDUCCIONES',    colMid + 5,     y + 5.5);
+  doc.text('%',              colMid + 70,    y + 5.5, { align: 'right' });
+  doc.text('IMPORTE',        colR,           y + 5.5, { align: 'right' });
+  y += 8;
+
+  // ── Filas ──
+  const yTableStart = y;
   for (let i = 0; i < maxRows; i++) {
-    if (alt) {
-      doc.setFillColor(...bg);
-      doc.rect(col1, y, col2 - col1 - 4, rowH, 'F');
-      doc.rect(col2, y, col3 - col2, rowH, 'F');
+    // Fondo alternado
+    if (i % 2 === 1) {
+      doc.setFillColor(242, 242, 241);
+      doc.rect(M,         y, colMid - M - 2,    rowH, 'F');
+      doc.rect(colMid + 2, y, colR - colMid - 2, rowH, 'F');
     }
-    alt = !alt;
 
     doc.setFont('helvetica', 'normal');
     doc.setFontSize(7.5);
+    const yText = y + 4.4;
 
     if (devengos[i]) {
       doc.setTextColor(...gray1);
-      doc.text(devengos[i][0], col1 + 4, y + 4.5);
+      doc.text(devengos[i][0], M + 3, yText);
+      doc.setTextColor(...gray2);
+      doc.text(String(devengos[i][2] || 30), M + 68, yText, { align: 'right' });
       doc.setFont('helvetica', 'bold');
-      doc.setTextColor(...black);
-      doc.text(fmtN(devengos[i][1]) + ' €', col2 - 8, y + 4.5, { align: 'right' });
+      doc.setTextColor(...navy);
+      doc.text(fmtN(devengos[i][1]), colMid - 5, yText, { align: 'right' });
     }
+
     if (deducciones[i]) {
       doc.setFont('helvetica', 'normal');
       doc.setTextColor(...gray1);
-      doc.text(deducciones[i][0], col2 + 4, y + 4.5);
+      doc.text(deducciones[i][0], colMid + 5, yText);
+      doc.setTextColor(...gray2);
+      doc.text(String(deducciones[i][2] || ''), colMid + 70, yText, { align: 'right' });
       doc.setFont('helvetica', 'bold');
-      doc.setTextColor(...rose);
-      doc.text('−' + fmtN(deducciones[i][1]) + ' €', col3, y + 4.5, { align: 'right' });
+      doc.setTextColor(rose[0], rose[1], rose[2]);
+      doc.text(fmtN(deducciones[i][1]), colR, yText, { align: 'right' });
     }
+
     y += rowH;
   }
 
-  // Bordes tablas
-  doc.setDrawColor(...divider);
-  doc.setLineWidth(0.25);
-  doc.roundedRect(col1, y - maxRows * rowH - thH, col2 - col1 - 4, maxRows * rowH + thH, 1.5, 1.5, 'S');
-  doc.roundedRect(col2, y - maxRows * rowH - thH, col3 - col2, maxRows * rowH + thH, 1.5, 1.5, 'S');
-  y += 5;
+  // ── Bordes externos tablas ──
+  doc.setDrawColor(...line);
+  doc.setLineWidth(0.3);
+  doc.rect(M,          yTableStart, colMid - M - 2,    maxRows * rowH, 'S');
+  doc.rect(colMid + 2, yTableStart, colR - colMid - 2, maxRows * rowH, 'S');
 
-  // Subtotales
-  const subH = 8;
-  // Izq — total devengado
-  doc.setFillColor(240, 252, 246);
-  doc.roundedRect(col1, y, col2 - col1 - 4, subH, 1.5, 1.5, 'F');
+  // ── Líneas divisorias de columna dentro de cada tabla ──
+  doc.setLineWidth(0.2);
+  doc.setDrawColor(...line);
+  // Devengos: separador "días"
+  doc.line(M + 57, yTableStart, M + 57, y);
+  // Deducciones: separador "%"
+  doc.line(colMid + 59, yTableStart, colMid + 59, y);
+
+  y += 3;
+
+  // ── Totales fila ──
+  // Total devengado
+  doc.setFillColor(...greenLt);
+  doc.rect(M, y, colMid - M - 2, 8, 'F');
   doc.setFont('helvetica', 'bold');
   doc.setFontSize(7.5);
   doc.setTextColor(...green);
-  doc.text('TOTAL DEVENGADO', col1 + 4, y + 5.2);
-  doc.text(fmtN(d.bruto) + ' €', col2 - 8, y + 5.2, { align: 'right' });
+  doc.text('TOTAL DEVENGADO', M + 3, y + 5.5);
+  doc.text(fmtN(d.bruto), colMid - 5, y + 5.5, { align: 'right' });
 
-  // Der — total deducciones
-  doc.setFillColor(254, 242, 242);
-  doc.roundedRect(col2, y, col3 - col2, subH, 1.5, 1.5, 'F');
-  doc.setFont('helvetica', 'bold');
-  doc.setFontSize(7.5);
-  doc.setTextColor(...rose);
-  doc.text('TOTAL DEDUCCIONES', col2 + 4, y + 5.2);
-  doc.text('−' + fmtN(d.totalDed) + ' €', col3, y + 5.2, { align: 'right' });
-  y += subH + 8;
+  // Total deducciones
+  doc.setFillColor(255, 235, 235);
+  doc.rect(colMid + 2, y, colR - colMid - 2, 8, 'F');
+  doc.setTextColor(rose[0], rose[1], rose[2]);
+  doc.text('TOTAL DEDUCCIONES', colMid + 5, y + 5.5);
+  doc.text(fmtN(d.totalDed), colR, y + 5.5, { align: 'right' });
+  y += 12;
 
-  // ── NETO ──
-  doc.setFillColor(...black);
-  doc.roundedRect(M, y, W - M * 2, 16, 2, 2, 'F');
+  // ═══════════════════════════════════════
+  // LÍQUIDO A PERCIBIR
+  // ═══════════════════════════════════════
+  doc.setFillColor(...navy);
+  doc.rect(M, y, W - M * 2, 14, 'F');
+  // Acento verde izquierda
   doc.setFillColor(...green);
-  doc.roundedRect(M, y, 3, 16, 1.5, 1.5, 'F');
-  doc.rect(M + 1.5, y, 1.5, 16, 'F');
+  doc.rect(M, y, 4, 14, 'F');
 
   doc.setFont('helvetica', 'bold');
-  doc.setFontSize(7.5);
-  doc.setTextColor(160, 175, 195);
-  doc.text('LÍQUIDO A PERCIBIR (NETO)', M + 8, y + 10.5);
+  doc.setFontSize(8);
+  doc.setTextColor(160, 185, 210);
+  doc.text('LÍQUIDO A PERCIBIR', M + 9, y + 9);
 
-  doc.setFontSize(14);
+  doc.setFontSize(16);
   doc.setTextColor(...white);
-  doc.text(fmtN(d.neto) + ' €', W - M - 2, y + 10.5, { align: 'right' });
-  y += 22;
+  doc.text(fmtN(d.neto) + ' €', W - M - 3, y + 9.5, { align: 'right' });
+  y += 20;
 
-  // ── SS EMPRESA ──
-  doc.setFillColor(...bg);
-  doc.roundedRect(M, y, W - M * 2, 10, 1.5, 1.5, 'F');
+  // ═══════════════════════════════════════
+  // BASES DE COTIZACIÓN Y RETENCIÓN
+  // ═══════════════════════════════════════
+  // Título sección
   doc.setFont('helvetica', 'bold');
-  doc.setFontSize(7.5);
+  doc.setFontSize(7);
+  doc.setTextColor(...navy);
+  doc.text('BASES DE COTIZACIÓN Y RETENCIÓN', M, y + 4);
+  doc.setDrawColor(...navy);
+  doc.setLineWidth(0.3);
+  doc.line(M, y + 5.5, W - M, y + 5.5);
+  y += 9;
+
+  // Tabla de bases
+  const baseRows = [
+    ['Base contingencias comunes',     fmtN(d.baseCotizacion || d.bruto),  '',  ''],
+    ['Base contingencias profesionales',fmtN(d.baseCotizacion || d.bruto), '',  ''],
+    ['Base horas extra fuerza mayor',   '0,00',                             '',  ''],
+    ['Base IRPF',                       fmtN(d.baseIrpf || d.bruto * 12),  `${(d.irpfPct||0).toFixed(2)}%`, fmtN(d.irpfMensual)],
+  ];
+
+  // Cabecera bases
+  doc.setFillColor(...bgLight);
+  doc.rect(M, y, W - M * 2, 6.5, 'F');
+  doc.setDrawColor(...line);
+  doc.setLineWidth(0.3);
+  doc.rect(M, y, W - M * 2, 6.5, 'S');
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(6.5);
+  doc.setTextColor(...gray1);
+  doc.text('CONCEPTO',          M + 3,       y + 4.5);
+  doc.text('BASE',              M + 100,     y + 4.5, { align: 'right' });
+  doc.text('TIPO (%)',          M + 130,     y + 4.5, { align: 'right' });
+  doc.text('CUOTA',             W - M - 2,   y + 4.5, { align: 'right' });
+  y += 6.5;
+
+  baseRows.forEach((row, i) => {
+    if (i % 2 === 1) { doc.setFillColor(242, 242, 241); doc.rect(M, y, W - M * 2, 6, 'F'); }
+    doc.setDrawColor(...line);
+    doc.setLineWidth(0.2);
+    doc.line(M, y + 6, W - M, y + 6);
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(7);
+    doc.setTextColor(...gray1);
+    doc.text(row[0], M + 3, y + 4.2);
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(...navy);
+    doc.text(row[1], M + 100, y + 4.2, { align: 'right' });
+    doc.setFont('helvetica', 'normal');
+    doc.setTextColor(...gray2);
+    doc.text(row[2], M + 130, y + 4.2, { align: 'right' });
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(...navy);
+    doc.text(row[3] || '—', W - M - 2, y + 4.2, { align: 'right' });
+    y += 6;
+  });
+  y += 6;
+
+  // ═══════════════════════════════════════
+  // SS EMPRESA (fila compacta)
+  // ═══════════════════════════════════════
+  doc.setFillColor(...bgLight);
+  doc.rect(M, y, W - M * 2, 8, 'F');
+  doc.setDrawColor(...line);
+  doc.setLineWidth(0.3);
+  doc.rect(M, y, W - M * 2, 8, 'S');
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(7);
   doc.setTextColor(...gray2);
-  doc.text('CUOTAS EMPRESA (SS):', M + 4, y + 6.5);
+  doc.text('APORTACIÓN EMPRESA S.S.', M + 3, y + 5);
   doc.setFont('helvetica', 'normal');
   doc.setTextColor(...gray1);
-  doc.text(`CC ${fmtN(d.emp_comunes)} € + Desemp. ${fmtN(d.emp_desemp)} € + FP ${fmtN(d.emp_fp)} € + FOGASA ${fmtN(d.emp_fogasa)} € + MEI ${fmtN(d.emp_mei)} €`, M + 52, y + 6.5);
+  const ssEmpTxt = [
+    `CC: ${fmtN(d.emp_comunes)}`,
+    `Desemp.: ${fmtN(d.emp_desemp)}`,
+    `FP: ${fmtN(d.emp_fp)}`,
+    `FOGASA: ${fmtN(d.emp_fogasa)}`,
+    `MEI: ${fmtN(d.emp_mei)}`,
+  ].join('  ');
+  doc.text(ssEmpTxt, M + 58, y + 5);
   doc.setFont('helvetica', 'bold');
-  doc.setTextColor(...black);
-  doc.text('Total: ' + fmtN(d.totalSSEmp) + ' €', W - M, y + 6.5, { align: 'right' });
-  y += 15;
+  doc.setTextColor(...navy);
+  doc.text('Total: ' + fmtN(d.totalSSEmp) + ' €', W - M - 2, y + 5, { align: 'right' });
+  y += 12;
 
-  // Coste empresa total
-  doc.setFont('helvetica', 'normal');
+  // Coste empresa
+  doc.setFont('helvetica', 'bold');
   doc.setFontSize(7.5);
   doc.setTextColor(...gray2);
-  doc.text('COSTE TOTAL EMPRESA:', M + 4, y);
-  doc.setFont('helvetica', 'bold');
-  doc.setTextColor(...black);
-  doc.text(fmtN(d.costeEmpresa) + ' €', W - M, y, { align: 'right' });
-  y += 10;
+  doc.text('COSTE TOTAL EMPRESA:', M + 3, y);
+  doc.setTextColor(...navy);
+  doc.text(fmtN(d.costeEmpresa) + ' €', W - M - 2, y, { align: 'right' });
+  y += 8;
 
-  // ── NOTAS ──
+  // ═══════════════════════════════════════
+  // OBSERVACIONES
+  // ═══════════════════════════════════════
   const notas = gs('notas');
   if (notas) {
-    doc.setFillColor(...bg);
-    doc.roundedRect(M, y, W - M * 2, 18, 2, 2, 'F');
+    doc.setFillColor(...bgLight);
+    doc.roundedRect(M, y, W - M * 2, 16, 1, 1, 'F');
     doc.setFillColor(...green);
-    doc.roundedRect(M, y, 3, 18, 1.5, 1.5, 'F');
-    doc.rect(M + 1.5, y, 1.5, 18, 'F');
+    doc.rect(M, y, 3, 16, 'F');
     doc.setFont('helvetica', 'bold');
-    doc.setFontSize(7);
+    doc.setFontSize(6.5);
     doc.setTextColor(...green);
-    doc.text('OBSERVACIONES', M + 7, y + 7);
-    doc.setFont('helvetica', 'normal');
-    doc.setTextColor(...gray1);
-    const nLines = doc.splitTextToSize(notas, W - M * 2 - 14);
-    doc.text(nLines, M + 7, y + 13);
-    y += 24;
-  }
-
-  // ── FIRMAS ──
-  if (y < 240) {
-    y = Math.max(y, 230);
-    doc.setFillColor(...divider);
-    doc.rect(M, y, 55, 0.3, 'F');
-    doc.rect(W - M - 55, y, 55, 0.3, 'F');
+    doc.text('OBSERVACIONES', M + 6, y + 5);
     doc.setFont('helvetica', 'normal');
     doc.setFontSize(7);
-    doc.setTextColor(...gray3);
-    doc.text('Firma empresa', M + 27, y + 5, { align: 'center' });
-    doc.text('Recibí conforme', W - M - 27, y + 5, { align: 'center' });
+    doc.setTextColor(...gray1);
+    const nLines = doc.splitTextToSize(notas, W - M * 2 - 12);
+    doc.text(nLines, M + 6, y + 11);
+    y += 22;
   }
 
-  // ── FOOTER ──
-  doc.setFillColor(...bg);
-  doc.rect(0, 283, W, 14, 'F');
-  doc.setFillColor(...divider);
-  doc.rect(0, 283, W, 0.3, 'F');
+  // ═══════════════════════════════════════
+  // FIRMAS
+  // ═══════════════════════════════════════
+  const yFirma = Math.max(y + 4, 245);
+  if (yFirma < 270) {
+    doc.setDrawColor(...gray3);
+    doc.setLineWidth(0.4);
+    doc.line(M,           yFirma, M + 60,       yFirma);
+    doc.line(W - M - 60,  yFirma, W - M,         yFirma);
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(7);
+    doc.setTextColor(...gray2);
+    doc.text('El empresario o su representante', M + 30, yFirma + 5, { align: 'center' });
+    doc.text('El trabajador, Recibí',            W - M - 30, yFirma + 5, { align: 'center' });
+  }
+
+  // ═══════════════════════════════════════
+  // FOOTER
+  // ═══════════════════════════════════════
+  doc.setFillColor(...bgLight);
+  doc.rect(0, 282, W, 15, 'F');
+  doc.setDrawColor(...line);
+  doc.setLineWidth(0.3);
+  doc.line(0, 282, W, 282);
   doc.setFillColor(...green);
-  doc.rect(0, 283, 3, 14, 'F');
+  doc.rect(0, 282, 3, 15, 'F');
   doc.setFont('helvetica', 'normal');
   doc.setFontSize(6.5);
   doc.setTextColor(...gray2);
-  doc.text('Generado con gestio.es — Herramientas gratuitas para autónomos y pymes de España', W / 2, 292, { align: 'center' });
+  doc.text('Generado con gestio.es — Herramientas gratuitas para autónomos y pymes de España', W / 2, 291, { align: 'center' });
 
-  const apellidos = gs('trab_apellidos').replace(/\s+/g,'_');
-  const nombre    = gs('trab_nombre').replace(/\s+/g,'_');
-  const filename = `nomina_${nombre}_${apellidos}_${mes}_${anyo}.pdf`;
+  // ── Guardar ──
+  const apellidos = gs('trab_apellidos').replace(/\s+/g, '_');
+  const nombre    = gs('trab_nombre').replace(/\s+/g, '_');
+  const filename  = `nomina_${nombre}_${apellidos}_${mes}_${anyo}.pdf`;
   const blob = doc.output('blob');
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = filename;
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href = url; a.download = filename;
   document.body.appendChild(a);
   a.click();
   setTimeout(() => { document.body.removeChild(a); URL.revokeObjectURL(url); }, 200);
