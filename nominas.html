@@ -1381,8 +1381,8 @@ function showToast(msg, isError = false) {
 function generarPDF() {
   // Validación mínima
   const errores = [];
-  if (!gs('empresa_nombre'))  errores.push('Nombre de empresa');
-  if (!gs('empresa_cif'))     errores.push('CIF de empresa');
+  if (!gs('emp_nombre'))  errores.push('Nombre de empresa');
+  if (!gs('emp_cif'))     errores.push('CIF de empresa');
   if (!gs('trab_nombre') && !gs('trab_apellidos')) errores.push('Nombre del trabajador');
   if (!gv('salario_mensual')) errores.push('Salario base');
   if (errores.length > 0) {
