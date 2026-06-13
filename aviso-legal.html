@@ -4,12 +4,12 @@
 <meta charset="UTF-8">
 <meta name="color-scheme" content="light dark">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Aviso Legal — gestio.es</title>
-<meta name="description" content="Aviso legal de gestio.es. Condiciones de uso, propiedad intelectual y responsabilidad.">
+<title>Aviso Legal — gestio.com.es</title>
+<meta name="description" content="Aviso legal de gestio.com.es. Condiciones de uso, propiedad intelectual y responsabilidad.">
 <meta name="robots" content="index, follow">
-<link rel="canonical" href="https://gestio.es/aviso-legal.html">
+<link rel="canonical" href="https://gestio.com.es/aviso-legal.html">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=Inter:wght@300;400;500;600&family=Space+Grotesk:wght@800&display=swap" rel="stylesheet">
 <style>
 :root {
   color-scheme: light dark;
@@ -57,19 +57,31 @@ nav {
   border-bottom: 1px solid var(--line);
 }
 .logo {
-  display: flex; align-items: center; gap: 9px;
+  display: flex; align-items: center; gap: 0;
   text-decoration: none;
   font-family: 'Bricolage Grotesque', sans-serif;
   font-size: 17px; font-weight: 700;
   color: var(--navy); letter-spacing: -0.4px;
 }
 .logo-icon {
-  width: 28px; height: 28px;
-  background: var(--dark-surface);
-  border-radius: 7px;
-  display: flex; align-items: center; justify-content: center;
+  position: relative;
+  width: 28px;
+  height: 28px;
+  flex-shrink: 0;
 }
-.logo-icon svg { width: 14px; height: 14px; }
+.logo-wordmark { margin-left: 4px; }
+.logo-g {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 800;
+  font-size: 13px;
+  color: #1aff8c;
+  text-shadow: 0 0 10px rgba(26,255,140,.8), 0 0 25px rgba(26,255,140,.35);
+}
 .nav-link {
   font-size: 13px; font-weight: 500; color: var(--slate);
   text-decoration: none; padding: 6px 14px; border-radius: 20px;
@@ -147,16 +159,24 @@ footer a:hover { color: white; }
   .wrap { padding: 32px 16px 64px; }
 }
 </style>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Cpolygon points='24,2 44,13 44,35 24,46 4,35 4,13' fill='%230d1530' stroke='%231aff8c' stroke-width='2'/%3E%3Ctext x='24' y='32' text-anchor='middle' font-family='Arial Black,sans-serif' font-weight='900' font-size='22' fill='%231aff8c'%3EG%3C/text%3E%3C/svg%3E">
 </head>
 <body>
 
 <nav>
   <a href="index.html" class="logo">
     <div class="logo-icon">
-      <svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="5" y="3" width="10" height="2.5" rx="1" fill="white"/><rect x="3" y="3" width="2.5" height="14" rx="1" fill="white"/><rect x="5" y="14.5" width="10" height="2.5" rx="1" fill="white"/><rect x="10" y="10" width="5" height="2.5" rx="1" fill="#6EE7B7"/></svg>
-    </div>
-    Gestio
-  </a>
+      <svg width="28" height="28" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <filter id="navglow" x="-40%" y="-40%" width="180%" height="180%">
+            <feGaussianBlur stdDeviation="2" result="b"/>
+            <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+        </defs>
+        <polygon points="24,2 44,13 44,35 24,46 4,35 4,13" fill="#0d1530" stroke="#1aff8c" stroke-width="1.5" filter="url(#navglow)"/>
+      </svg>
+      <span class="logo-g">G</span>
+    </div><span class="logo-wordmark">Gest<span style="color:#1aff8c;">io</span></span></a>
   <a href="index.html" class="nav-link">← Inicio</a>
 </nav>
 
@@ -168,29 +188,29 @@ footer a:hover { color: white; }
 
   <div class="section">
     <h2>1. Titular del sitio web</h2>
-    <p>El presente sitio web <strong>gestio.es</strong> es operado a título personal por <strong>Marius Iobacioiu</strong>, con domicilio en Sevilla, España (en adelante, «el Titular»). Para cualquier consulta legal puedes escribir a <a href="mailto:mariusvioreliobacioiu0@gmail.com" style="color:var(--emerald)">mariusvioreliobacioiu0@gmail.com</a>.</p>
+    <p>El presente sitio web <strong>gestio.com.es</strong> es operado a título personal por <strong>Marius Iobacioiu</strong>, con domicilio en Sevilla, España (en adelante, «el Titular»). Para cualquier consulta legal puedes escribir a <a href="mailto:mariusvioreliobacioiu0@gmail.com" style="color:var(--emerald)">mariusvioreliobacioiu0@gmail.com</a>.</p>
     <p>El acceso y uso de este sitio implica la aceptación de las condiciones recogidas en este aviso legal.</p>
   </div>
 
   <div class="section">
     <h2>2. Objeto y naturaleza del servicio</h2>
-    <p>gestio.es ofrece herramientas web gratuitas de generación de documentos (facturas, albaranes, presupuestos, nóminas y similares) para autónomos y pequeñas empresas españolas.</p>
+    <p>gestio.com.es ofrece herramientas web gratuitas de generación de documentos (facturas, albaranes, presupuestos, nóminas y similares) para autónomos y pequeñas empresas españolas.</p>
     <div class="highlight-box">
-      Toda la generación de documentos ocurre íntegramente en el navegador del usuario. gestio.es no recibe, almacena ni procesa ningún dato introducido en los formularios. Los PDF se generan y descargan localmente, sin pasar por ningún servidor.
+      Toda la generación de documentos ocurre íntegramente en el navegador del usuario. gestio.com.es no recibe, almacena ni procesa ningún dato introducido en los formularios. Los PDF se generan y descargan localmente, sin pasar por ningún servidor.
     </div>
     <p>El servicio se presta de forma completamente gratuita y sin necesidad de registro.</p>
   </div>
 
   <div class="section">
     <h2>3. Propiedad intelectual</h2>
-    <p>El diseño, código fuente, textos y elementos visuales de gestio.es son propiedad del Titular y están protegidos por la legislación española e internacional sobre propiedad intelectual.</p>
+    <p>El diseño, código fuente, textos y elementos visuales de gestio.com.es son propiedad del Titular y están protegidos por la legislación española e internacional sobre propiedad intelectual.</p>
     <p>Queda prohibida su reproducción total o parcial, distribución, transformación o comunicación pública sin autorización expresa del Titular, salvo para uso personal y privado.</p>
     <p>Los documentos PDF generados por el usuario con sus propios datos son de su exclusiva propiedad.</p>
   </div>
 
   <div class="section">
     <h2>4. Exclusión de responsabilidad</h2>
-    <p>Las herramientas de gestio.es tienen carácter meramente orientativo. El Titular no se responsabiliza de:</p>
+    <p>Las herramientas de gestio.com.es tienen carácter meramente orientativo. El Titular no se responsabiliza de:</p>
     <p>— La validez legal, fiscal o laboral de los documentos generados para casos concretos. Se recomienda consultar con un asesor fiscal o laboral ante cualquier duda.</p>
     <p>— Errores en los cálculos derivados de datos incorrectos introducidos por el usuario.</p>
     <p>— Cambios normativos que puedan afectar a los tipos impositivos, tramos o porcentajes mostrados en las herramientas.</p>
@@ -205,7 +225,7 @@ footer a:hover { color: white; }
 </div>
 
 <footer>
-  <p>© 2026 gestio.es — Herramientas gratuitas para autónomos y pymes &nbsp;·&nbsp; <a href="aviso-legal.html">Aviso legal</a> &nbsp;·&nbsp; <a href="privacidad.html">Privacidad</a></p>
+  <p>© 2026 gestio.com.es — Herramientas gratuitas para autónomos y pymes &nbsp;·&nbsp; <a href="aviso-legal.html">Aviso legal</a> &nbsp;·&nbsp; <a href="privacidad.html">Privacidad</a></p>
 </footer>
 
 </body>

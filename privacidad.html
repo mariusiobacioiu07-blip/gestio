@@ -4,12 +4,12 @@
 <meta charset="UTF-8">
 <meta name="color-scheme" content="light dark">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Política de Privacidad — gestio.es</title>
-<meta name="description" content="Política de privacidad de gestio.es. Sin almacenamiento de tus datos: las herramientas funcionan en tu navegador. Información sobre cookies publicitarias de Google AdSense.">
+<title>Política de Privacidad — gestio.com.es</title>
+<meta name="description" content="Política de privacidad de gestio.com.es. Sin almacenamiento de tus datos: las herramientas funcionan en tu navegador. Información sobre cookies publicitarias de Google AdSense.">
 <meta name="robots" content="index, follow">
-<link rel="canonical" href="https://gestio.es/privacidad.html">
+<link rel="canonical" href="https://gestio.com.es/privacidad.html">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=Inter:wght@300;400;500;600&family=Space+Grotesk:wght@800&display=swap" rel="stylesheet">
 <style>
 :root {
   color-scheme: light dark;
@@ -56,19 +56,31 @@ nav {
   border-bottom: 1px solid var(--line);
 }
 .logo {
-  display: flex; align-items: center; gap: 9px;
+  display: flex; align-items: center; gap: 0;
   text-decoration: none;
   font-family: 'Bricolage Grotesque', sans-serif;
   font-size: 17px; font-weight: 700;
   color: var(--navy); letter-spacing: -0.4px;
 }
 .logo-icon {
-  width: 28px; height: 28px;
-  background: var(--dark-surface);
-  border-radius: 7px;
-  display: flex; align-items: center; justify-content: center;
+  position: relative;
+  width: 28px;
+  height: 28px;
+  flex-shrink: 0;
 }
-.logo-icon svg { width: 14px; height: 14px; }
+.logo-wordmark { margin-left: 4px; }
+.logo-g {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 800;
+  font-size: 13px;
+  color: #1aff8c;
+  text-shadow: 0 0 10px rgba(26,255,140,.8), 0 0 25px rgba(26,255,140,.35);
+}
 .nav-link {
   font-size: 13px; font-weight: 500; color: var(--slate);
   text-decoration: none; padding: 6px 14px; border-radius: 20px;
@@ -160,16 +172,24 @@ footer a:hover { color: white; }
   .wrap { padding: 32px 16px 64px; }
 }
 </style>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Cpolygon points='24,2 44,13 44,35 24,46 4,35 4,13' fill='%230d1530' stroke='%231aff8c' stroke-width='2'/%3E%3Ctext x='24' y='32' text-anchor='middle' font-family='Arial Black,sans-serif' font-weight='900' font-size='22' fill='%231aff8c'%3EG%3C/text%3E%3C/svg%3E">
 </head>
 <body>
 
 <nav>
   <a href="index.html" class="logo">
     <div class="logo-icon">
-      <svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="5" y="3" width="10" height="2.5" rx="1" fill="white"/><rect x="3" y="3" width="2.5" height="14" rx="1" fill="white"/><rect x="5" y="14.5" width="10" height="2.5" rx="1" fill="white"/><rect x="10" y="10" width="5" height="2.5" rx="1" fill="#6EE7B7"/></svg>
-    </div>
-    Gestio
-  </a>
+      <svg width="28" height="28" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <filter id="navglow" x="-40%" y="-40%" width="180%" height="180%">
+            <feGaussianBlur stdDeviation="2" result="b"/>
+            <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+        </defs>
+        <polygon points="24,2 44,13 44,35 24,46 4,35 4,13" fill="#0d1530" stroke="#1aff8c" stroke-width="1.5" filter="url(#navglow)"/>
+      </svg>
+      <span class="logo-g">G</span>
+    </div><span class="logo-wordmark">Gest<span style="color:#1aff8c;">io</span></span></a>
   <a href="index.html" class="nav-link">← Inicio</a>
 </nav>
 
@@ -182,7 +202,7 @@ footer a:hover { color: white; }
   <div class="section">
     <h2>El resumen</h2>
     <div class="highlight-box">
-      <strong>gestio.es no recoge, almacena ni transmite ningún dato de los formularios.</strong> Todo lo que escribes en las herramientas (facturas, nóminas, etc.) vive únicamente en tu navegador y desaparece al cerrar la pestaña. Los PDF se generan en tu dispositivo y nunca pasan por nuestros servidores. La web puede mostrar anuncios de Google AdSense, que utilizan sus propias cookies — más detalles abajo.
+      <strong>gestio.com.es no recoge, almacena ni transmite ningún dato de los formularios.</strong> Todo lo que escribes en las herramientas (facturas, nóminas, etc.) vive únicamente en tu navegador y desaparece al cerrar la pestaña. Los PDF se generan en tu dispositivo y nunca pasan por nuestros servidores. La web puede mostrar anuncios de Google AdSense, que utilizan sus propias cookies — más detalles abajo.
     </div>
     <ul class="check-list">
       <li>Sin registro ni cuenta de usuario</li>
@@ -195,23 +215,23 @@ footer a:hover { color: white; }
 
   <div class="section">
     <h2>1. Responsable del tratamiento</h2>
-    <p>El responsable del sitio web gestio.es es Marius Iobacioiu, con domicilio en Sevilla, España. Para cualquier consulta sobre privacidad, escribe a <a href="mailto:mariusvioreliobacioiu0@gmail.com" style="color:var(--emerald)">mariusvioreliobacioiu0@gmail.com</a>.</p>
+    <p>El responsable del sitio web gestio.com.es es Marius Iobacioiu, con domicilio en Sevilla, España. Para cualquier consulta sobre privacidad, escribe a <a href="mailto:mariusvioreliobacioiu0@gmail.com" style="color:var(--emerald)">mariusvioreliobacioiu0@gmail.com</a>.</p>
   </div>
 
   <div class="section">
     <h2>2. Datos que NO recogemos</h2>
-    <p>Las herramientas de generación de documentos (facturas, albaranes, presupuestos, nóminas) funcionan íntegramente en tu navegador mediante JavaScript del lado del cliente. En ningún momento los datos que introduces — nombre, NIF, importes, datos de clientes — se envían a ningún servidor ni son accesibles por gestio.es.</p>
+    <p>Las herramientas de generación de documentos (facturas, albaranes, presupuestos, nóminas) funcionan íntegramente en tu navegador mediante JavaScript del lado del cliente. En ningún momento los datos que introduces — nombre, NIF, importes, datos de clientes — se envían a ningún servidor ni son accesibles por gestio.com.es.</p>
     <p>Al cerrar o recargar la página, esos datos desaparecen. No utilizamos localStorage ni ningún mecanismo de persistencia local para esos datos.</p>
   </div>
 
   <div class="section">
     <h2>3. Publicidad — Google AdSense</h2>
-    <p>gestio.es muestra anuncios gestionados por Google AdSense, un servicio de publicidad de Google LLC. Para mostrar anuncios relevantes, Google y sus socios publicitarios pueden utilizar cookies y tecnologías similares para recopilar información sobre tus visitas a este y otros sitios web.</p>
+    <p>gestio.com.es muestra anuncios gestionados por Google AdSense, un servicio de publicidad de Google LLC. Para mostrar anuncios relevantes, Google y sus socios publicitarios pueden utilizar cookies y tecnologías similares para recopilar información sobre tus visitas a este y otros sitios web.</p>
     <p>Esta información puede incluir tu dirección IP, identificadores de dispositivo y datos de navegación, y se utiliza para mostrar anuncios personalizados (o no personalizados, según tu configuración) y medir su rendimiento.</p>
     <p>Puedes obtener más información sobre cómo Google utiliza esta información y cómo gestionar tus preferencias de anuncios en:</p>
     <p>— Cómo Google usa los datos: <a href="https://policies.google.com/technologies/partner-sites" target="_blank" rel="noopener" style="color:var(--emerald)">policies.google.com/technologies/partner-sites</a></p>
     <p>— Configuración de anuncios de Google: <a href="https://adssettings.google.com" target="_blank" rel="noopener" style="color:var(--emerald)">adssettings.google.com</a></p>
-    <p>gestio.es no tiene acceso a, ni controla, las cookies que Google y sus socios publicitarios puedan utilizar.</p>
+    <p>gestio.com.es no tiene acceso a, ni controla, las cookies que Google y sus socios publicitarios puedan utilizar.</p>
   </div>
 
   <div class="section">
@@ -221,12 +241,12 @@ footer a:hover { color: white; }
 
   <div class="section">
     <h2>5. Formulario de contacto</h2>
-    <p>Si en algún momento contactas con gestio.es por email, los datos que facilites (nombre, dirección de correo, contenido del mensaje) se usarán exclusivamente para responder tu consulta y no se cederán a terceros. Se conservarán el tiempo necesario para gestionar la comunicación y, como máximo, durante el plazo legal aplicable.</p>
+    <p>Si en algún momento contactas con gestio.com.es por email, los datos que facilites (nombre, dirección de correo, contenido del mensaje) se usarán exclusivamente para responder tu consulta y no se cederán a terceros. Se conservarán el tiempo necesario para gestionar la comunicación y, como máximo, durante el plazo legal aplicable.</p>
   </div>
 
   <div class="section">
     <h2>6. Tus derechos</h2>
-    <p>Dado que gestio.es no almacena los datos de los formularios de las herramientas, el ejercicio de los derechos de acceso, rectificación, supresión, oposición, portabilidad y limitación del tratamiento sobre esos datos es de aplicación prácticamente nula. Para datos de contacto por email, o para cuestiones relacionadas con la publicidad de Google, puedes escribir a <a href="mailto:mariusvioreliobacioiu0@gmail.com" style="color:var(--emerald)">mariusvioreliobacioiu0@gmail.com</a>.</p>
+    <p>Dado que gestio.com.es no almacena los datos de los formularios de las herramientas, el ejercicio de los derechos de acceso, rectificación, supresión, oposición, portabilidad y limitación del tratamiento sobre esos datos es de aplicación prácticamente nula. Para datos de contacto por email, o para cuestiones relacionadas con la publicidad de Google, puedes escribir a <a href="mailto:mariusvioreliobacioiu0@gmail.com" style="color:var(--emerald)">mariusvioreliobacioiu0@gmail.com</a>.</p>
     <p>Si consideras que el tratamiento de tus datos vulnera la normativa vigente, puedes presentar una reclamación ante la Agencia Española de Protección de Datos (<a href="https://www.aepd.es" target="_blank" rel="noopener" style="color:var(--emerald)">aepd.es</a>).</p>
   </div>
 
@@ -238,7 +258,7 @@ footer a:hover { color: white; }
 </div>
 
 <footer>
-  <p>© 2026 gestio.es — Herramientas gratuitas para autónomos y pymes &nbsp;·&nbsp; <a href="aviso-legal.html">Aviso legal</a> &nbsp;·&nbsp; <a href="privacidad.html">Privacidad</a></p>
+  <p>© 2026 gestio.com.es — Herramientas gratuitas para autónomos y pymes &nbsp;·&nbsp; <a href="aviso-legal.html">Aviso legal</a> &nbsp;·&nbsp; <a href="privacidad.html">Privacidad</a></p>
 </footer>
 
 </body>

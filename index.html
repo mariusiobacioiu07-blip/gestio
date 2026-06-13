@@ -4,23 +4,23 @@
 <meta charset="UTF-8">
 <meta name="color-scheme" content="light dark">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>gestio.es — Herramientas de gestión gratuitas para autónomos y pymes</title>
+<title>gestio.com.es — Herramientas de gestión gratuitas para autónomos y pymes</title>
 <meta name="description" content="Facturas, nóminas, albaranes y más. Herramientas gratuitas para autónomos y pymes españolas. Sin registro. Sin letra pequeña. 100% en tu navegador.">
 <meta name="keywords" content="generador facturas gratis, calculadora nóminas, autónomos, pymes, factura PDF, España, IVA, IRPF">
 <meta name="robots" content="index, follow">
-<link rel="canonical" href="https://gestio.es/">
+<link rel="canonical" href="https://gestio.com.es/">
 <!-- Open Graph -->
 <meta property="og:type" content="website">
-<meta property="og:url" content="https://gestio.es/">
-<meta property="og:title" content="gestio.es — Herramientas de gestión gratuitas para autónomos y pymes">
+<meta property="og:url" content="https://gestio.com.es/">
+<meta property="og:title" content="gestio.com.es — Herramientas de gestión gratuitas para autónomos y pymes">
 <meta property="og:description" content="Facturas, nóminas, albaranes y más. Sin registro. Sin letra pequeña. 100% gratuito.">
 <meta property="og:locale" content="es_ES">
 <!-- Twitter Card -->
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="gestio.es — Herramientas gratuitas para autónomos">
+<meta name="twitter:title" content="gestio.com.es — Herramientas gratuitas para autónomos">
 <meta name="twitter:description" content="Crea facturas y nóminas profesionales gratis. Sin registro. Sin datos en servidor.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300;12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300;12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&family=Inter:wght@300;400;500;600&family=Space+Grotesk:wght@800&display=swap" rel="stylesheet">
 <style>
 :root {
   color-scheme: light dark;
@@ -140,15 +140,24 @@ nav.scrolled { box-shadow: 0 2px 24px rgba(15,27,45,0.07); }
 }
 
 .logo-icon {
-  width: 32px; height: 32px;
-  background: var(--dark-surface);
-  border-radius: 8px;
+  position: relative;
+  width: 28px;
+  height: 28px;
+  flex-shrink: 0;
+}
+.logo-wordmark { margin-left: 4px; }
+.logo-g {
+  position: absolute;
+  inset: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  flex-shrink: 0;
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 800;
+  font-size: 13px;
+  color: #1aff8c;
+  text-shadow: 0 0 10px rgba(26,255,140,.8), 0 0 25px rgba(26,255,140,.35);
 }
-.logo-icon svg { width: 18px; height: 18px; }
 
 .logo-dot {
   color: var(--emerald);
@@ -886,6 +895,7 @@ footer a:hover { color: white; }
   transition: left 0.4s ease, top 0.4s ease;
 }
 </style>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Cpolygon points='24,2 44,13 44,35 24,46 4,35 4,13' fill='%230d1530' stroke='%231aff8c' stroke-width='2'/%3E%3Ctext x='24' y='32' text-anchor='middle' font-family='Arial Black,sans-serif' font-weight='900' font-size='22' fill='%231aff8c'%3EG%3C/text%3E%3C/svg%3E">
 </head>
 <body>
 
@@ -896,10 +906,17 @@ footer a:hover { color: white; }
 <nav id="mainNav">
   <a href="index.html" class="logo">
     <div class="logo-icon">
-      <svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="5" y="3" width="10" height="2.5" rx="1" fill="white"/><rect x="3" y="3" width="2.5" height="14" rx="1" fill="white"/><rect x="5" y="14.5" width="10" height="2.5" rx="1" fill="white"/><rect x="10" y="10" width="5" height="2.5" rx="1" fill="#6EE7B7"/></svg>
-    </div>
-    Gestio
-  </a>
+      <svg width="28" height="28" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <filter id="navglow" x="-40%" y="-40%" width="180%" height="180%">
+            <feGaussianBlur stdDeviation="2" result="b"/>
+            <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+        </defs>
+        <polygon points="24,2 44,13 44,35 24,46 4,35 4,13" fill="#0d1530" stroke="#1aff8c" stroke-width="1.5" filter="url(#navglow)"/>
+      </svg>
+      <span class="logo-g">G</span>
+    </div><span class="logo-wordmark">Gest<span style="color:#1aff8c;">io</span></span></a>
 </nav>
 
 <!-- TOOLS STRIP -->
@@ -1071,7 +1088,7 @@ footer a:hover { color: white; }
     <div class="reveal">
       <div class="section-label">¿Cómo funciona?</div>
       <h2 class="section-title" style="color:white">Tres pasos. Ni uno más.</h2>
-      <p class="section-sub">Sin tutoriales, sin manuales. Si puedes rellenar un formulario, puedes usar gestio.es.</p>
+      <p class="section-sub">Sin tutoriales, sin manuales. Si puedes rellenar un formulario, puedes usar gestio.com.es.</p>
     </div>
 
     <div class="how-grid">
@@ -1156,7 +1173,7 @@ footer a:hover { color: white; }
 
 <!-- FOOTER -->
 <footer>
-  <p>© 2026 gestio.es — Herramientas gratuitas para autónomos y pymes &nbsp;·&nbsp; <a href="aviso-legal.html">Aviso legal</a> &nbsp;·&nbsp; <a href="privacidad.html">Privacidad</a></p>
+  <p>© 2026 gestio.com.es — Herramientas gratuitas para autónomos y pymes &nbsp;·&nbsp; <a href="aviso-legal.html">Aviso legal</a> &nbsp;·&nbsp; <a href="privacidad.html">Privacidad</a></p>
 </footer>
 
 <script>
