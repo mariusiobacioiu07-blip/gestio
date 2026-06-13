@@ -1567,7 +1567,7 @@ function generarPDF() {
       doc.setTextColor(...gray1);
       doc.text(deducciones[i][0], colMid + 5, yText);
       doc.setTextColor(...gray2);
-      doc.text(String(deducciones[i][2] || ''), colMid + 70, yText, { align: 'right' });
+      doc.text(String(deducciones[i][2] || ''), colMid + 59, yText, { align: 'right' });
       doc.setFont('helvetica', 'bold');
       doc.setTextColor(rose[0], rose[1], rose[2]);
       doc.text(fmtN(deducciones[i][1]), colR, yText, { align: 'right' });

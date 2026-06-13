@@ -1249,7 +1249,7 @@ async function generarPDF() {
   y += 8;
 
   // ── TABLA LÍNEAS ──
-  const cols = { desc: M, qty: 137, price: 157, total: W - M };
+  const cols = { desc: M, qty: 137, price: 157, total: W - M - 2 };
   const thH = 8;
 
   // Cabecera tabla
@@ -1326,7 +1326,7 @@ async function generarPDF() {
 
   drawTRow('Base imponible', fmtN(base) + ' €');
   drawTRow(`IVA (${ivaPct}%)`, fmtN(iva) + ' €');
-  if (irpfOn) drawTRow(`IRPF (−${irpfPct}%)`, `−${fmtN(irpf)} €`, false, rose);
+  if (irpfOn) drawTRow(`IRPF (-${irpfPct}%)`, `-${fmtN(irpf)} €`, false, rose);
 
   y += 2;
 
