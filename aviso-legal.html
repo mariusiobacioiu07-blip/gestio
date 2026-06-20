@@ -8,6 +8,9 @@
 <meta name="description" content="Aviso legal de gestio.com.es. Condiciones de uso, propiedad intelectual y responsabilidad.">
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="https://gestio.com.es/aviso-legal.html">
+<!-- Google AdSense -->
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3874784656108870"
+     crossorigin="anonymous"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=Inter:wght@300;400;500;600&family=Space+Grotesk:wght@800&display=swap" rel="stylesheet">
 <style>
@@ -39,47 +42,23 @@
   }
 }
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-body {
-  font-family: 'Inter', sans-serif;
-  background: var(--bg);
-  color: var(--ink);
-  font-size: 14px;
-  line-height: 1.6;
-}
-
+body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--ink); font-size: 14px; line-height: 1.6; }
 nav {
-  position: sticky; top: 0; z-index: 100;
-  height: 56px;
+  position: sticky; top: 0; z-index: 100; height: 56px;
   display: flex; align-items: center; justify-content: space-between;
-  padding: 0 28px;
-  background: var(--nav-bg);
-  backdrop-filter: blur(16px);
-  border-bottom: 1px solid var(--line);
+  padding: 0 28px; background: var(--nav-bg);
+  backdrop-filter: blur(16px); border-bottom: 1px solid var(--line);
 }
 .logo {
-  display: flex; align-items: center; gap: 0;
-  text-decoration: none;
-  font-family: 'Bricolage Grotesque', sans-serif;
-  font-size: 17px; font-weight: 700;
+  display: flex; align-items: center; gap: 0; text-decoration: none;
+  font-family: 'Bricolage Grotesque', sans-serif; font-size: 17px; font-weight: 700;
   color: var(--navy); letter-spacing: -0.4px;
 }
-.logo-icon {
-  position: relative;
-  width: 28px;
-  height: 28px;
-  flex-shrink: 0;
-}
+.logo-icon { position: relative; width: 28px; height: 28px; flex-shrink: 0; }
 .logo-wordmark { margin-left: 4px; }
 .logo-g {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: 'Space Grotesk', sans-serif;
-  font-weight: 800;
-  font-size: 13px;
-  color: #1aff8c;
+  position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+  font-family: 'Space Grotesk', sans-serif; font-weight: 800; font-size: 13px; color: #1aff8c;
   text-shadow: 0 0 10px rgba(26,255,140,.8), 0 0 25px rgba(26,255,140,.35);
 }
 .nav-link {
@@ -88,91 +67,44 @@ nav {
   transition: color 0.2s, background 0.2s;
 }
 .nav-link:hover { color: var(--navy); background: var(--bg-2); }
-
-.wrap {
-  max-width: 720px;
-  margin: 0 auto;
-  padding: 48px 24px 80px;
-}
-
+.wrap { max-width: 720px; margin: 0 auto; padding: 48px 24px 80px; }
 .page-eyebrow {
-  font-size: 11px; font-weight: 700;
-  letter-spacing: 2px; text-transform: uppercase;
-  color: var(--emerald); margin-bottom: 12px;
-  display: flex; align-items: center; gap: 8px;
+  font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase;
+  color: var(--emerald); margin-bottom: 12px; display: flex; align-items: center; gap: 8px;
 }
-.page-eyebrow::before {
-  content: ''; width: 18px; height: 2px;
-  background: var(--emerald); border-radius: 1px;
-}
+.page-eyebrow::before { content: ''; width: 18px; height: 2px; background: var(--emerald); border-radius: 1px; }
 h1 {
   font-family: 'Bricolage Grotesque', sans-serif;
-  font-size: clamp(28px, 5vw, 40px);
-  font-weight: 800; color: var(--navy);
-  letter-spacing: -1.5px; line-height: 1.1;
-  margin-bottom: 8px;
+  font-size: clamp(28px, 5vw, 40px); font-weight: 800; color: var(--navy);
+  letter-spacing: -1.5px; line-height: 1.1; margin-bottom: 8px;
 }
-.meta {
-  font-size: 13px; color: var(--slate-2); margin-bottom: 40px;
-}
-
-.section {
-  margin-bottom: 36px;
-  padding-bottom: 36px;
-  border-bottom: 1px solid var(--line);
-}
+.meta { font-size: 13px; color: var(--slate-2); margin-bottom: 40px; }
+.section { margin-bottom: 36px; padding-bottom: 36px; border-bottom: 1px solid var(--line); }
 .section:last-child { border-bottom: none; margin-bottom: 0; }
-
 h2 {
-  font-family: 'Bricolage Grotesque', sans-serif;
-  font-size: 17px; font-weight: 700;
-  color: var(--navy); letter-spacing: -0.3px;
-  margin-bottom: 12px;
+  font-family: 'Bricolage Grotesque', sans-serif; font-size: 17px; font-weight: 700;
+  color: var(--navy); letter-spacing: -0.3px; margin-bottom: 12px;
 }
-
 p { color: var(--slate); margin-bottom: 10px; }
 p:last-child { margin-bottom: 0; }
-
 .highlight-box {
-  background: var(--em-light);
-  border: 1px solid rgba(5,150,105,0.2);
-  border-radius: var(--r);
-  padding: 14px 16px;
-  margin: 14px 0;
-  font-size: 13px;
-  color: #065F46;
-  line-height: 1.6;
+  background: var(--em-light); border: 1px solid rgba(5,150,105,0.2);
+  border-radius: var(--r); padding: 14px 16px; margin: 14px 0;
+  font-size: 13px; color: #065F46; line-height: 1.6;
 }
-
-footer {
-  background: var(--dark-surface);
-  color: rgba(255,255,255,0.5);
-  text-align: center;
-  padding: 24px;
-  font-size: 13px;
-}
+footer { background: var(--dark-surface); color: rgba(255,255,255,0.5); text-align: center; padding: 24px; font-size: 13px; }
 footer a { color: rgba(255,255,255,0.6); text-decoration: none; }
 footer a:hover { color: white; }
-
-@media (max-width: 600px) {
-  nav { padding: 0 16px; }
-  .wrap { padding: 32px 16px 64px; }
-}
+@media (max-width: 600px) { nav { padding: 0 16px; } .wrap { padding: 32px 16px 64px; } }
 </style>
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Cpolygon points='24,2 44,13 44,35 24,46 4,35 4,13' fill='%230d1530' stroke='%231aff8c' stroke-width='2'/%3E%3Ctext x='24' y='32' text-anchor='middle' font-family='Arial Black,sans-serif' font-weight='900' font-size='22' fill='%231aff8c'%3EG%3C/text%3E%3C/svg%3E">
 </head>
 <body>
-
 <nav>
   <a href="index.html" class="logo">
     <div class="logo-icon">
       <svg width="28" height="28" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <defs>
-          <filter id="navglow" x="-40%" y="-40%" width="180%" height="180%">
-            <feGaussianBlur stdDeviation="2" result="b"/>
-            <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
-          </filter>
-        </defs>
+        <defs><filter id="navglow" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
         <polygon points="24,2 44,13 44,35 24,46 4,35 4,13" fill="#0d1530" stroke="#1aff8c" stroke-width="1.5" filter="url(#navglow)"/>
       </svg>
       <span class="logo-g">G</span>
@@ -181,14 +113,13 @@ footer a:hover { color: white; }
 </nav>
 
 <div class="wrap">
-
   <div class="page-eyebrow">Legal</div>
   <h1>Aviso legal</h1>
   <p class="meta">Última actualización: junio de 2026</p>
 
   <div class="section">
     <h2>1. Titular del sitio web</h2>
-    <p>El presente sitio web <strong>gestio.com.es</strong> es operado a título personal por <strong>Marius Iobacioiu</strong>, con domicilio en Sevilla, España (en adelante, «el Titular»). Para cualquier consulta legal puedes escribir a <a href="mailto:mariusvioreliobacioiu0@gmail.com" style="color:var(--emerald)">mariusvioreliobacioiu0@gmail.com</a>.</p>
+    <p>El presente sitio web <strong>gestio.com.es</strong> es operado a título personal por <strong>Marius-Viorel Iobacioiu</strong>, con domicilio en Sevilla, España (en adelante, «el Titular»). Para cualquier consulta legal puedes escribir a <a href="mailto:mariusvioreliobacioiu0@gmail.com" style="color:var(--emerald)">mariusvioreliobacioiu0@gmail.com</a> o usar el <a href="contacto.html" style="color:var(--emerald)">formulario de contacto</a>.</p>
     <p>El acceso y uso de este sitio implica la aceptación de las condiciones recogidas en este aviso legal.</p>
   </div>
 
@@ -221,12 +152,10 @@ footer a:hover { color: white; }
     <h2>5. Legislación aplicable</h2>
     <p>Este aviso legal se rige por la legislación española. Para cualquier controversia derivada del uso del sitio, las partes se someten a los juzgados y tribunales del domicilio del Titular, salvo que la normativa de protección al consumidor establezca otro fuero.</p>
   </div>
-
 </div>
 
 <footer>
   <p>© 2026 gestio.com.es — Herramientas gratuitas para autónomos y pymes &nbsp;·&nbsp; <a href="aviso-legal.html">Aviso legal</a> &nbsp;·&nbsp; <a href="privacidad.html">Privacidad</a></p>
 </footer>
-
 </body>
 </html>
