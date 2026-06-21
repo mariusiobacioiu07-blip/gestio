@@ -1,0 +1,921 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="color-scheme" content="light dark">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gestio PRO — Servicios a medida para autónomos y pymes</title>
+<meta name="description" content="Diseño web profesional, Excel avanzado y herramientas de gestión a medida. Para autónomos y pymes que necesitan algo más que una plantilla.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://gestio.com.es/pro">
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3874784656108870" crossorigin="anonymous"></script>
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://gestio.com.es/pro">
+<meta property="og:title" content="Gestio PRO — Servicios a medida para autónomos y pymes">
+<meta property="og:description" content="Diseño web, Excel avanzado y herramientas de gestión hechas para ti. Sin plantillas. Sin complicaciones.">
+<meta property="og:locale" content="es_ES">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300;12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&family=Inter:wght@300;400;500;600&family=Space+Grotesk:wght@800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy:    #0F1B2D;
+  --navy-2:  #1A2E48;
+  --navy-3:  #243b55;
+  --emerald: #059669;
+  --em-light:#D1FAE5;
+  --em-mid:  #6EE7B7;
+  --em-glow: rgba(5,150,105,0.18);
+  --slate:   #64748B;
+  --slate-2: #94A3B8;
+  --slate-3: #CBD5E1;
+  --bg:      #0D1117;
+  --bg-2:    #161B22;
+  --bg-3:    #1C2128;
+  --ink:     #E6EDF3;
+  --line:    rgba(255,255,255,0.08);
+  --line-em: rgba(5,150,105,0.25);
+  --card-bg: #161B22;
+  --card-border: rgba(255,255,255,0.08);
+  --nav-bg:  rgba(13,17,23,0.92);
+  --white:   #ffffff;
+  --amber:   #F59E0B;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  overflow-x: hidden;
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+/* ── GRID BG ── */
+.grid-bg {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+  background-size: 48px 48px;
+  mask-image: radial-gradient(ellipse 80% 50% at 50% 0%, black 30%, transparent 100%);
+}
+
+/* ── NAV ── */
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 32px;
+  background: var(--nav-bg);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--line);
+  transition: box-shadow 0.3s;
+}
+nav.scrolled { box-shadow: 0 2px 24px rgba(0,0,0,0.3); }
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--ink);
+  letter-spacing: -0.5px;
+}
+.logo-icon {
+  position: relative;
+  width: 28px; height: 28px;
+  flex-shrink: 0;
+}
+.logo-wordmark { margin-left: 4px; }
+.logo-g {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 800;
+  font-size: 13px;
+  color: #1aff8c;
+  text-shadow: 0 0 10px rgba(26,255,140,.8), 0 0 25px rgba(26,255,140,.35);
+}
+.logo-dot { color: var(--emerald); }
+
+.nav-links {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+.nav-pill {
+  padding: 7px 16px;
+  border-radius: 20px;
+  font-size: 13.5px;
+  font-weight: 500;
+  color: var(--slate-2);
+  text-decoration: none;
+  transition: color 0.2s, background 0.2s;
+  white-space: nowrap;
+}
+.nav-pill:hover { color: var(--ink); background: var(--bg-3); }
+
+.nav-pro-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 16px;
+  background: var(--em-glow);
+  border: 1px solid var(--line-em);
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--em-mid);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.nav-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  border-radius: 20px;
+  font-size: 13.5px;
+  font-weight: 500;
+  color: var(--slate-2);
+  text-decoration: none;
+  transition: color 0.2s, background 0.2s;
+}
+.nav-back:hover { color: var(--ink); background: var(--bg-3); }
+.nav-back svg { flex-shrink: 0; }
+
+@media (max-width: 480px) {
+  nav { padding: 0 16px; }
+  .logo { font-size: 14px; gap: 6px; }
+  .logo-icon { width: 22px; height: 22px; }
+  .logo-icon svg { width: 22px; height: 22px; }
+  .nav-links { gap: 4px; }
+  .nav-back { padding: 6px 10px; font-size: 12.5px; gap: 5px; }
+  .nav-back svg { width: 13px; height: 13px; }
+  .nav-pro-badge { display: none; }
+}
+
+/* ── HERO ── */
+.hero {
+  position: relative;
+  z-index: 1;
+  padding: 140px 32px 80px;
+  max-width: 1100px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.pro-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 18px 6px 12px;
+  background: var(--em-glow);
+  border: 1px solid var(--line-em);
+  border-radius: 24px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--em-mid);
+  margin-bottom: 32px;
+  animation: fadeUp 0.6s ease both;
+}
+.pro-eyebrow-dot {
+  width: 6px; height: 6px;
+  background: var(--emerald);
+  border-radius: 50%;
+  animation: livePulse 2s ease-in-out infinite;
+}
+
+@keyframes livePulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.4); opacity: 0.6; }
+}
+
+.hero h1 {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: clamp(38px, 6.5vw, 72px);
+  font-weight: 800;
+  color: var(--ink);
+  letter-spacing: -3px;
+  line-height: 1.02;
+  margin-bottom: 24px;
+  animation: fadeUp 0.6s ease 0.1s both;
+}
+.hero h1 em {
+  font-style: normal;
+  color: var(--emerald);
+}
+
+.hero p {
+  font-size: clamp(15px, 2vw, 18px);
+  color: var(--slate-2);
+  max-width: 540px;
+  margin: 0 auto 48px;
+  line-height: 1.7;
+  animation: fadeUp 0.6s ease 0.2s both;
+}
+
+.hero-cta-group {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+  animation: fadeUp 0.6s ease 0.3s both;
+}
+
+.btn-whatsapp {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 28px;
+  background: #25D366;
+  color: white;
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+  box-shadow: 0 4px 24px rgba(37,211,102,0.25);
+}
+.btn-whatsapp:hover {
+  background: #1ebe5a;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 32px rgba(37,211,102,0.35);
+}
+
+.btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 24px;
+  background: transparent;
+  color: var(--slate-2);
+  border: 1.5px solid var(--line);
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 500;
+  font-family: inherit;
+  text-decoration: none;
+  cursor: pointer;
+  transition: border-color 0.2s, color 0.2s, transform 0.15s;
+}
+.btn-ghost:hover {
+  border-color: var(--slate-3);
+  color: var(--ink);
+  transform: translateY(-2px);
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── TRUST STRIP ── */
+.trust-strip {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 32px;
+  padding: 20px 32px;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  flex-wrap: wrap;
+}
+.trust-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--slate-2);
+}
+.trust-icon { color: var(--emerald); }
+
+/* ── SERVICES SECTION ── */
+.services-section {
+  position: relative;
+  z-index: 1;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 80px 32px;
+}
+
+.section-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--emerald);
+  margin-bottom: 16px;
+}
+.section-label::before {
+  content: '';
+  width: 20px; height: 2px;
+  background: var(--emerald);
+  border-radius: 1px;
+}
+
+.section-title {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: clamp(28px, 4vw, 42px);
+  font-weight: 700;
+  color: var(--ink);
+  letter-spacing: -1.5px;
+  line-height: 1.1;
+  margin-bottom: 12px;
+}
+.section-sub {
+  font-size: 16px;
+  color: var(--slate-2);
+  margin-bottom: 56px;
+  max-width: 460px;
+}
+
+/* ── SERVICE CARDS ── */
+.services-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+}
+@media (max-width: 720px) { .services-grid { grid-template-columns: 1fr; } }
+
+.service-card {
+  position: relative;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 20px;
+  padding: 36px 32px 32px;
+  overflow: hidden;
+  transition: border-color 0.3s, transform 0.3s;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+.service-card:hover {
+  border-color: rgba(5,150,105,0.35);
+  transform: translateY(-4px);
+}
+
+/* glow top accent */
+.service-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--emerald), transparent);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.service-card:hover::before { opacity: 1; }
+
+/* Ambient glow blob */
+.service-card::after {
+  content: '';
+  position: absolute;
+  top: -80px; right: -80px;
+  width: 240px; height: 240px;
+  background: radial-gradient(circle, rgba(5,150,105,0.06) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.card-icon-wrap {
+  width: 56px; height: 56px;
+  border-radius: 16px;
+  background: var(--em-glow);
+  border: 1px solid var(--line-em);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 24px;
+  flex-shrink: 0;
+}
+.card-icon-wrap svg { width: 26px; height: 26px; color: var(--em-mid); }
+
+.card-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--emerald);
+  margin-bottom: 12px;
+}
+
+.card-title {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: clamp(22px, 3vw, 28px);
+  font-weight: 700;
+  color: var(--ink);
+  letter-spacing: -1px;
+  line-height: 1.15;
+  margin-bottom: 14px;
+}
+
+.card-desc {
+  font-size: 14.5px;
+  color: var(--slate-2);
+  line-height: 1.65;
+  margin-bottom: 28px;
+}
+
+.card-features {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 32px;
+  flex: 1;
+}
+.card-features li {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 13.5px;
+  color: var(--slate-2);
+  line-height: 1.5;
+}
+.feat-check {
+  width: 18px; height: 18px;
+  background: var(--em-glow);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+.feat-check svg { width: 10px; height: 10px; color: var(--emerald); }
+
+.card-price-block {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-bottom: 24px;
+  padding-top: 24px;
+  border-top: 1px solid var(--line);
+}
+.price-from {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--slate);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+.price-amount {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 32px;
+  font-weight: 800;
+  color: var(--ink);
+  letter-spacing: -1.5px;
+}
+.price-unit {
+  font-size: 13px;
+  color: var(--slate-2);
+}
+
+.btn-card-cta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 13px 20px;
+  background: var(--emerald);
+  color: white;
+  border-radius: 10px;
+  font-size: 14.5px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+  box-shadow: 0 4px 20px rgba(5,150,105,0.2);
+  width: 100%;
+}
+.btn-card-cta:hover {
+  background: #047857;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 28px rgba(5,150,105,0.3);
+}
+.btn-card-cta svg { width: 16px; height: 16px; flex-shrink: 0; }
+
+.btn-card-secondary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 11px 20px;
+  background: transparent;
+  color: var(--slate-2);
+  border: 1.5px solid var(--line);
+  border-radius: 10px;
+  font-size: 13.5px;
+  font-weight: 500;
+  text-decoration: none;
+  transition: border-color 0.2s, color 0.2s;
+  width: 100%;
+  margin-top: 8px;
+}
+.btn-card-secondary:hover { border-color: var(--em-mid); color: var(--ink); }
+.btn-card-secondary .price-tag { color: var(--em-mid); font-weight: 700; }
+
+/* ── HOW IT WORKS ── */
+.how-section {
+  position: relative;
+  z-index: 1;
+  background: var(--bg-2);
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  padding: 80px 32px;
+}
+.how-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.how-steps {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0;
+  position: relative;
+  margin-top: 48px;
+}
+@media (max-width: 720px) {
+  .how-steps { grid-template-columns: 1fr; gap: 0; }
+  .how-connector { display: none; }
+}
+
+.how-step {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 0 32px 0 0;
+  position: relative;
+}
+.how-step:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  top: 20px;
+  right: 0;
+  width: 1px;
+  height: 40px;
+  background: var(--line);
+}
+@media (max-width: 720px) {
+  .how-step { padding: 0 0 32px 0; border-bottom: 1px solid var(--line); margin-bottom: 32px; }
+  .how-step:not(:last-child)::after { display: none; }
+  .how-step:last-child { border: none; margin-bottom: 0; padding-bottom: 0; }
+}
+
+.step-num {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  color: var(--emerald);
+  margin-bottom: 16px;
+}
+.step-title {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 8px;
+  letter-spacing: -0.5px;
+}
+.step-desc {
+  font-size: 13.5px;
+  color: var(--slate-2);
+  line-height: 1.6;
+}
+
+/* ── BOTTOM CTA ── */
+.bottom-cta-section {
+  position: relative;
+  z-index: 1;
+  padding: 80px 32px;
+  text-align: center;
+}
+.bottom-cta-inner {
+  max-width: 600px;
+  margin: 0 auto;
+  background: var(--bg-2);
+  border: 1px solid var(--card-border);
+  border-radius: 24px;
+  padding: 56px 48px;
+  position: relative;
+  overflow: hidden;
+}
+.bottom-cta-inner::before {
+  content: '';
+  position: absolute;
+  top: -100px; left: 50%;
+  transform: translateX(-50%);
+  width: 400px; height: 200px;
+  background: radial-gradient(ellipse, rgba(5,150,105,0.1) 0%, transparent 70%);
+  pointer-events: none;
+}
+.cta-title {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: clamp(24px, 4vw, 36px);
+  font-weight: 800;
+  color: var(--ink);
+  letter-spacing: -1.5px;
+  line-height: 1.1;
+  margin-bottom: 14px;
+}
+.cta-sub {
+  font-size: 15px;
+  color: var(--slate-2);
+  margin-bottom: 32px;
+  line-height: 1.65;
+}
+.cta-note {
+  margin-top: 16px;
+  font-size: 12.5px;
+  color: var(--slate);
+}
+
+/* ── FOOTER ── */
+footer {
+  position: relative;
+  z-index: 1;
+  padding: 28px 32px;
+  border-top: 1px solid var(--line);
+  text-align: center;
+  font-size: 13px;
+  color: var(--slate);
+}
+footer a { color: var(--slate-2); text-decoration: none; }
+footer a:hover { color: var(--ink); }
+
+/* ── REVEAL ── */
+.reveal {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.55s ease, transform 0.55s ease;
+}
+.reveal.visible {
+  opacity: 1;
+  transform: none;
+}
+.reveal-delay-1 { transition-delay: 0.1s; }
+.reveal-delay-2 { transition-delay: 0.2s; }
+.reveal-delay-3 { transition-delay: 0.3s; }
+</style>
+</head>
+<body>
+
+<div class="grid-bg"></div>
+
+<!-- NAV -->
+<nav id="mainNav">
+  <a href="index.html" class="logo">
+    <div class="logo-icon">
+      <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+        <polygon points="14,2 25,8 25,20 14,26 3,20 3,8" fill="none" stroke="#1A2E48" stroke-width="1.5"/>
+      </svg>
+      <div class="logo-g">G</div>
+    </div>
+    <span class="logo-wordmark">Gest<span style="color:#1aff8c;">io</span></span>
+  </a>
+
+  <div class="nav-links">
+    <a href="index.html" class="nav-back">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      Herramientas gratis
+    </a>
+    <span class="nav-pro-badge">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+      Gestio PRO
+    </span>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="pro-eyebrow">
+    <span class="pro-eyebrow-dot"></span>
+    Servicios profesionales
+  </div>
+  <h1>Tu negocio,<br><em>sin límites</em></h1>
+  <p>Las herramientas gratuitas son para el día a día. Esto es para cuando necesitas algo que realmente marque la diferencia — hecho a tu medida, por alguien que entiende cómo funciona una pyme.</p>
+  <div class="hero-cta-group">
+    <a href="contacto.html" class="btn-whatsapp">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      Pedir presupuesto gratis
+    </a>
+    <button type="button" id="verServiciosBtn" class="btn-ghost">
+      Ver servicios
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+    </button>
+  </div>
+</section>
+
+<!-- TRUST STRIP -->
+<div class="trust-strip">
+  <div class="trust-item">
+    <svg class="trust-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+    Presupuesto sin compromiso
+  </div>
+  <div class="trust-item">
+    <svg class="trust-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+    Respuesta en menos de 24h
+  </div>
+  <div class="trust-item">
+    <svg class="trust-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+    Hecho en España, para España
+  </div>
+  <div class="trust-item">
+    <svg class="trust-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+    Soporte incluido
+  </div>
+</div>
+
+<!-- SERVICES -->
+<section class="services-section" id="servicios">
+  <div class="reveal">
+    <div class="section-label">Servicios PRO</div>
+    <h2 class="section-title">Lo que de verdad<br>cambia tu negocio</h2>
+    <p class="section-sub">Dos servicios con los que empezamos. Más en camino.</p>
+  </div>
+
+  <div class="services-grid">
+
+    <!-- CARD 1: Diseño web -->
+    <div class="service-card reveal reveal-delay-1">
+      <div class="card-icon-wrap">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+      </div>
+      <div class="card-tag">
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="4"/></svg>
+        Página web
+      </div>
+      <div class="card-title">Tu web profesional,<br>lista para vender</div>
+      <div class="card-desc">Muchos autónomos y pymes pierden clientes porque su web parece de 2010 — o directamente no tienen. Te hacemos una web rápida, moderna y adaptada a lo que vendes.</div>
+      <ul class="card-features">
+        <li>
+          <div class="feat-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+          Diseño a medida — sin plantillas de Wix ni WordPress genérico
+        </li>
+        <li>
+          <div class="feat-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+          100% adaptada a móvil — donde están tus clientes
+        </li>
+        <li>
+          <div class="feat-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+          Carga rápida y con buena base técnica para SEO (código optimizado)
+        </li>
+        <li>
+          <div class="feat-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+          Formulario de contacto y enlace directo a WhatsApp
+        </li>
+        <li>
+          <div class="feat-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+          Entrega en 7–14 días. Sin rollos.
+        </li>
+        <li>
+          <div class="feat-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+          Te entregamos el código listo. Asesoramiento de hosting, dominio y Google disponible como extra
+        </li>
+      </ul>
+      <a href="contacto.html" class="btn-card-cta">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        Solicitar presupuesto gratis
+      </a>
+    </div>
+
+    <!-- CARD 2: Excel avanzado -->
+    <div class="service-card reveal reveal-delay-2">
+      <div class="card-icon-wrap">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="16" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+      </div>
+      <div class="card-tag">
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="4"/></svg>
+        Excel a medida
+      </div>
+      <div class="card-title">Excel que hace<br>el trabajo por ti</div>
+      <div class="card-desc">No una tabla de colores — un archivo que calcula, organiza y te da la información que necesitas sin que tengas que tocar nada. Lo que llevas haciendo a mano, automatizado.</div>
+      <ul class="card-features">
+        <li>
+          <div class="feat-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+          Control de facturación, cobros y pagos pendientes
+        </li>
+        <li>
+          <div class="feat-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+          Planillas de nóminas, vacaciones o rotación de personal
+        </li>
+        <li>
+          <div class="feat-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+          Control de stock, pedidos o almacén
+        </li>
+        <li>
+          <div class="feat-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+          Dashboards y gráficas que se actualizan solos
+        </li>
+        <li>
+          <div class="feat-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+          Macros y automatizaciones (VBA) para tareas repetitivas
+        </li>
+      </ul>
+      <a href="contacto.html" class="btn-card-cta">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        Solicitar presupuesto gratis
+      </a>
+      <a href="excel-facturacion.html" class="btn-card-secondary">
+        ¿Solo necesitas control de facturación? <span class="price-tag">Plantilla lista — 19,90&nbsp;€</span>
+      </a>
+    </div>
+
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how-section">
+  <div class="how-inner">
+    <div class="reveal">
+      <div class="section-label">El proceso</div>
+      <h2 class="section-title">Simple. Sin sorpresas.</h2>
+    </div>
+    <div class="how-steps">
+      <div class="how-step reveal reveal-delay-1">
+        <div class="step-num">01 — Contacto</div>
+        <div class="step-title">Me cuentas qué necesitas</div>
+        <div class="step-desc">Rellena el formulario de contacto en menos de un minuto. Me dices qué necesitas y en 24h te respondo con un presupuesto claro.</div>
+      </div>
+      <div class="how-step reveal reveal-delay-2">
+        <div class="step-num">02 — Presupuesto</div>
+        <div class="step-title">Precio fijo, sin letras pequeñas</div>
+        <div class="step-desc">Te mando el coste total antes de empezar. Si no convence, no hay ningún problema — sin compromisos ni presiones.</div>
+      </div>
+      <div class="how-step reveal reveal-delay-3">
+        <div class="step-num">03 — Entrega</div>
+        <div class="step-title">Lo tienes funcionando</div>
+        <div class="step-desc">Entrego, te explico cómo usarlo y me aseguro de que esté como lo necesitas. Con soporte incluido los primeros 30 días.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BOTTOM CTA -->
+<section class="bottom-cta-section">
+  <div class="bottom-cta-inner reveal">
+    <div class="cta-title">¿Tienes algo<br>en mente?</div>
+    <p class="cta-sub">No tiene que encajar exactamente en ninguno de los servicios de arriba. Si tienes un problema en tu negocio que crees que se puede resolver con tecnología, escríbeme y lo vemos.</p>
+    <a href="contacto.html" class="btn-whatsapp">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      Escríbenos, es gratis
+    </a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p>© 2026 gestio.com.es — Herramientas gratuitas para autónomos y pymes &nbsp;·&nbsp; <a href="aviso-legal.html">Aviso legal</a> &nbsp;·&nbsp; <a href="privacidad.html">Privacidad</a></p>
+</footer>
+
+<script>
+window.addEventListener('scroll', () => {
+  document.getElementById('mainNav').classList.toggle('scrolled', window.scrollY > 10);
+});
+
+document.getElementById('verServiciosBtn').addEventListener('click', () => {
+  const target = document.getElementById('servicios');
+  const navHeight = document.getElementById('mainNav').offsetHeight;
+  const top = target.getBoundingClientRect().top + window.scrollY - navHeight - 12;
+  window.scrollTo({ top, behavior: 'smooth' });
+});
+
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); }
+  });
+}, { threshold: 0.08 });
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
