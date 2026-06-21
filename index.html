@@ -87,15 +87,22 @@
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { scroll-behavior: smooth; }
+html {
+  scroll-behavior: smooth;
+  overflow-x: hidden;
+  overscroll-behavior-x: none;
+}
 
 body {
   font-family: 'Inter', sans-serif;
   background: var(--bg);
   color: var(--ink);
   overflow-x: hidden;
+  overscroll-behavior-x: none;
+  touch-action: pan-y;
   font-size: 15px;
   line-height: 1.6;
+  max-width: 100vw;
 }
 
 /* ── GRID BACKGROUND ─── */
@@ -298,11 +305,12 @@ nav.scrolled { box-shadow: 0 2px 24px rgba(15,27,45,0.07); }
 
 .hero-actions {
   display: flex;
+  flex-direction: column;
   gap: 12px;
-  justify-content: center;
-  flex-wrap: wrap;
+  align-items: center;
   animation: fadeUp 0.6s ease 0.3s both;
 }
+.hero-actions > * { width: 100%; max-width: 320px; justify-content: center; }
 
 .btn-primary {
   display: inline-flex;
@@ -824,8 +832,16 @@ footer a:hover { color: white; }
   scrollbar-width: none;
   -ms-overflow-style: none;
   height: 42px;
+  touch-action: pan-x;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-x: contain;
 }
 .tools-strip::-webkit-scrollbar { display: none; }
+
+.strip-tab.pro {
+  color: #059669;
+}
+.strip-tab.pro:hover { color: #059669; background: var(--em-light); }
 
 .strip-tab {
   display: inline-flex;
@@ -836,6 +852,7 @@ footer a:hover { color: white; }
   border-radius: 7px;
   font-size: 12.5px;
   font-weight: 500;
+  font-family: inherit;
   color: var(--slate);
   text-decoration: none;
   white-space: nowrap;
@@ -920,10 +937,16 @@ footer a:hover { color: white; }
       </svg>
       <span class="logo-g">G</span>
     </div><span class="logo-wordmark">Gest<span style="color:#1aff8c;">io</span></span></a>
-  <a href="contacto.html" class="nav-tool">
-    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-    Contacto
-  </a>
+  <div style="display:flex;align-items:center;gap:8px;">
+    <a href="contacto.html" class="nav-tool">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+      Contacto
+    </a>
+    <a href="pro.html" style="display:inline-flex;align-items:center;gap:6px;padding:7px 16px;background:rgba(5,150,105,0.15);border:1px solid rgba(5,150,105,0.3);border-radius:20px;font-size:13px;font-weight:600;color:#6EE7B7;text-decoration:none;white-space:nowrap;">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+      Gestio PRO
+    </a>
+  </div>
 </nav>
 
 <!-- TOOLS STRIP -->
@@ -953,6 +976,11 @@ footer a:hover { color: white; }
     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
     Contratos
   </a>
+  <div class="strip-sep"></div>
+  <button type="button" class="strip-tab pro" onclick="document.getElementById('gestio-pro').scrollIntoView({behavior:'smooth', block:'start'})">
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+    Herramientas PRO
+  </button>
 </div>
 
 
@@ -960,10 +988,14 @@ footer a:hover { color: white; }
   <h1>Gestiona tu empresa<br>sin <em>complicaciones</em></h1>
   <p>Facturas, nóminas, albaranes y más. Herramientas gratuitas para autónomos y pymes españolas. Sin registro. Sin letra pequeña.</p>
   <div class="hero-actions">
-    <a href="#herramientas" class="btn-primary" onclick="event.preventDefault();document.getElementById('herramientas').scrollIntoView({behavior:'smooth'})">
-      Ver todas las herramientas
+    <button type="button" class="btn-primary" onclick="document.getElementById('herramientas').scrollIntoView({behavior:'smooth'})" style="border:none;cursor:pointer;">
+      Herramientas gratis
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-    </a>
+    </button>
+    <button type="button" class="btn-secondary" onclick="document.getElementById('gestio-pro').scrollIntoView({behavior:'smooth'})" style="cursor:pointer;">
+      Herramientas PRO
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+    </button>
   </div>
 </section>
 
@@ -1085,6 +1117,56 @@ footer a:hover { color: white; }
       </div>
     </a>
 
+  </div>
+
+  <!-- SEPARADOR PRO -->
+  <div id="gestio-pro" style="margin-top:64px;padding-top:56px;border-top:1px solid var(--line);scroll-margin-top:110px;">
+    <div class="reveal" style="margin-bottom:32px;">
+      <div class="section-label">Gestio PRO</div>
+      <h2 class="section-title">Servicios a medida para tu negocio</h2>
+      <p class="section-sub">Cuando las herramientas gratis se quedan cortas. Diseño web, Excel avanzado y software personalizado para autónomos y pymes.</p>
+    </div>
+    <div class="tools-grid">
+      <a href="pro.html" class="tool-card reveal reveal-delay-1" style="border-color:rgba(5,150,105,0.25);text-decoration:none;color:inherit;">
+        <div class="tool-arrow"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
+        <div class="tool-icon" style="background:rgba(5,150,105,0.12);">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#6EE7B7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+        </div>
+        <div class="tool-meta">
+          <div class="tool-name">Diseño web</div>
+          <div class="tool-desc">Páginas profesionales para tu negocio. Rápidas, bonitas y optimizadas para Google.</div>
+        </div>
+        <div class="tool-tag" style="background:rgba(5,150,105,0.12);color:#6EE7B7;"><span class="tag-dot"></span>Desde 199 €</div>
+      </a>
+      <a href="pro.html" class="tool-card reveal reveal-delay-2" style="border-color:rgba(5,150,105,0.25);text-decoration:none;color:inherit;">
+        <div class="tool-arrow"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
+        <div class="tool-icon" style="background:rgba(5,150,105,0.12);">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#6EE7B7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M3 15h18M9 3v18M15 3v18"/></svg>
+        </div>
+        <div class="tool-meta">
+          <div class="tool-name">Excel a medida</div>
+          <div class="tool-desc">Automatiza tus hojas de cálculo. Facturación, stock, presupuestos y más.</div>
+        </div>
+        <div class="tool-tag" style="background:rgba(5,150,105,0.12);color:#6EE7B7;"><span class="tag-dot"></span>Desde 29 €</div>
+      </a>
+      <a href="pro.html" class="tool-card reveal reveal-delay-3" style="border-color:rgba(5,150,105,0.25);text-decoration:none;color:inherit;">
+        <div class="tool-arrow"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
+        <div class="tool-icon" style="background:rgba(5,150,105,0.12);">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#6EE7B7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+        </div>
+        <div class="tool-meta">
+          <div class="tool-name">Software a medida</div>
+          <div class="tool-desc">Apps y herramientas específicas para tu negocio. Presupuesto sin compromiso.</div>
+        </div>
+        <div class="tool-tag" style="background:rgba(5,150,105,0.12);color:#6EE7B7;"><span class="tag-dot"></span>Consultar precio</div>
+      </a>
+    </div>
+    <div style="text-align:center;margin-top:32px;">
+      <a href="pro.html" class="btn-primary" style="display:inline-flex;align-items:center;gap:8px;">
+        Ver todos los servicios PRO
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </a>
+    </div>
   </div>
 </section>
 
